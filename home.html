@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Chat Room</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+  <link rel="icon" href="../static/favicon.png" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="home.css">
+  <link rel="stylesheet" href="homeres.css">
+</head>
+<body>
+  <div class="preloder">
+    <div class="mid-div">
+      <h1>Please wait...</h1>
+      <div class="center_div">
+        <img src="preloder.gif"/>
+      </div>
+    </div>
+  </div>
+  <header>
+    <div class="icon"><img src="favicon.png" class="ficon" />ChatterBox</div>
+    <ul class="menu">
+      <li><a class="home" href="#">Home</a></li>
+      <li><a href="#">About</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+  </header>
+  <main>
+    <h1>Chat Rules:</h1>
+    <p>
+      Please read the following rules before joining the chat rooms. Any
+      violation will get you banned from the Chat.
+    </p>
+    <div class="rules">
+      <span>No Spam:</span> Do not spam chat users with random or automated
+      messages.
+    </div>
+    <div class="rules">
+      <span>No Provocation:</span> Do not attack or harass others because of
+      their race, religion or anything that is personal.
+    </div>
+    <div class="rules">
+      <span>No Bad Links:</span> Do not send links to websites that are
+      similar to Chatroom or websites that aren't authentic or look
+      suspicious.
+    </div>
+    <div class="rules">
+      <span>No Sexual Harassment:</span> Do not attack or harass people of
+      opposite gender and respect everyone online. Also we do not encourage
+      sex-talk or any other practices here.
+    </div>
+    <div class="rules">
+      <span>Other rules:</span> Even if we didn't mention everything, any act
+      that is considered a bad behavior will result in a permanent ban.
+    </div>
+    <p>
+      Please keep the chat clean or you might get banned for any of the rules
+      mentioned above. We are also working on a "Report" feature that will let
+      you report bad users easily.
+    </p>
+    <div class="buttons">
+      <button class="btn1" id="login_form">Log In</button>
+      <button class="btn2" id="glogin_form">Guest login</button>
+    </div>
+    <p>
+      We do not keep our users' data or messages sent here, Chatroom
+      automatically deletes all your message history whenever you logout,
+      making Chatroom totally Anonymous and secure.
+    </p>
+  </main>
+
+  <div class="main2">
+    <div class="wrapper-div">
+        <div class="main-slider">
+            <div class="left-msg">
+                <div class="center-msg">
+                    <p>Already Have an Account?</p>
+                    <button onclick="login()">Log In</button>
+                </div>
+            </div>
+            <div class="right-msg">
+                <div class="center-msg">
+                    <p>Don't Have an Account?</p>
+                    <button onclick="signin()">Sign In</button>
+                </div>
+            </div>
+            <div class="slider">
+                <div class="slider-wrapper">
+                    <div class="left-slider">
+                      
+                        <div class="login">
+                            <h1>LOGIN HERE</h1>
+
+                            <div>
+                              <input type="text" name="log_username" id="log_username_email" placeholder="username/email:"/>
+                            </div>
+
+                            <div>
+                              <input type="password" name="log_password" id="log_password" placeholder="password:"/>
+                            </div>
+
+                            <div>
+                              <span><input type="checkbox"  name="rememberme" id="rememberme" class="img3"/></span><p class="if3">Remember me</p>
+                            </div>
+
+                            <div>
+                              <button type="submit" onclick="login2()">login <i class="fas fa-sign-in-alt"></i></button>
+                            </div>
+                            <div>
+                              <p class="nps1">forgot password?<a href="">click here</a></p>
+                            </div>
+                          </div>
+                    
+                          
+                    </div>
+
+                    <div class="right-slider">
+                      
+                        <div class="register">
+                            <h1>GET REGISTER HERE</h1>
+                            <div>
+                              <input type="text" name="reg_username" id="reg_username" placeholder="username:" required/>
+                            </div>
+                        
+                            <div>
+                              <input type="email" name="reg_email" id="reg_email" placeholder="email:" required/>
+                            </div>
+                        
+                            <div>
+                              <input type="password" name="reg_password" id="reg_password" placeholder="password:" required/>
+                            </div>
+                        
+                            <div>
+                              <button type="submit" onclick="addRecord()">Sign in <i class="fas fa-sign-in-alt"></i></button>
+                            </div>
+                          </div>
+                  
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+  <div class="guest_login">
+    <h1>GUEST LOGIN HERE</h1>
+    <div>
+      <input type="text" name="glog_username"  placeholder="username:" id="glog_username" />
+    </div>
+
+    <div>
+      <button class="fbtn1" type="submit" onclick="glogin()">Login</button>
+    </div>
+  </div>
+
+  </div>
+
+  <div class="footer">
+    <p>
+      (c) 2012, ChatterBox <br>
+All trademarks and registered trademarks appearing on this site are the property of their respective owners.
+    </p>
+  </div>
+
+</body>
+
+<script>
+  setTimeout(preloder, 1000);
+
+  function preloder() {
+    document.querySelector(".preloder").setAttribute("style", "display:none");
+    document.querySelector("main").setAttribute("style", "display:block");
+  }
+
+  const signin = () =>{
+    if(window.innerWidth <= 825){
+      document.querySelector(".slider").setAttribute("style","position:absolute;top:30%");
+    }else{
+      document.querySelector(".slider").setAttribute("style","position:absolute;left:50%");
+    }
+      document.querySelector(".main-slider").setAttribute("style","background-color:#F85D6F");
+      document.querySelector("header").setAttribute("style","background-color:#F85D6F");
+      document.querySelector(".left-slider").setAttribute("style","position:absolute;left:-100%");
+      document.querySelector(".right-slider").setAttribute("style","position:absolute;left:0%");
+    };
+
+    const login = () =>{
+        document.querySelector(".main-slider").setAttribute("style","background-color:#37BBF9");
+        document.querySelector(".slider").setAttribute("style","position:absolute;left:0%");
+        document.querySelector(".right-slider").setAttribute("style","position:absolute;left:100%");
+        document.querySelector(".left-slider").setAttribute("style","position:absolute;left:0%");
+        document.querySelector("header").setAttribute("style","background-color:#37BBF9");
+    };
+
+</script>
+
+<script>
+  if(document.cookie){
+    document.getElementById("rememberme").checked = true;
+    document.getElementById("log_username_email").value = document.cookie.split(";")[0].split("=")[1];
+    document.getElementById("log_password").value = document.cookie.split(";")[1].split("=")[1];
+  }else{
+    document.getElementById("rememberme").checked = false;
+  }
+
+
+  document.querySelector(".home").addEventListener("click", () => {
+    document.querySelector(".main2").setAttribute("style","display:none");
+    document.querySelector(".wrapper-div").setAttribute("style", "display:none");
+    document.querySelector(".guest_login").setAttribute("style", "display:none");
+    document.querySelector("main").setAttribute("style", "display:block");
+    document.querySelector(".footer").setAttribute("style","display:flex");
+    document.querySelector("header").setAttribute("style","background-color:#37BBF9");
+  });
+
+  document.getElementById("login_form").addEventListener("click", function () {
+      document.querySelector(".main2").setAttribute("style","display:flex");
+      document.querySelector(".wrapper-div").setAttribute("style", "display:flex");
+      document.querySelector(".guest_login").setAttribute("style", "display:none");
+      document.querySelector("main").setAttribute("style", "display:none");
+    document.querySelector(".footer").setAttribute("style","display:none");
+    });
+
+  document.getElementById("glogin_form").addEventListener("click", function () {
+      document.querySelector(".main2").setAttribute("style","display:flex");
+      document.querySelector(".guest_login").setAttribute("style", "display:flex");
+      document.querySelector(".wrapper-div").setAttribute("style", "display:none");
+      document.querySelector("main").setAttribute("style", "display:none");
+      document.querySelector(".footer").setAttribute("style","display:none");
+      document.querySelector("header").setAttribute("style","background-color:#37BBF9");
+    });
+
+    clearinputs=()=>{
+      document.getElementById("log_username_email").value = "";
+      document.getElementById("log_password").value = "";
+      document.getElementById("reg_username").value = "";
+      document.getElementById("reg_email").value = "";
+      document.getElementById("reg_password").value = "";
+      document.getElementById("glog_username").value = "";
+    }
+
+
+    addRecord=()=>{
+      $.ajax({ 
+           url: '/register',
+           type: 'POST',
+           data:{
+             name:document.querySelector("#reg_username").value,
+             email:document.querySelector("#reg_email").value,
+             password:document.querySelector("#reg_password").value,
+           },
+
+           success: function(data){
+              if(data == "okay"){
+                window.location.href = "/chatroom";
+              }
+           }
+           , error: function(data){
+               alert("you entered wrong details");
+           }
+        });
+
+        clearinputs();
+    }
+
+
+    login2=()=>{
+      $.ajax({ 
+           url: '/login',
+           type: 'POST',
+           data:{
+             name_email:document.getElementById("log_username_email").value,
+             password:document.getElementById("log_password").value,
+           },
+
+           
+           success: function(data){
+              if(data == "matched"){
+                if(document.getElementById("rememberme").checked){
+                  document.cookie = `remembermename=${document.getElementById("log_username_email").value}`;
+                  document.cookie = `remembermepass=${document.getElementById("log_password").value}`;
+                }else{
+                  document.cookie = "remembermename=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                  document.cookie = "remembermepass=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                }
+                window.location.href = "/chatroom";
+              }
+           }
+           , error: function(jqXHR, textStatus, err){
+               alert("you entered wrong details");
+                clearinputs();
+           }
+          });
+    }
+
+    glogin=()=>{
+      $.ajax({ 
+           url: '/glogin',
+           type: 'POST',
+           data:{"name":document.getElementById("glog_username").value},
+
+           success: function(data){
+              if(data == "okay"){
+                window.location.href = "/chatroom";
+              }
+           }
+           , error: function(jqXHR, textStatus, err){
+               alert("you entered wrong details");
+           }
+        });
+
+        clearinputs();
+    }
+</script>
+
+</html>

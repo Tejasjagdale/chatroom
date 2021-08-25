@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>
+        Main Room
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+    <link rel="icon" href="favicon.png">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+        integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="mainres.css">
+</head>
+<body>
+    <div class="alert">
+        <img src="" id="enlarge_img">
+
+        <div class="video_options">
+            <div>Which video are you streaming</div>
+            <div>Youtube video</div>
+            <div><label>Some Local Video</label><input type="file" accept=".mp4,.mkv" onchange="localvideo(event)"></div>
+        </div>
+
+        <div class="inbox" tabindex="0">
+            <div class="head">
+                <span><i class="fas fa-trash-alt"></i> clear</span><i class="fas fa-times" onclick="alertclose(event)"></i>
+            </div>
+            <div class="msg-container">
+            </div>
+        </div>
+
+        <div class="notification" tabindex="0">
+            <div class="head"><span><i class="fas fa-trash-alt"></i> clear</span><i class="fas fa-times"
+                    onclick="alertclose(event)"></i>
+            </div>
+            <div class="notification_body">
+
+            </div>
+        </div>
+
+        <div class="create_room"  tabindex="0">
+            <div class="head"><span>ChatterBox</span> <i class="fas fa-times" onclick="alertclose(event)"></i></div>
+            <div class="crbody">
+                <div>
+                    <label>RoomName:</label>
+                    <input type="text" name="Croomname" id="Croomname" />
+                </div>
+                <div>
+                    <label>Password:</label>
+                    <input type="password" name="Croompassword" id="Croompassword" />
+                </div>
+                <div class="crbtn">
+                    <button class="crabtn" onclick="createroom()">CreateRoom <i class="fas fa-sign-in-alt"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="enter_roompass">
+            <div class="head"><span>Enter Room password</span> <i class="fas fa-times" onclick="alertclose(event)"></i>
+            </div>
+            <div class="crbody">
+                <div>
+                    <label>Enter Password:</label>
+                    <input type="password" id="Eroompassword" />
+                </div>
+                <div class="crbtn">
+                    <button class="crabtn" onclick="roompass()">Enter <i class="fas fa-sign-in-alt"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="profile_div">
+            <div class="head">
+                <div class="dp_pic">
+                    <span><i class="fas fa-user"></i></span>
+                </div>
+                <div class="name_type">
+                    <p class="type"><i class="fas fa-user"></i> guestuser</p>
+                    <p class="name">name</p>
+
+                    <i class="fas fa-times" id="exit" onclick="alertclose(event)"></i>
+                </div>
+            </div>
+            <div class="crbody">
+                <div class="bdiv">
+                    <span onclick="view_poption(this.innerText)">Profile</span>
+                    <span onclick="view_poption(this.innerText)">friends</span>
+                    <span onclick="view_poption(this.innerText)">about me</span>
+                </div>
+                <div class="profile_display">
+                    <div class="country">
+                        <label>country:</label>
+                        <p>india</p>
+                    </div>
+    
+                    <div class="joinat">
+                        <label>joined at:</label>
+                        <p>5/2/2002</p>
+                    </div>
+    
+                    <div class="status">
+                        <label>status:</label>
+                        <p>online</p>
+                    </div>
+    
+                    <div class="current_room">
+                        <label>current room:</label>
+                        <p>Mainroom</p>
+                    </div>
+                </div>
+
+                <div class="friends_display">
+                </div>
+
+                <div class="aboutme_display">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-wrapper">
+        <div class="ui-left">
+
+            <div id="set_display">
+                <h1>
+                    <i class="fas fa-arrow-left"></i> SET CHAT WALLPAPER
+                </h1>
+                <div class="display-wrapper">
+                    <div class="check-option">
+                        <div><input type="checkbox" id="doodel"> Add Chat Doodels</div>
+                        <div><input type="file" id="wp_select" onchange="set_wallpaper()"> <i class="far fa-image"></i> Select image</div>
+                    </div>
+                    <div class="select-color">
+                        <div><div class="color" id="color1"></div></div>
+                        <div><div class="color" id="color2"></div></div>
+                        <div><div class="color" id="color3"></div></div>
+                        <div><div class="color" id="color4"></div></div>
+                        <div><div class="color" id="color5"></div></div>
+                        <div><div class="color" id="color6"></div></div>
+                        <div><div class="color" id="color7"></div></div>
+                        <div><div class="color" id="color8"></div></div>
+                        <div><div class="color" id="color9"></div></div>
+                        <div><div class="color" id="color10"></div></div>
+                        <div><div class="color" id="color11"></div></div>
+                        <div><div class="color" id="color12"></div></div>
+                        <div><div class="color" id="color13"></div></div>
+                        <div><div class="color" id="color14"></div></div>
+                        <div><div class="color" id="color15"></div></div>
+                        <div><div class="color" id="color16"></div></div>
+                        <div><div class="color" id="color17"></div></div>
+                        <div><div class="color" id="color18"></div></div>
+                        <div><div class="color" id="color19"></div></div>
+                        <div><div class="color" id="color20"></div></div>
+                        <div><div class="color" id="bgimage" ></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="edit_profile">
+                <h1>Profile <i class="far fa-times-circle" onclick="close_eprofile()"></i></h1>
+                <section>
+                    <div>
+                        <label><i class="fas fa-camera-retro"></i></label>
+                        <img src="profile/default_dp2.png">
+                    </div>
+                    <div>
+                        <p> Rohit Sharma</p>
+                    </div>
+                </section>
+                <div><i class="fas fa-user-edit"></i> Edit Name</div>
+                <div><i class="fas fa-question-circle"></i> About me</div>
+                <div><i class="fas fa-ban"></i> Manage Blocks</div>
+                <div><i class="fas fa-volume-up"></i> Sound setings</div>
+                <div><i class="fas fa-key-skeleton"></i> Change password</div>
+                <div><i class="fas fa-envelope"></i> Change Email</div>
+                <div><i class="fas fa-trash-alt"></i> Delete Account</div>
+            </div>
+
+            <header class="header1">
+                <div class="icon">ChatterBox</div>
+            </header>
+            <div class="options">
+                <span onclick="showusers()">
+                    <p id="users"><i class="fas fa-users"></i></p>
+                </span>
+                <span onclick="showfrnds()">
+                    <p id="friends"><i class="fas fa-user-plus"></i></p>
+                </span>
+                <span onclick="showrooms()">
+                    <p id="rooms"><i class="fas fa-home"></i></p>
+                </span>
+                <span onclick="joinvc()">
+                    <p id="voice_channels"><i class="fas fa-volume"></i></p>
+                </span>
+            </div>
+            <div id="search">
+                <div><i class="far fa-search"></i></div><input type="text" id="search_any" cur_option="user" placeholder="Search user here....">
+            </div>
+            <div class="option">
+
+                <div class="users">
+                </div>
+
+                <div class="freinds">
+                </div>
+
+                <div class="user_details">
+                    <div class="ud_head">
+                        <span><i class="fas fa-user"></i></span>
+                        <p>name</p>
+                    </div>
+                    <div class="ud_body">
+                        <div class="user-type" style="display:none"></div>
+                        <div class="vprofile" id="profile_div"><span><i class="fas fa-user-tie"></i></span> view profile
+                        </div>
+                        <div class="addfreind" onclick="addfreind(this.id,event)">
+                            <span class="frd-icon"><i class="fas fa-user-plus"></i></span> Addfreind
+                        </div>
+                        <div class="pm_chat" onclick="pmchat(this.id,this.classList,event)"  ><i class="fas fa-comments"></i> privatechat</div>
+                    </div>
+                </div>
+
+                <div class="vc-options">
+                    <div class="vco-head">
+                        <p><i class="fas fa-signal"></i> Voice Connected</p>
+                        <p><i class="fas fa-phone-slash"></i></p>
+                    </div>
+                    <div class="vco-mid"><button class="channel-video" onclick="startvideo()"><i class="fas fa-video"></i> Video</button><button class="screen-share"><i class="far fa-share-square"></i> Screen</button></div>
+                    <div class="vco-bottom">
+                        <div class="this_user_identity"><span></span>tejas</div>
+                        <div>
+                            <button class="mainmic" onclick="muteMic()"><i class="fas fa-microphone"></i></button>
+                            <button onclick="deafen()"><i class="fas fa-headphones"></i></button> 
+                            <button><i class="fas fa-cog"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="rooms">
+                    <div class="room addroom" >
+                        <span class="uprofile"></span>
+                        <p class="username">CreateRoom</p>
+                    </div>
+
+                    <div class="room" onclick="changeroom(this.id)" id="mainroom">
+                        <span class="uprofile"></span>
+                        <p class="username">Main Room</p>
+                        <div class="num_of_users">5</div>
+                    </div>
+                </div>
+
+                <div class="voice_channels">
+                    <h1 class="channel_type"><span class="show_hide_user"><i class="fal fa-chevron-right"></i></span>TEXT CHANNELS</h1>
+                    <div class="Text_channel">
+                        <span class="text_icon"><i class="fas fa-hashtag"></i></span><p>General</p>
+                    </div>
+
+                    <h1 class="channel_type"><span class="show_hide_user"><i class="fal fa-chevron-right"></i></span>VOICE CHANNELS</h1>
+                    <div class="voice_channel">
+                        <span class="voice_icon"><i class="fas fa-volume"></i></span><p>General</p>
+                        <div class="channel_users" id="General_channel_users">
+                            <!-- <div><span></span> tejas jagdale</div> -->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+        <div class="ui-right">
+            <div class="incoming_pmcall">
+                <div class="incom_icon">
+                   <span class="incom_dp"></span>
+                </div>
+                <div class="caller_name">
+                    <p class="scall_name">username</p>
+                    <p>incoming call</p>
+                </div>
+                <div class="call_icons">
+                    <div class="class_red">
+                        <span class="call_green" onclick="declinecall()"><i class="fas fa-phone-slash"></i></span>
+                    </div>
+                    <div class="class_green">
+                        <span class="call_red" onclick="acceptcall(event)"><i class="fas fa-phone-plus"></i></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="video_div_wrapper">
+                <div class="video-streaming-div">
+                    <div class="video_player">
+                        <video id="streamed-video" src="" playsinline autoplay controls></video>
+                    </div>
+                </div>
+            </div>
+
+            <header class="header2">
+                <div class="room_name" id="Main Room">
+                    <span><i class="fas fa-users"></i></span>Main Room
+                </div>
+                <ul class="menu">
+                    <li><a href="#inbox" id="inbox"><i class="fas fa-envelope"></i><p class="num_of_noti1">0</p></a></li>
+                    <li><a href="#notification" id="notification"><i class="fas fa-bell"></i><p class="num_of_noti2">0</p></a></li>
+                    <li><a href="#log_profile" id="log_profile" onclick="showasm()"><i class="fas fa-bars"></i></a></li>
+                </ul>
+            </header>
+
+            <div class="main-chat">
+                <div class="emojis"></div>
+            </div>
+
+            <div class="persnol_chat_model" id="PM_chat_display">
+            </div>
+            
+            <footer>
+                <div class="sticky-uploader">
+                    <p>START STREAMING VIDEO HERE!</p>
+                    <div><button class="show_options">Select Video Here</button></div>
+                </div>
+
+                <input type="hidden" id="setfile">
+                <input type="file" id="myfile" onchange="selectFile(event)" >
+                <button id="emojis" onclick="emoji()"><i class="far fa-smile" ></i></button>
+                <button id="file"><i class="far fa-paperclip"></i></button>
+                <input type="text" placeholder="Type a massage" class="type_msg" autofocus/>
+                <button id="enter" onclick="sendresp()"><i class="fas fa-paper-plane"  ></i></button>
+            </footer>
+
+            <aside>
+                <ul>
+                    <li class="main-li">MENU <span><i class="fal fa-times" onclick="asmback()"></i></span></li>
+                    <li onclick="edit_profile()"><div class="aside-wrapper"><span><i class="far fa-user-circle"></i></span> Profile</div></li>
+                    <li class="mddown"><span class="ddown"><i class="fas fa-caret-left"></i></span><div class="aside-wrapper"><span class="bot-span"><i class="fab fa-android"></i></span> Add Bot</div>
+                        <ul class="sddown">
+                            <li><span></span> Rhythm bot</li>
+                            <li><span></span> Chat bot</li>
+                            <li><span></span> Quiz bot</li>
+                            <li><span></span> Video bot</li>
+                        </ul>
+                    </li>
+                    <li class="rsetting" ><div class="aside-wrapper"><span><i class="far fa-cog"></i></span> Room Settings</div></li>
+                    <li onclick="show_display()"><div class="aside-wrapper"><span><i class="far fa-image"></i></span> Display</div></li>
+                    <li onclick="logout()"><div class="aside-wrapper"><span><i class="fas fa-sign-out-alt"></i></span> Logout</div></li>
+                </ul>
+            </aside>
+        </div>
+    </div>
+</body>
+<script src ="http://localhost:3812/socket.io/socket.io.js"></script>
+<script src="/socket.io-stream/socket.io-stream.js"></script>
+<script src="https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js"></script>
+<script src="/simple-peer/simplepeer.min.js"></script>
+<script src="main.js"></script>
+<script src="pmcall.js"></script>
+<script src="action.js"></script>
+<script src="emojis.js"></script>
+<script src="video_bot.js"></script>
+<script src="mobile.js"></script>
+</html>
