@@ -88,30 +88,30 @@ app.post("/register", async(req,res)=>{
 
         res.cookie("jwt",{"token":token,"user_type":"register","name":req.body.name});
         
-        var transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-              user: 'tejasjagdale60@gmail.com',
-              pass: 'pcbbypqecyudcajy'
-            }
-          });
+        // var transporter = nodemailer.createTransport({
+        //     service: 'gmail',
+        //     auth: {
+        //       user: 'tejasjagdale60@gmail.com',
+        //       pass: 'pcbbypqecyudcajy'
+        //     }
+        //   });
           
-          otp = getRandomInt(1000,9999);
+        //   otp = getRandomInt(1000,9999);
 
-          var mailOptions = {
-            from: 'tejasjagdale60@gmail.com',
-            to: req.body.email,
-            subject: 'Forget password of fcrit website',
-            text: `your otp is ${otp}`
-          };
+        //   var mailOptions = {
+        //     from: 'tejasjagdale60@gmail.com',
+        //     to: req.body.email,
+        //     subject: 'Forget password of fcrit website',
+        //     text: `your otp is ${otp}`
+        //   };
           
-          transporter.sendMail(mailOptions, function(error, info){
-            if (error) {
-              console.log(error);
-            } else {
-              console.log('Email sent: ' + info.response);
-            }
-          });
+        //   transporter.sendMail(mailOptions, function(error, info){
+        //     if (error) {
+        //       console.log(error);
+        //     } else {
+        //       console.log('Email sent: ' + info.response);
+        //     }
+        //   });
 
         const registered = await registeruser.save();
 
