@@ -1,8 +1,6 @@
 const mongoose =  require("mongoose");
 
-const DB = 'mongodb+srv://tejas:tejas1234@cluster0.gpcgz.mongodb.net/chatapp?retryWrites=true&w=majority';
-
-mongoose.connect(DB,{
+mongoose.connect(process.env.DB,{
     useNewUrlParser:true,
     useUnifiedTopology:true,
     useCreateIndex:true,
