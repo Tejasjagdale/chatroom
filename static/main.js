@@ -1308,6 +1308,9 @@
 
     const show_display=()=>{
         document.getElementById("set_display").style.transform = "translateX(0%)";
+        if(window.innerWidth <= 825){
+            document.querySelector(".ui-left").setAttribute("style","transform:translatex(0%)")
+        }
         asmback();
         close_eprofile();
     }
@@ -1339,6 +1342,9 @@
 
     const edit_profile=()=>{
         document.getElementById("edit_profile").setAttribute("style","transform:translatex(0%)");
+        if(window.innerWidth <= 825){
+            document.querySelector(".ui-left").setAttribute("style","transform:translatex(0%)")
+        }
         asmback();
         close_user_profile();
     }
