@@ -8,9 +8,40 @@
     transform: translateX(0%);
   }
 
-  .user_details{
-    width:180px;
-    height:225px;
+  .users .user{
+    height:60px;
+  }
+
+  .users .user span{
+    width:40px;
+    height:40px;
+  }
+
+  .user_details {
+    width: 180px;
+    height: 225px;
+  }
+
+  .pmvideo_enlarge {
+    display: block;
+  }
+
+  .chat-msg,.y-chat-msg{
+    padding-top: 20px;
+    font-size: 14px;
+  }
+
+  .y-profile,.profile{
+    min-width:45px;
+    height:45px;
+  }
+
+  .chat-name,.y-chat-name{
+    font-size: 13px;
+  }
+
+  .chat-time,.y-chat-time{
+    font-size: 10px;
   }
 }
 
@@ -18,6 +49,36 @@
   .main-wrapper {
     display: block;
     position: relative;
+  }
+
+  .users .user{
+    height:55px;
+  }
+
+  .users .user span{
+    width:35px;
+    height:35px;
+  }
+
+  .users .user p{
+    font-size: 20px;
+  }
+
+  .chat-msg,.y-chat-msg{
+    font-size: 13px;
+  }
+
+  .chat-name,.y-chat-name{
+    font-size: 12px;
+  }
+
+  .chat-time,.y-chat-time{
+    font-size: 10px;
+  }
+
+  .y-profile,.profile{
+    min-width:40px;
+    height:40px;
   }
 
   .ui-left {
@@ -29,7 +90,7 @@
     background-color: #5865f2;
     overflow: hidden;
     transform: translateX(0%);
-    z-index: 15;
+    z-index: 50;
     transition: all 0.5s ease-in-out;
   }
 
@@ -37,120 +98,143 @@
     position: absolute;
     top: 0%;
     left: 0%;
-    width:100%;
+    width: 100%;
     height: 100%;
+  }
+
+  .pmvideo_enlarge {
+    display: none;
   }
 
   aside {
     width: 40%;
   }
 
-  
-.main-li span{
-  right:40px;
-}
+  .main-li span {
+    right: 40px;
+  }
 
-  .type_msg{
+  .type_msg {
     border-radius: 15px;
   }
 
-  #enter{
-    width:35px;
-    height:35px;
-    font-size:18px;
+  #enter {
+    width: 35px;
+    height: 35px;
+    font-size: 18px;
   }
 
-  .user_details{
+  .user_details {
     left: 180px;
   }
 
-  .ud_head{
-    height:60%;
+  .ud_head {
+    height: 60%;
   }
 
-  .ud_body{
-    height:40%;
+  .ud_body {
+    height: 40%;
   }
 }
 
 @media only screen and (max-width: 525px) {
   .ui-left {
     width: 90%;
+    z-index: 50;
   }
 
-  .inbox{
-    width:90%;
-  }
-
-  aside{
-    width:60%;
-  }
-
-  .main-li span{
-    right:20px;
-  }
-
-  .notification{
-    width:90%;
-  }
-
-  .create_room{
+  .inbox {
     width: 90%;
   }
 
-  .enter_roompass{
+  aside {
+    width: 60%;
+  }
+
+  .main-li span {
+    right: 20px;
+  }
+
+  .notification {
     width: 90%;
   }
 
-  .profile_div{
-    width:90%;
+  .create_room {
+    width: 90%;
   }
 
-  .pmvideo_wrapper{
+  .enter_roompass {
+    width: 90%;
+  }
+
+  .profile_div {
+    width: 90%;
+  }
+
+  .pmvideo_wrapper {
     display: block;
-    height:100%;
   }
 
-  .pm_video_div{
-    height:100%;
+  .incoming_pmcall {
+    width: 280px;
+    height: 350px;
   }
 
-  .user_details{
+  .user_details {
     left: 120px;
     width: 160px;
-    height:200px;
+    height: 200px;
   }
 
-  #pmvideoElement1{
+  #pmvideoElement1 {
     position: absolute;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
   }
 
-  .room_name{
+  #pmvideoElement2 {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    width: 70px;
+    height: 90px;
+  }
+
+  .pmvideo_control button {
+    width: 35px;
+    height: 35px;
+    font-size: 15px;
+  }
+
+  .room_name {
     font-size: 33%;
   }
 
-  #file{
+  #file {
     font-size: 20px;
   }
 
-  #emojis{
+  #emojis {
     font-size: 20px;
   }
 
-  .type_msg{
-    height:30px;
+  .type_msg {
+    height: 30px;
     font-size: 15px;
     border-radius: 15px;
     padding-left: 5%;
   }
 
-  #enter{
-    width:30px;
-    height:30px;
-    font-size:15px;
+  #enter {
+    width: 30px;
+    height: 30px;
+    font-size: 15px;
+  }
+
+  aside ul {
+    position: relative;
+    right: 0px;
   }
 }

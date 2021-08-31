@@ -217,7 +217,7 @@ body {
     flex-direction: column;
     background-color: #292B2F;
     z-index: 5;
-    display: none;
+    display:none;
 }
 
 .vc-options i{
@@ -354,7 +354,7 @@ body {
 
 .ud_head {
     width: 100%;
-    height: 50%;
+    height: 40%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -385,7 +385,7 @@ body {
 
 .ud_body {
     width: 100%;
-    height: 50%;
+    height: 60%;
     display: flex;
     flex-direction: column;
 }
@@ -404,7 +404,7 @@ body {
 .vprofile {
     color: red;
     cursor: pointer;
-    font-size: 40%;
+    font-size: 35%;
 }
 
 .vprofile span {
@@ -423,6 +423,7 @@ body {
 .addfreind {
     color: #25A72A;
     cursor: pointer;
+    font-size: 30%;
 }
 
 .addfreind .frd-icon {
@@ -485,8 +486,8 @@ body {
 }
 
 .users .user span{
-    width:50px;
-    height:50px;
+    width:45px;
+    height:45px;
     border-radius:50%;
     display: flex;
     justify-content: center;
@@ -693,6 +694,7 @@ body {
     display: flex;
     justify-content: space-around;
     align-items: center;
+    font-size: 30%;
 }
 
 .check-option div{
@@ -855,7 +857,7 @@ body {
 
 .menu li a {
     text-decoration: none;
-    font-size: 30%;
+    font-size: 32%;
     color: gray;
     position: relative;
 }
@@ -1043,8 +1045,8 @@ body {
 }
 
 .profile{
-    min-width:60px;
-    height:60px;
+    min-width:50px;
+    height:50px;
     border-radius:50%;
     display: flex;
     justify-content: center;
@@ -1054,7 +1056,7 @@ body {
     border:3px solid white;
     background-position: center;
     margin-left: 10px;
-    margin-right: 20px;
+    margin-right: 10px;
     box-shadow: 0px 0px 26px -8px rgba(0,0,0,0.75);
 }
 
@@ -1090,11 +1092,20 @@ body {
     margin-top:10px;
     margin-left: 20%;
     justify-content: flex-end;
+    box-sizing: border-box;
+}
+
+.y-profile-wrapper{
+    width:50px;
+    width:50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .y-profile{
-    min-width:60px;
-    height:60px;
+    min-width:50px;
+    height:50px;
     border-radius:50%;
     display: flex;
     justify-content: center;
@@ -1102,8 +1113,6 @@ body {
     background-image: url("profile/default_dp2.png");
     background-size: 100% 100%;
     background-position: center;
-    margin-left: 10px;
-    margin-right: 20px;
     border:3px solid white;
     box-shadow: 0px 0px 26px -8px rgba(0,0,0,0.75);
 }
@@ -1117,6 +1126,7 @@ body {
     padding:25px 10px 15px 10px;
     font-size: 16px;
     min-width: 150px;
+    margin-right: 10px;
     box-shadow: 0px 0px 26px -8px rgba(0,0,0,0.75);
    }
 
@@ -1738,6 +1748,7 @@ aside ul li:nth-child(3) ul li{
 .crbody div label {
     color: #4D426D;
     font-weight: 600;
+    font-size: 40%;
 }
 
 .crbody div input {
@@ -2330,6 +2341,7 @@ aside ul li:nth-child(3) ul li{
     display: flex;
     justify-content: center;
     align-items: center;
+    font-size: 30%;
 }
 
 .class_green{
@@ -2338,6 +2350,7 @@ aside ul li:nth-child(3) ul li{
     display: flex;
     justify-content: center;
     align-items: center;
+    font-size: 30%;
 }
 
 .call_red

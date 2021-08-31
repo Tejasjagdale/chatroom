@@ -139,8 +139,10 @@
                                                                         <span class="y-chat-name">you</span>
                                                                         <video src="" class="vid_stream_div"></video>
                                                                         <span class="y-chat-time">${time}</span>
-                                                                        </p>
-                                                                        <span class="y-profile"></span>`;
+                                                                      </p>
+                                                                      <div class="y-profile-wrapper">
+                                                                      <span class="y-profile"></span>
+                                                                      </div>`;
                         var objDiv = document.querySelector(`.main-chat`);
                         objDiv.scrollTop = objDiv.scrollHeight;
                     }
@@ -231,6 +233,19 @@
         var objDiv = document.querySelector(`.main-chat`);
         objDiv.scrollTop = objDiv.scrollHeight;
         msg1.play();
+        }
+    });
+
+    socket.on('msg-clear',(data)=>{
+        if(data.room == document.querySelector(".room_name").id){
+            console.log(data);
+            var element1 = document.querySelectorAll(".y-chat")[0].id.split("msg")[1];
+            var element2 = document.querySelectorAll(".chat")[0].id.split("msg")[1];
+            if(element1 > element2){
+                document.querySelectorAll(".chat")[0].remove();
+            }else{
+                document.querySelectorAll(".y-chat")[0].remove();
+            }
         }
     });
 
@@ -867,7 +882,8 @@
             if (user_div.classList[1] == "register") {
                 document.querySelector(".user_details .addfreind").setAttribute("style", "display:flex");
                 document.querySelector(".user_details .addfreind").id = user_div.id;
-            } if (user_div.classList[1] == "guest") {
+            } 
+            if (user_div.classList[1] == "guest") {
                 document.querySelector(".user_details .addfreind").setAttribute("style", "display:none");
             }
         }
@@ -880,15 +896,18 @@
         
         if (document.querySelector(".user_details .ud_head p").innerText == document.querySelector(`#${event} .username`).innerText) {
             close_user_profile();
-        } else {
+        } 
+        else {
             if (event == `user${this_userid}`) {
                 document.querySelector(".pm_chat").innerHTML = `<i class="far fa-edit"></i> Edit`;
-                document.querySelector(".pm_chat").setAttribute("onclick","edit_profile()")
+                document.querySelector(".pm_chat").setAttribute("onclick","edit_profile()");
                 document.querySelector(".user_details .addfreind").setAttribute("style", "display:none");
                 document.querySelector(".user_details .ud_head p").innerText = document.querySelector(`#${event} .username`).innerText;
-            } else {
+            } 
+            else {
                 document.querySelector(".user_details .addfreind").setAttribute("onclick","addfreind(this.id,event)");
                 document.querySelector(".user_details .addfreind").innerHTML = `<span class="frd-icon"><i class="fas fa-user-plus"></i></span> Addfreind`;
+
                 frnds_list.forEach((item,index)=> {
                     if(item.sender_id.trim() == event.replace("user"," ").trim() || item.receiver_id.replace("user"," ").trim() == event.replace("user"," ").trim() || item.sender_id.trim() == event.replace("frnd"," ").trim() || item.receiver_id.replace("user"," ").trim() == event.replace("frnd"," ").trim()){
                         document.querySelector(".user_details .addfreind").innerHTML = `<span class="frd-icon"><i class="fas fa-times"></i></span> Remove freind`;
@@ -903,6 +922,7 @@
                 if (user_type != "guest" && user_div.classList[1] != "guest") {
                     document.querySelector(".user_details .addfreind").setAttribute("style", "display:flex");
                 }
+                document.querySelector(".pm_chat").setAttribute("onclick","pmchat(this.id,this.classList,event)")
                 document.querySelector(".pm_chat").id = user_div.id;
                 document.querySelector(".pm_chat").classList = "pm_chat";
                 document.querySelector(".pm_chat").classList.add(document.querySelector(`#${event} .username`).innerText);

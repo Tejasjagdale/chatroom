@@ -222,23 +222,6 @@ loader();
 
 
 io.on('connection', function(socket) {
-
-    // setInterval(function(){ 
-    //              roomdata.forEach(async (element,index)=> {
-    //                  if(element.roomusers.length == 0){
-    //                      if(element.roomactive == false){
-    //                         roomdata.splice(index,1);
-    //                         roomsname.splice(index,1);
-    //                         await Rooms.deleteOne({roomname:element.roomname});
-    //                         socket.emit('unactive-room',element.roomname);
-    //                         socket.broadcast.emit('unactive-room',element.roomname);
-    //                      }else{
-    //                         element.roomactive = true;
-    //                      }
-    //                  }
-    //                 }); 
-    //                 }, 300000);
-
     socket.on('new-user-joined', async (data) => {
         try {
             const token = data.token;
@@ -296,10 +279,13 @@ io.on('connection', function(socket) {
 
        roomdata.forEach(function(items, index){
            if(data1.room == items.roomname){
-            if(roomdata[index].roommsgs.length == 0){
-                roomdata[index].roommsgs[0] = data1;
+            if(roomdata[index].roommsgs.length >= 10){
+                roomdata[index].roommsgs.splice(0, 1);
+                roomdata[index].roommsgs.push(data1)
+                socket.emit('msg-clear', data1);
+                socket.broadcast.emit('msg-clear', data1);
             }else{
-                roomdata[index].roommsgs = [...roomdata[index].roommsgs,data1]
+                roomdata[index].roommsgs.push(data1)
             }
            }
        });

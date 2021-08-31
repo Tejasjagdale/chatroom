@@ -268,8 +268,8 @@ async function stopCapture() {
 function enlarge(){
     document.querySelector(".pmvideo_enlarge").setAttribute("onclick","backtosize()");
     document.querySelector(".pm_video_div").setAttribute("style","min-height:100%;display:block");
-    document.getElementById("pmvideoElement1").setAttribute("style","width:450px;height:300px;border-radius:10px");
-    document.getElementById("pmvideoElement2").setAttribute("style","width:450px;height:300px;border-radius:10px");
+    document.getElementById("pmvideoElement1").setAttribute("style","width:50%;height:100%;");
+    document.getElementById("pmvideoElement2").setAttribute("style","width:50%;height:100%;");
     document.getElementById("pmvideoElement2").style.opacity = 1;
     document.querySelector(".pmvideo_enlarge").classList.remove("fa-expand-wide");
     document.querySelector(".pmvideo_enlarge").classList.add("fa-compress-wide");
@@ -278,8 +278,8 @@ function enlarge(){
 function backtosize(){
     document.querySelector(".pmvideo_enlarge").setAttribute("onclick","enlarge()");
     document.querySelector(".pm_video_div").setAttribute("style","height:65%;display:block");
-    document.getElementById("pmvideoElement1").setAttribute("style","width:400px;height:220px;border-radius:10px");
-    document.getElementById("pmvideoElement2").setAttribute("style","width:400px;height:220px;border-radius:10px");
+    document.getElementById("pmvideoElement1").setAttribute("style","width:50%;height:100%");
+    document.getElementById("pmvideoElement2").setAttribute("style","width:50%;height:100%");
     document.getElementById("pmvideoElement2").style.opacity = 1;
     document.querySelector(".pmvideo_enlarge").classList.remove("fa-compress-wide");
     document.querySelector(".pmvideo_enlarge").classList.add("fa-expand-wide");
