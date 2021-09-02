@@ -56,6 +56,35 @@ body {
     width:28%;
     height:100%;
     background-color: #5865F2;
+    overflow-x: hidden;
+}
+
+.player{
+    position: absolute;
+    bottom: 0;
+    left:0;
+    width: 100%;
+    height:70px;
+    background-color: orangered;
+    display: flex;
+}
+
+.player .thumb{
+    width:30%;
+    height:100%;
+    background-color: orchid;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.player .player_controls{
+    width:70%;
+    height:100%;
+    background-color: palegreen;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .option{
@@ -354,7 +383,7 @@ body {
 
 .ud_head {
     width: 100%;
-    height: 40%;
+    height: 50%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -385,7 +414,7 @@ body {
 
 .ud_body {
     width: 100%;
-    height: 60%;
+    height: 50%;
     display: flex;
     flex-direction: column;
 }
@@ -437,6 +466,16 @@ body {
     align-items: center;
     color: white;
     font-size: 12px;
+}
+
+#action{
+    color:orangered;
+    font-size: 30%;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
 }
 
 .pm_chat {
@@ -512,13 +551,16 @@ body {
     right:10px;
     top:50%;
     transform: translateY(-50%);
-    font-size: 20px;
-    width:40px;
-    height:40px;
+    font-size: 18px;
+    width:80px;
+    height:100%;
     display: flex;
-    justify-content: center;
+    justify-content: space-around;
     align-items: center;
+    color: white;
 }
+
+
 
 .freinds{
     position: absolute;
@@ -606,8 +648,8 @@ body {
 }
 
 .rooms .room span{
-    width:50px;
-    height:50px;
+    width:45px;
+    height:45px;
     border-radius:50%;
     display: flex;
     justify-content: center;
@@ -636,13 +678,12 @@ body {
     position: absolute;
     right:10px;
     top:50%;
-    background-color: #F60062;
     width:30px;
     height:30px;
     border-radius: 50%;
     color:white;
     transform: translateY(-50%);
-    font-size: 20px;
+    font-size: 16px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -857,7 +898,7 @@ body {
 
 .menu li a {
     text-decoration: none;
-    font-size: 32%;
+    font-size: 40%;
     color: gray;
     position: relative;
 }
@@ -1490,6 +1531,380 @@ aside ul li:nth-child(3) ul li{
     align-items: center;
 }
 
+.Room_settings {
+    display: none;
+    width: 500px;
+    height: 450px;
+    background-color:white;
+    z-index: 55;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) ;
+}
+
+.Room_settings .head {
+    width: 100%;
+    height: 50px;
+    background: #F7001F;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 20px;
+    padding: 0px 30px;
+}
+
+.settings-container {
+    width: 100%;
+    height: 400px;
+}
+
+.Rset_options{
+    width:100%;
+    height:40px;
+    font-size: 20px;
+    display: flex;
+    align-items: flex-start;
+}
+
+.Rset_options button{
+    width:25%;
+    height:100%;
+    color: black;
+    border: none;
+    outline: none;
+    background-color: #EFEFEF;
+}
+
+#rset_option{
+    width:100%;
+    height:360px;
+    display: flex;
+    flex-direction: column;
+    display:block;
+}
+
+#rset_option .rset_warpper{
+    width:100%;
+    height:90px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+#rset_option .rset_warpper_btn{
+    width:100%;
+    height:40px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding-left: 10%;
+}
+
+#rset_option .rset_warpper_btn button{
+    background-color: darkred;
+    color:white;
+    font-size: 16px;
+    padding: 6px 25px;
+    outline: none;
+    border:none
+}
+
+#rset_option .rset_warpper label{
+    font-size: 17px;
+    margin-left: 10%;
+}
+
+#room_roles{
+    width:100%;
+    height:360px;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    display:none;
+}
+
+#room_roles .rr_container{
+    width:450px;
+    margin-left: 25px;
+    height:auto;
+}
+
+#room_roles .rr_container label{
+    width:100%;
+    font-size: 20px;
+    border-bottom: 1px solid black;
+}
+
+#room_roles .rr_container .room_roles_container{
+    width:100%;
+    height:auto;
+}
+
+.roomroles-wrapper{
+    width: 100%;
+    height: 90px;
+    font-size: 20px;
+    padding-left: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.roomroles{
+    width:450px;
+    height:70px;
+    background-color: #37CF84;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    cursor: pointer;
+    color: white;
+}
+
+.roomroles span{
+    width:55px;
+    height:55px;
+    border-radius: 50%;
+    background-color: lightsalmon;
+    background-image: url("user9.jpg");
+    background-size: 100% 100%;
+    background-position: center;
+    border:3px solid white;
+    position: absolute;
+    left:10px;
+    pointer-events: none;
+}
+
+.roomroles p{
+    width:200px;
+    height:100%;
+    position: absolute;
+    left:80px;
+    top:0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    font-size: 25px;
+    pointer-events: none;
+}
+
+.roomroles i{
+    position: absolute;
+    right:20px;
+    cursor: pointer;
+    font-size: 25px;
+}
+
+#muted_list{
+    width:100%;
+    height:360px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    display:none;
+}
+
+.muted-wrapper{
+    width: 100%;
+    height: 90px;
+    font-size: 20px;
+    padding-left: 20px;
+    padding-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.muted{
+    width:450px;
+    height:70px;
+    background-color: #37CF84;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    cursor: pointer;
+    color: white;
+}
+
+.muted span{
+    width:55px;
+    height:55px;
+    border-radius: 50%;
+    background-color: lightsalmon;
+    background-image: url("user9.jpg");
+    background-size: 100% 100%;
+    background-position: center;
+    border:3px solid white;
+    position: absolute;
+    left:10px;
+    pointer-events: none;
+}
+
+.muted p{
+    width:200px;
+    height:100%;
+    position: absolute;
+    left:80px;
+    top:0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    font-size: 25px;
+    pointer-events: none;
+}
+
+.muted i{
+    position: absolute;
+    right:20px;
+    cursor: pointer;
+    font-size: 25px;
+}
+
+#baned_list{
+    width:100%;
+    height:360px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    display:none;
+}
+
+.baned-wrapper{
+    width: 100%;
+    height: 90px;
+    font-size: 20px;
+    padding-left: 20px;
+    padding-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.baned{
+    width:450px;
+    height:70px;
+    background-color: #c92b52;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    cursor: pointer;
+    color: white;
+}
+
+.baned span{
+    width:55px;
+    height:55px;
+    border-radius: 50%;
+    background-color: lightsalmon;
+    background-image: url("user9.jpg");
+    background-size: 100% 100%;
+    background-position: center;
+    border:3px solid white;
+    position: absolute;
+    left:10px;
+    pointer-events: none;
+}
+
+.baned p{
+    width:200px;
+    height:100%;
+    position: absolute;
+    left:80px;
+    top:0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    font-size: 25px;
+    pointer-events: none;
+}
+
+.baned i{
+    position: absolute;
+    right:20px;
+    cursor: pointer;
+    font-size: 25px;
+}
+
+.active_rsopt{
+    background-color: black;
+    color:white;
+}
+
+#rset_option .rset_warpper input{
+    background-color: #EFEFEF;
+    width:80%;
+    color: black;
+    font-size: 16px;
+    margin-left: 10%;
+    outline: none;
+    padding-top:5px;
+    padding-bottom: 5px;
+    padding-left: 10px;
+    border:1px solid grey;
+}
+
+.admin_action {
+    display: none;
+    width: 500px;
+    height: 450px;
+    background-color:white;
+    z-index: 55;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) ;
+}
+
+.admin_action .head {
+    width: 100%;
+    height: 60px;
+    background: #0E4B8D;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 20px;
+    padding: 0px 30px;
+}
+
+.action-container {
+    width: 100%;
+    height: 400px;
+    overflow-y: scroll;
+    padding-top: 10px;
+}
+
+.action-wrapper{
+    width: 100%;
+    height: 70px;
+    font-size: 20px;
+    padding-left: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.actions{
+    width:450px;
+    height:60px;
+    background-color: #DBD7E7;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    cursor: pointer;
+    color: black;
+}
+
 .inbox {
     display: none;
     width: 500px;
@@ -1911,13 +2326,14 @@ aside ul li:nth-child(3) ul li{
 .profile_div .crbody .bdiv {
     width: 100%;
     display: flex;
-    height: 10%;
+    height: 35px;
     flex-direction: row;
     transform: translateX(0%);
     display: flex;
     justify-content: space-evenly;
     align-items: center;
     border-bottom: 1px solid black;
+    font-size: 30%;
 }
 
 .profile_div .crbody .bdiv span {
@@ -1932,10 +2348,11 @@ aside ul li:nth-child(3) ul li{
 
 .profile_display{
     width:100%;
-    height:100%;
+    height:310px;
     padding-left: 15%;
     padding-right: 15%;
     display: block;
+    font-size: 35%;
 }
 
 .profile_display div{
@@ -1946,6 +2363,26 @@ aside ul li:nth-child(3) ul li{
     justify-content: center;
     align-items: center;
     border-bottom: 2px solid #4D426D;
+}
+
+.profile_display div label{
+    font-size: 80%;
+    width:100%;
+    height:50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.profile_display div p{
+    font-size: 80%;
+    width:100%;
+    height:50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .friends_display{
@@ -2704,5 +3141,4 @@ animation-delay:0.4s;
     cursor:pointer;
 }
 
-
-
+/* music player */

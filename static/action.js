@@ -1,4 +1,3 @@
-// Search bar code
 
 document.getElementById("search_any").addEventListener("keyup",(event)=>{
     let val = event.target.value;

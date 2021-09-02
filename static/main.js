@@ -25,12 +25,12 @@
     socket.on('room-users',(data)=>{
         data.forEach((items,index)=> {
             if(items.roomname == "Main Room"){
-                document.querySelector(`.rooms #mainroom .num_of_users`).innerText = items.roomusers.length;
+                document.querySelector(`.rooms #mainroom .num_of_users`).innerHTML = items.roomusers.length+`<i class="fas fa-user"></i>`;
             }
             else{
                 document.querySelectorAll(".room .username").forEach((item,index)=> {
                     if(item.innerText == items.roomname){
-                        document.querySelector(`#${item.parentNode.id} .num_of_users`).innerText = items.roomusers.length;
+                        document.querySelector(`#${item.parentNode.id} .num_of_users`).innerHTML = items.roomusers.length+`<i class="fas fa-user"></i>`;
                     }
                 });
             }
@@ -67,8 +67,7 @@
             var name = data.name;
 
             document.querySelector(`.users`).appendChild(room_user);
-            document.getElementById("user" + data.id).innerHTML = `<span class="uprofile"></span><p class="username">${data.name}</p><div><img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/>
-          </div>`
+            document.getElementById("user" + data.id).innerHTML = `<span class="uprofile"></span><p class="username">${data.name}</p><div><img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`
 
             if(data.type == "guest"){
                 document.getElementById("user" + data.id).classList.add('guest');
@@ -91,6 +90,7 @@
         var name = item.name;
 
         document.querySelector(`.users`).appendChild(room_user);
+       
         document.getElementById("user" + item.id).innerHTML = `<span class="uprofile"></span><p class="username">${item.name}</p><div><img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`
 
         if(item.type == "guest"){
@@ -100,14 +100,6 @@
         }
 
         document.getElementById("user" + item.id).setAttribute("onclick", "user_profile(this.id)");
-        });
-    });
-
-    socket.on("unactive-room",(data)=>{
-        document.querySelectorAll(".room .username").forEach((item,index)=> {
-            if(item.innerText == data){
-                document.getElementById(item.parentNode.id).remove();
-            }
         });
     });
 
@@ -269,18 +261,21 @@
         newroom.className = "room";
 
         document.querySelector(`.rooms`).appendChild(newroom);
-        document.getElementById("room"+t).innerHTML = `<span class="uprofile"></span><p class="username">${data.roomname}</p><div class="num_of_users">0</div>`;
+        document.getElementById("room"+t).innerHTML = `<span class="uprofile"></span><p class="username">${data.roomname}</p><div class="num_of_users">0<i class="fas fa-user"></i></div>`;
         document.getElementById("room"+t).setAttribute("onclick","changeroom(this.id)");
     });
 
 
     socket.on("change-room",(data)=>{
         if(data.result =="passed"){
-            console.log(data.data.admin_id,this_userid);
-            if(data.data.admin_id == this_userid){
-               document.querySelector(".rsetting").setAttribute("style","display:block");
-            }else{
-               document.querySelector(".rsetting").setAttribute("style","display:none");
+            if(data.data.nroomname != "Main room"){
+                data.data.roles.forEach(element => {
+                    if(element._id == this_userid){
+                        document.querySelector(".rsetting").setAttribute("style","display:block");
+                     }else{
+                        document.querySelector(".rsetting").setAttribute("style","display:none");
+                     }
+                });
             }
             document.querySelector(".room_name").id = data.data.nroomname;
             document.querySelector(".room_name").innerHTML = `<span><i class='fas fa-users'></i></span>${data.data.nroomname}`;
@@ -298,7 +293,7 @@
             var name = data.user.name;
 
             document.querySelector(`.users`).appendChild(room_user);
-            document.getElementById("user" + data.user.id).innerHTML = `<span class="uprofile"></span><p class="username">${data.user.name}</p><div>🇮🇳</div>`
+            document.getElementById("user" + data.user.id).innerHTML = `<span class="uprofile"></span><p class="username">${data.user.name}</p><div><img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`
 
         if(data.type == "guest"){
             document.getElementById("user"+data.user.id).classList.add('guest');
@@ -326,7 +321,19 @@
             var name = item.name;
 
             document.querySelector(`.users`).appendChild(room_user);
-            document.getElementById("user" + item.id).innerHTML = `<span class="uprofile"></span><p class="username">${item.name}</p><div>🇮🇳</div>`
+            console.log(data)
+            data.roomroles.forEach(element => {
+                if(element.userid == item.id){
+                    if(element.role == "admin"){
+                        document.getElementById("user" + item.id).innerHTML = `<span class="uprofile"></span><p class="username">${item.name}</p><div><i class="fas fa-crown"></i><img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`
+                    }else{
+                        document.getElementById("user" + item.id).innerHTML = `<span class="uprofile"></span><p class="username">${item.name}</p><div><i class="fas fa-user-shield"></i><img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`
+                    }
+                }else{
+                    document.getElementById("user" + item.id).innerHTML = `<span class="uprofile"></span><p class="username">${item.name}</p><div><img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`
+                }
+            });
+            
 
             if(item.type == "guest"){
                 document.getElementById("user" + item.id).classList.add('guest');
@@ -704,7 +711,7 @@
         var rname = document.getElementById("Croomname").value;
         var rpassword = document.getElementById("Croompassword").value;
 
-        socket.emit("new-room",{"roomname":rname,"roompass":rpassword,"admin_id":this_userid});
+        socket.emit("new-room",{"roomname":rname,"roompass":rpassword,"roomroles":[{"role":"admin","username":username,"userid":this_userid}]});
 
         document.getElementById("Croomname").value = "";
         document.getElementById("Croompassword").value = "";
@@ -910,7 +917,7 @@
 
                 frnds_list.forEach((item,index)=> {
                     if(item.sender_id.trim() == event.replace("user"," ").trim() || item.receiver_id.replace("user"," ").trim() == event.replace("user"," ").trim() || item.sender_id.trim() == event.replace("frnd"," ").trim() || item.receiver_id.replace("user"," ").trim() == event.replace("frnd"," ").trim()){
-                        document.querySelector(".user_details .addfreind").innerHTML = `<span class="frd-icon"><i class="fas fa-times"></i></span> Remove freind`;
+                        document.querySelector(".user_details .addfreind").innerHTML = `<span class="frd-icon"><i class="fas fa-user-times"></i></span> Remove freind`;
                         document.querySelector(".addfreind").setAttribute("style","color:red");
                         document.querySelector(".user_details .addfreind").setAttribute("onclick","RemoveFreind(this.id,event)");
                     }
@@ -946,6 +953,32 @@
             document.querySelector(".profile_display").setAttribute("style","display:block");
         }else{
             console.log(poption);
+        }
+    }
+
+    function view_rr_opt(opt) {
+        // var element = document. getElementById(elementId);
+        // element. parentNode. removeChild(element);
+        if(opt == "option"){
+            document.getElementById("rset_option").setAttribute("style","display:block");
+            document.getElementById("room_roles").setAttribute("style","display:none");
+            document.getElementById("muted_list").setAttribute("style","display:none");
+            document.getElementById("baned_list").setAttribute("style","display:none");
+        }else if(opt == "staff"){
+            document.getElementById("rset_option").setAttribute("style","display:none");
+            document.getElementById("room_roles").setAttribute("style","display:block");
+            document.getElementById("muted_list").setAttribute("style","display:none");
+            document.getElementById("baned_list").setAttribute("style","display:none");
+        }else if(opt == "muted"){
+            document.getElementById("rset_option").setAttribute("style","display:none");
+            document.getElementById("room_roles").setAttribute("style","display:none");
+            document.getElementById("muted_list").setAttribute("style","display:block");
+            document.getElementById("baned_list").setAttribute("style","display:none");
+        }else{
+            document.getElementById("rset_option").setAttribute("style","display:none");
+            document.getElementById("room_roles").setAttribute("style","display:none");
+            document.getElementById("muted_list").setAttribute("style","display:none");
+            document.getElementById("baned_list").setAttribute("style","display:block");
         }
     }
 
@@ -1120,6 +1153,12 @@
 
     document.querySelector(".alert").addEventListener("click", (event) => { alertclose(event) });
 
+    document.getElementById("action").addEventListener("click", () => {
+        document.querySelector(".admin_action").classList.add("activeb2");
+        document.querySelector(".alert").setAttribute("style", "display:block");
+        document.querySelector(".admin_action").setAttribute("style", "animation: ZoomIn 0.3s ease-out");
+    });
+
     document.getElementById("inbox").addEventListener("click", () => {
         document.querySelector(".inbox").classList.add("activeb2");
         document.querySelector(".alert").setAttribute("style", "display:block");
@@ -1146,6 +1185,12 @@
         }
     });
 
+    document.querySelector("#roomsetting").addEventListener("click", () => {
+        document.querySelector(".alert").setAttribute("style", "display:block");
+        document.querySelector(".Room_settings").classList.add("activeb2");
+        document.querySelector(".Room_settings").setAttribute("style", "animation: ZoomIn 0.3s ease-out");
+    });
+
     document.querySelector(".addroom").addEventListener("click", () => {
         document.querySelector(".alert").setAttribute("style", "display:block");
         document.querySelector(".create_room").classList.add("activeb2");
@@ -1160,6 +1205,18 @@
 
 
     document.querySelector(".inbox").addEventListener("click", (e) => {
+        if (e.target !== e.currentTarget) {
+            e.stopPropagation();
+        }
+    });
+
+    document.querySelector(".admin_action").addEventListener("click", (e) => {
+        if (e.target !== e.currentTarget) {
+            e.stopPropagation();
+        }
+    });
+
+    document.querySelector(".Room_settings").addEventListener("click", (e) => {
         if (e.target !== e.currentTarget) {
             e.stopPropagation();
         }

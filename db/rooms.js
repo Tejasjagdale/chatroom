@@ -25,6 +25,17 @@ const roomSchema = new mongoose.Schema({
         "time":{
             type:String,
         }
+    }],
+    roomroles:[{
+        "role":{
+            type:String,
+        },
+        "username":{
+            type:String,
+        },
+        "userid":{
+            type:String,
+        }
     }]
 });
 

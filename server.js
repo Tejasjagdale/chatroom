@@ -208,7 +208,7 @@ async function loader(){
             "roomusers":new Array(),
             "userssockets":new Array(),
             "roommsgs":new Array(),
-            "roomadmin":"",
+            "roomroles":items.roomroles,
             "roomactive":false
         });
 
@@ -227,8 +227,25 @@ io.on('connection', function(socket) {
             const token = data.token;
             const user_type = data.user_type;
             const verifyUser = jwt.verify(token,process.env.SECRET_KEY);
-
-
+            
+            activeusers.forEach((element,index) => {
+                console.log(roomdata)
+                if(verifyUser._id == element.id){
+                    activeusers.splice(index,1);
+                    user_sockets.splice(index,1);
+                    console.log(roomdata)
+                    roomdata[0].roomusers.forEach((elem,ind)=>{
+                        if(elem.id == verifyUser._id){
+                            roomdata[0].roomusers.splice(ind,1)
+                        }
+                    })
+                    roomdata[0].userssockets.forEach((elem,ind)=>{
+                        if(elem.id == verifyUser._id){
+                            roomdata[0].userssockets.splice(ind,1)
+                        }
+                    })
+                }
+            });
 
             if(user_type == "register"){
                 var user = await Register.findOne({_id:verifyUser._id}); 
@@ -263,7 +280,7 @@ io.on('connection', function(socket) {
                 socket.emit('load-frnds',frnds);
             }
 
-
+            // console.log(activeusers,user_sockets,roomdata);
         } catch (error) {
             console.log(error);
         }
@@ -496,7 +513,7 @@ io.on('connection', function(socket) {
                 "roomusers":new Array(),
                 "userssockets":new Array(),
                 "roommsgs":new Array(),
-                "roomadmin":data2.admin_id,
+                "roomroles":data2.roomroles,
                 "roomactive": false
             });
 
@@ -548,6 +565,13 @@ io.on('connection', function(socket) {
                         socket.emit("change-room-load",items);
                     }
                 });
+
+                roomdata.forEach((items,index) => {
+                    if(items.roomname == data.nroomname){
+                        data.roles = items.roomroles;
+                    }
+                });
+
                 socket.emit("change-room", {"result":"passed","data":data});
                 socket.emit('room-users',roomdata);
                 socket.broadcast.emit('room-users',roomdata);

@@ -26,6 +26,120 @@
             <div><label>Some Local Video</label><input type="file" accept=".mp4,.mkv" onchange="localvideo(event)"></div>
         </div>
 
+        <div class="admin_action" tabindex="0">
+            <div class="head">
+                <span><i class="fas fa-exclamation-circle"></i> Actions</span><i class="fas fa-times" onclick="alertclose(event)"></i>
+            </div>
+            <div class="action-container">
+                <div class="action-wrapper">
+                    <div class="actions" onclick=""><i class="fas fa-comment-slash"></i> Mute</div>
+                </div>
+                <div class="action-wrapper">
+                    <div class="actions" onclick=""><i class="fas fa-ban"></i> Block</div>
+                </div>
+                <div class="action-wrapper">
+                    <div class="actions" onclick=""><i class="fas fa-user-slash"></i> Ban</div>
+                </div>
+                <div class="action-wrapper">
+                    <div class="actions" onclick=""><i class="fas fa-user-plus"></i> Add Friend</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="Room_settings">
+            <div class="head">
+                <span><i class="fas fa-cog"></i> Room Settings</span><i class="fas fa-times" onclick="alertclose(event)"></i>
+            </div>
+            <div class="settings-container">
+                <div class="Rset_options">
+                    <button id="active_rsopt" onclick="view_rr_opt(`option`)">Options</button>
+                    <button onclick="view_rr_opt(`staff`)">Staff</button>
+                    <button onclick="view_rr_opt(`muted`)">Muted</button>
+                    <button onclick="view_rr_opt(`baned`)">Baned</button>
+                </div>
+
+                <div id="rset_option">
+                    <div class="rset_warpper">
+                        <label>Room Name</label>
+                        <input id="change_roomname" value="Main room">
+                    </div>
+
+                    <div class="rset_warpper">
+                        <label>Password</label>
+                        <input id="change_roompass" value="password">
+                    </div>
+
+                    <div class="rset_warpper">
+                    </div>
+
+                    <div class="rset_warpper_btn">
+                        <button><i class="far fa-save"></i> Save</button>
+                    </div>
+                </div>
+
+                <div id="room_roles">
+                    <div class="rr_container">
+                        <label>Room Owner</label>
+                        <div class="room_roles_container">
+
+                            <div  class="roomroles-wrapper">
+                                <div class="roomroles" onclick="">
+                                    <span></span> <p>user5</p> <i class="fas fa-times" onclick="deletepm(event)"></i>
+                                </div>
+                            </div> 
+
+                        </div>
+                    </div>
+
+                    <div class="rr_container">
+                        <label>Moderator</label>
+                        <div>
+                            <div  class="roomroles-wrapper">
+                                <div class="roomroles" onclick="">
+                                    <span></span> <p>user5</p> <i class="fas fa-times" onclick="deletepm(event)"></i>
+                                </div>
+                            </div> 
+
+                            <div  class="roomroles-wrapper">
+                                <div class="roomroles" onclick="">
+                                    <span></span> <p>user5</p> <i class="fas fa-times" onclick="deletepm(event)"></i>
+                                </div>
+                            </div> 
+
+                            <div  class="roomroles-wrapper">
+                                <div class="roomroles" onclick="">
+                                    <span></span> <p>user5</p> <i class="fas fa-times" onclick="deletepm(event)"></i>
+                                </div>
+                            </div> 
+
+                            <div  class="roomroles-wrapper">
+                                <div class="roomroles" onclick="">
+                                    <span></span> <p>user5</p> <i class="fas fa-times" onclick="deletepm(event)"></i>
+                                </div>
+                            </div> 
+                        </div>
+                    </div>
+                </div>
+
+                <div id="muted_list">
+                    <div  class="muted-wrapper">
+                        <div class="muted" onclick="">
+                            <span></span> <p>user5</p> <i class="fas fa-times" onclick="deletepm(event)"></i>
+                        </div>
+                    </div>   
+                </div>
+
+                <div id="baned_list">
+                    <div  class="baned-wrapper">
+                        <div class="baned" onclick="">
+                            <span></span> <p>user5</p> <i class="fas fa-times" onclick="deletepm(event)"></i>
+                        </div>
+                    </div>   
+                </div> 
+            </div> 
+        </div>
+        </div>
+
         <div class="inbox" tabindex="0">
             <div class="head">
                 <span><i class="fas fa-trash-alt"></i> clear</span><i class="fas fa-times" onclick="alertclose(event)"></i>
@@ -221,6 +335,7 @@
                         <div class="addfreind" onclick="addfreind(this.id,event)">
                             <span class="frd-icon"><i class="fas fa-user-plus"></i></span> Addfreind
                         </div>
+                        <div id="action" onclick="actions(this.id)"><i class="fas fa-exclamation-circle"></i> Action</div>
                         <div class="pm_chat" onclick="pmchat(this.id,this.classList,event)"  ><i class="fas fa-comments"></i> privatechat</div>
                     </div>
                 </div>
@@ -269,7 +384,15 @@
                         </div>
                     </div>
                 </div>
+            </div>
 
+            <div class="player">
+                <div class="thumb">
+                    <img width="100%" height="100%" src="thumb1.jpg" >
+                </div>
+                <div class="player_controls">
+                    <audio class="controls" src="sounds/Ringtone1.mp3" controls></audio>
+                </div>
             </div>
         </div>
 
@@ -351,13 +474,13 @@
                     <li onclick="edit_profile()"><div class="aside-wrapper"><span><i class="far fa-user-circle"></i></span> Profile</div></li>
                     <li class="mddown"><span class="ddown"><i class="fas fa-caret-left"></i></span><div class="aside-wrapper"><span class="bot-span"><i class="fab fa-android"></i></span> Add Bot</div>
                         <ul class="sddown">
-                            <li><span></span> Rhythm bot</li>
+                            <li onclick="getsong()"><span></span> Rhythm bot</li>
                             <li><span></span> Chat bot</li>
                             <li><span></span> Quiz bot</li>
                             <li><span></span> Video bot</li>
                         </ul>
                     </li>
-                    <li class="rsetting" ><div class="aside-wrapper"><span><i class="far fa-cog"></i></span> Room Settings</div></li>
+                    <li class="rsetting" id="roomsetting"><div class="aside-wrapper"><span><i class="far fa-cog"></i></span> Room Settings</div></li>
                     <li onclick="show_display()"><div class="aside-wrapper"><span><i class="far fa-image"></i></span> Display</div></li>
                     <li onclick="logout()"><div class="aside-wrapper"><span><i class="fas fa-sign-out-alt"></i></span> Logout</div></li>
                 </ul>
@@ -374,5 +497,6 @@
 <script src="action.js"></script>
 <script src="emojis.js"></script>
 <script src="video_bot.js"></script>
+<script src="music_bot.js"></script>
 <script src="mobile.js"></script>
 </html>
