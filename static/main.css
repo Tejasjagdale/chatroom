@@ -431,55 +431,28 @@ body {
 }
 
 .vprofile {
-    color: red;
+    color: black;
     cursor: pointer;
     font-size: 35%;
 }
 
-.vprofile span {
-    width: 45px;
-    height: 45px;
-    background-color: red;
-    border-radius: 50%;
+.vprofile i {
+    color: red;
     margin-right: 15px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    font-size: 20px;
 }
 
 .addfreind {
-    color: #25A72A;
+    color: black;
     cursor: pointer;
-    font-size: 30%;
+    font-size: 35%;
 }
 
-.addfreind .frd-icon {
-    width: 27px;
-    height: 27px;
-    background-color: #25A72A;
-    border-radius: 50%;
+.addfreind i{
+    color: orangered;
     margin-right: 15px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    font-size: 12px;
-}
-
-#action{
-    color:orangered;
-    font-size: 30%;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
 }
 
 .pm_chat {
-    color: #339AF0;
     border-radius: 0% 0% 10px 10px / 10px 10px 10px 10px;
     cursor: pointer;
     font-size: 35%;
@@ -487,6 +460,7 @@ body {
 
 .pm_chat i {
     margin-right: 15px;
+    color: #339AF0;
 }
 
 .ud_body div span {
@@ -995,7 +969,7 @@ body {
     overflow-y: scroll;
     background-color: #AED8C7;
     background-image: url("wallpapers/dbg3.jpg");
-    background-size: 30% 100%;
+    background-size: auto 100%;
 }
 
 .sticky-uploader{
@@ -1791,7 +1765,7 @@ aside ul li:nth-child(3) ul li{
 .baned{
     width:450px;
     height:70px;
-    background-color: #c92b52;
+    background-color: #F7001F;
     position: relative;
     display: flex;
     align-items: center;
@@ -1854,7 +1828,7 @@ aside ul li:nth-child(3) ul li{
 
 .admin_action {
     display: none;
-    width: 500px;
+    width: 400px;
     height: 450px;
     background-color:white;
     z-index: 55;
@@ -1876,6 +1850,32 @@ aside ul li:nth-child(3) ul li{
     padding: 0px 30px;
 }
 
+.admin_action .head span{
+    width: auto;
+    height: 100%;
+    display:flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+#action_dp{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: gray;
+    background-image: url('profile/default_dp3.png');
+    background-size: 100% 100%;
+    background-position: center;
+    border: 3px solid white;
+    margin-right: 10px;
+    margin-left: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 85%;
+}
+
 .action-container {
     width: 100%;
     height: 400px;
@@ -1895,14 +1895,35 @@ aside ul li:nth-child(3) ul li{
 
 .actions{
     width:450px;
-    height:60px;
+    height:50px;
     background-color: #DBD7E7;
     position: relative;
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    justify-content: flex-start;
     cursor: pointer;
     color: black;
+}
+
+.actions i{
+    margin-right: 25px;
+    margin-left: 35px;
+}
+
+#actions1 i{
+    color:#31659D;
+}
+
+#actions2 i{
+    color:red;
+}
+
+#actions3 i{
+    color: orange;
+}
+
+#actions4 i{
+    color: green;
 }
 
 .inbox {
@@ -2043,6 +2064,10 @@ aside ul li:nth-child(3) ul li{
     width: 100%;
     height: 400px;
     overflow-y: scroll;
+    background-image: url("alert_bg.jpg");
+    background-position: center;
+    background-size: 125px 150px;
+    background-repeat: no-repeat;
 }
 
 .alerts{
@@ -2387,6 +2412,7 @@ aside ul li:nth-child(3) ul li{
 
 .friends_display{
     width:100%;
+    height:310px;
     display: none;
     grid-template-rows: repeat(10, 1fr);
     grid-template-columns: repeat(3, 1fr);

@@ -197,7 +197,7 @@ async function loader(){
             "roomusers":new Array(),
             "userssockets":new Array(),
             "roommsgs":new Array(),
-            "roomadmin":"",
+            "roomroles":[{role:"admin",username:"admin",userid:"admin"}],
             "roomactive":false
         });
 
@@ -211,7 +211,6 @@ async function loader(){
             "roomroles":items.roomroles,
             "roomactive":false
         });
-
         });
     } catch (error) {
         console.log(error);
@@ -229,7 +228,7 @@ io.on('connection', function(socket) {
             const verifyUser = jwt.verify(token,process.env.SECRET_KEY);
             
             activeusers.forEach((element,index) => {
-                console.log(roomdata)
+                // console.log(roomdata)
                 if(verifyUser._id == element.id){
                     activeusers.splice(index,1);
                     user_sockets.splice(index,1);
@@ -279,8 +278,6 @@ io.on('connection', function(socket) {
                 const frnds = await Register.findOne({_id:user._id});
                 socket.emit('load-frnds',frnds);
             }
-
-            // console.log(activeusers,user_sockets,roomdata);
         } catch (error) {
             console.log(error);
         }
@@ -348,7 +345,6 @@ io.on('connection', function(socket) {
                     socket.broadcast.to(user_sockets[index]).emit('pmmsg-send', data1);
                 }
             });
-
         
             if(data1.sender_type == "register"){
                 await Register.updateOne( 

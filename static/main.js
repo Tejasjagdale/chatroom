@@ -321,7 +321,6 @@
             var name = item.name;
 
             document.querySelector(`.users`).appendChild(room_user);
-            console.log(data)
             data.roomroles.forEach(element => {
                 if(element.userid == item.id){
                     if(element.role == "admin"){
@@ -557,15 +556,17 @@
         document.querySelector(`.friends_display`).innerHTML = ``;
         data.frnds.forEach((item,index)=> {
             if(item.sender == data.name){
-                var frndp = document.createElement("DIV");
-                frndp.id = "frndp" + item.receiver_id.replace("user"," ").trim();
-                frndp.className = "profile_wrapper";
+                if(item.status == "accepted"){
+                    var frndp = document.createElement("DIV");
+                    frndp.id = "frndp" + item.receiver_id.replace("user"," ").trim();
+                    frndp.className = "profile_wrapper";
 
 
-                document.querySelector(`.friends_display`).appendChild(frndp);
-                document.getElementById(frndp.id).innerHTML = `<span class="frnds_profile"><p class="frnd_name">${item.receiver}</p></span>`;
-                document.getElementById(frndp.id).classList.add('register');
-                document.getElementById(frndp.id).setAttribute("onclick", "view_profilef(this.id)");
+                    document.querySelector(`.friends_display`).appendChild(frndp);
+                    document.getElementById(frndp.id).innerHTML = `<span class="frnds_profile"><p class="frnd_name">${item.receiver}</p></span>`;
+                    document.getElementById(frndp.id).classList.add('register');
+                    document.getElementById(frndp.id).setAttribute("onclick", "view_profilef(this.id)");
+                }
             }else{
                 var frndp = document.createElement("DIV");
                 frndp.id = "frndp" + item.sender_id;
@@ -580,40 +581,6 @@
         });
     });
 
-
-    socket.on("load-frnds",(data)=>{
-        frnds_list =  data.frnds;
-        data.frnds.forEach((item,index)=>{
-            if(item.status == "accepted"){
-                var frnd = document.createElement("DIV");
-                if(item.sender == username){
-                    var frnd_id = item.receiver_id.replace("user"," ").trim();
-                    var name = item.receiver;
-                }else{
-                    var frnd_id = item.sender_id;
-                    var name = item.sender;
-                }
-
-                frnd.id = "frnd" + frnd_id;
-                frnd.className = "freind";
-
-                document.querySelector(`.freinds`).appendChild(frnd);
-                document.getElementById("frnd" + frnd_id).innerHTML = `<span class="uprofile"></span><p class="username">${name}</p><div><img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
-                document.getElementById("frnd" + frnd_id).classList.add('register');
-                document.getElementById("frnd" + frnd_id).setAttribute("onclick", "user_profile(this.id)");
-            }
-            if(item.status == "send"){
-                if(this_userid == item.receiver_id.replace("user"," ").trim()){
-                    var noti_div = document.createElement("DIV");
-
-                    noti_div.id = "alert" + item.sender_id;
-                    noti_div.className = "alerts";
-                    document.querySelector(`.notification_body`).appendChild(noti_div);
-                    document.getElementById("alert" + item.sender_id).innerHTML = `<div class="alert-warpper" ><span></span><p>${item.sender} sent you freind request</p><span class="accept" id="${item.sender}" onclick="addfreind(this.className,event)"><i class="fas fa-check"></i></span><span class="decline" onclick="addfreind(this.className,event)"><i class="fas fa-times"></i></span></div>`;
-                }
-            }
-        });
-    });
         
     socket.on("room-file",async (data)=>{
         t++;
@@ -880,6 +847,44 @@
         });
     }
 
+    socket.on("load-frnds",(data)=>{
+        frnds_list =  data.frnds
+
+        console.log(frnds_list);
+         
+        data.frnds.forEach((item,index)=>{
+            if(item.status == "accepted"){
+                var frnd = document.createElement("DIV");
+                if(item.sender == username){
+                    var frnd_id = item.receiver_id.replace("user"," ").trim();
+                    var name = item.receiver;
+                }else{
+                    var frnd_id = item.sender_id;
+                    var name = item.sender;
+                }
+
+                frnd.id = "frnd" + frnd_id;
+                frnd.className = "freind";
+
+                document.querySelector(`.freinds`).appendChild(frnd);
+                document.getElementById("frnd" + frnd_id).innerHTML = `<span class="uprofile"></span><p class="username">${name}</p><div><img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
+                document.getElementById("frnd" + frnd_id).classList.add('register');
+                document.getElementById("frnd" + frnd_id).setAttribute("onclick", "user_profile(this.id)");
+            }
+            if(item.status == "send"){
+                console.log(item)
+                if(this_userid == item.receiver_id.replace("user"," ").trim()){
+                    var noti_div = document.createElement("DIV");
+
+                    noti_div.id = "alert" + item.sender_id;
+                    noti_div.className = "alerts";
+                    document.querySelector(`.notification_body`).appendChild(noti_div);
+                    document.getElementById("alert" + item.sender_id).innerHTML = `<div class="alert-warpper" ><span></span><p>${item.sender} sent you freind request</p><span class="accept" id="${item.sender}" onclick="addfreind(this.className,event)"><i class="fas fa-check"></i></span><span class="decline" onclick="addfreind(this.className,event)"><i class="fas fa-times"></i></span></div>`;
+                }
+            }
+        });
+    });
+
 
     function user_profile(event) {
         var user_div = document.getElementById(event);
@@ -912,16 +917,7 @@
                 document.querySelector(".user_details .ud_head p").innerText = document.querySelector(`#${event} .username`).innerText;
             } 
             else {
-                document.querySelector(".user_details .addfreind").setAttribute("onclick","addfreind(this.id,event)");
-                document.querySelector(".user_details .addfreind").innerHTML = `<span class="frd-icon"><i class="fas fa-user-plus"></i></span> Addfreind`;
-
-                frnds_list.forEach((item,index)=> {
-                    if(item.sender_id.trim() == event.replace("user"," ").trim() || item.receiver_id.replace("user"," ").trim() == event.replace("user"," ").trim() || item.sender_id.trim() == event.replace("frnd"," ").trim() || item.receiver_id.replace("user"," ").trim() == event.replace("frnd"," ").trim()){
-                        document.querySelector(".user_details .addfreind").innerHTML = `<span class="frd-icon"><i class="fas fa-user-times"></i></span> Remove freind`;
-                        document.querySelector(".addfreind").setAttribute("style","color:red");
-                        document.querySelector(".user_details .addfreind").setAttribute("onclick","RemoveFreind(this.id,event)");
-                    }
-                });
+                document.querySelector(".user_details .addfreind").innerHTML = `<i class="fa fa-bolt" aria-hidden="true"></i> Action`;
                 
                 if (document.querySelector(".pm_chat").innerHTML == `<i class="far fa-edit"></i> Edit`) {
                     document.querySelector(".pm_chat").innerHTML = `<i class="fas fa-comments"></i> privatechat`;
@@ -942,6 +938,89 @@
     function close_user_profile() {
         document.querySelector(".user_details").setAttribute("style", `display:none`);
         document.querySelector(".user_details .ud_head p").innerText = "";
+    }
+
+    function addfreind(opretion_type, recv_id) {
+        var receiver = document.querySelector(".admin_action .head span").innerText;
+        document.querySelector(".user_details").setAttribute("style", "display:none");
+        document.querySelector(".user_details .ud_head p").innerText = "";
+
+        if (opretion_type == "accept") {
+            var frnd_query = {
+                "sender":username,
+                "receiver": event.target.id,
+                "sender_id":this_userid,
+                "receiver_id": event.target.parentNode.parentNode.id.replace("alert"," "),
+                "status":"accepted",
+            }
+
+            frnds_list.push(frnd_query);
+            var frnd = document.createElement("DIV");
+            frnd.id = "frnd" + event.target.parentNode.parentNode.id.replace("alert"," ").trim();
+            frnd.className = "freind";
+
+            document.querySelector(`.freinds`).appendChild(frnd);
+            document.getElementById("frnd" + event.target.parentNode.parentNode.id.replace("alert"," ").trim()).innerHTML = `<span class="uprofile" name="hmm"></span><p class="username">${event.target.id}</p><div><img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
+            document.getElementById("frnd" + event.target.parentNode.parentNode.id.replace("alert"," ").trim()).classList.add('register');
+            document.getElementById("frnd" + event.target.parentNode.parentNode.id.replace("alert"," ").trim()).setAttribute("onclick", "user_profile(this.id)");
+            frnds_list.push(frnd_query);
+            socket.emit("frnd_query",frnd_query);
+            document.getElementById(event.target.parentNode.parentNode.id).remove();
+        } if (opretion_type == "decline") {
+            var frnd_query = {
+                "sender":username,
+                "receiver": event.target.id,
+                "sender_id":this_userid,
+                "receiver_id": event.target.parentNode.parentNode.id.replace("alert"," "),
+                "status":"declined",
+            }
+            socket.emit("frnd_query",frnd_query);
+            document.getElementById(event.target.parentNode.parentNode.id).remove();
+
+        } if (opretion_type != "accept" && opretion_type != "decline") {
+
+            var frnd_query = {
+                "sender":username,
+                "receiver": document.querySelector(".admin_action .head span").innerText.trim(),
+                "sender_id":this_userid,
+                "receiver_id": recv_id,
+                "status":"send",
+            }
+            socket.emit("frnd_query",frnd_query);
+            alertclose(event);
+        }
+    }
+
+    const RemoveFreind=(id)=>{
+        if(id.includes("user")){
+            document.getElementById(id.replace("user","frnd")).remove();
+            var recv_id =  id;
+        }else{
+            document.getElementById(id).remove();
+            var recv_id =  id.replace("frnd","user");
+        }
+
+        const receiver = document.querySelector(".admin_action .head span").innerText;
+
+        var frnd_query = {
+                "sender":username,
+                "receiver": receiver,
+                "sender_id":this_userid,
+                "receiver_id": recv_id,
+                "status":"declined",
+            }
+        console.log(frnd_query)
+        socket.emit("frnd_query",frnd_query);
+        alertclose(event);
+
+        frnds_list.forEach((items,index)=> {
+            if(items.receiver == receiver){
+                frnds_list.splice(index,1);
+            }
+            if(items.sender == receiver){
+                frnds_list.splice(index,1);
+            }
+        });
     }
 
     function view_poption(poption) {
@@ -1029,403 +1108,4 @@
 
     function closepm() {
         document.querySelector(".persnol_chat_model").classList.remove("activepm");
-    }
-
-    function addfreind(opretion_type, event) {
-        event.stopPropagation();
-        var receiver = document.querySelector(".user_details .ud_head p").innerText;
-        document.querySelector(".user_details").setAttribute("style", "display:none");
-        document.querySelector(".user_details .ud_head p").innerText = "";
-
-        if (opretion_type == "accept") {
-
-            var frnd_query = {
-                "sender":username,
-                "receiver": event.target.id,
-                "sender_id":this_userid,
-                "receiver_id": event.target.parentNode.parentNode.id.replace("alert"," "),
-                "status":"accepted",
-            }
-
-            frnds_list.push(frnd_query);
-            var frnd = document.createElement("DIV");
-            frnd.id = "frnd" + event.target.parentNode.parentNode.id.replace("alert"," ").trim();
-            frnd.className = "freind";
-
-            document.querySelector(`.freinds`).appendChild(frnd);
-            document.getElementById("frnd" + event.target.parentNode.parentNode.id.replace("alert"," ").trim()).innerHTML = `<span class="uprofile" name="hmm"></span><p class="username">${event.target.id}</p><div><img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
-            document.getElementById("frnd" + event.target.parentNode.parentNode.id.replace("alert"," ").trim()).classList.add('register');
-            document.getElementById("frnd" + event.target.parentNode.parentNode.id.replace("alert"," ").trim()).setAttribute("onclick", "user_profile(this.id)");
-            frnds_list.push(frnd_query);
-            socket.emit("frnd_query",frnd_query);
-            document.getElementById(event.target.parentNode.parentNode.id).remove();
-        } if (opretion_type == "decline") {
-            var frnd_query = {
-                "sender":username,
-                "receiver": event.target.id,
-                "sender_id":this_userid,
-                "receiver_id": event.target.parentNode.parentNode.id.replace("alert"," "),
-                "status":"declined",
-            }
-            socket.emit("frnd_query",frnd_query);
-            document.getElementById(event.target.parentNode.parentNode.id).remove();
-
-        } if (opretion_type != "accept" && opretion_type != "decline") {
-
-            var frnd_query = {
-                "sender":username,
-                "receiver": receiver.trim(),
-                "sender_id":this_userid,
-                "receiver_id": event.target.id,
-                "status":"send",
-            }
-            socket.emit("frnd_query",frnd_query);
-        }
-    }
-
-    const RemoveFreind=(id,event)=>{
-        if(id.includes("user")){
-            document.getElementById(id.replace("user","frnd")).remove();
-            var recv_id =  id;
-        }else{
-            document.getElementById(id).remove();
-            var recv_id =  id.replace("frnd","user");
-        }
-
-        const receiver = document.querySelector(".user_details .ud_head").innerText;
-
-        var frnd_query = {
-                "sender":username,
-                "receiver": receiver,
-                "sender_id":this_userid,
-                "receiver_id": recv_id,
-                "status":"declined",request_video
-            }
-
-        socket.emit("frnd_query",frnd_query);
-        document.querySelector(".user_details").setAttribute("style","display:none");
-
-        frnds_list.forEach((items,index)=> {
-            if(items.receiver == receiver){
-                frnds_list.splice(index,1);
-            }
-            if(items.sender == receiver){
-                frnds_list.splice(index,1);
-            }
-        });
-    }
-
-    const deletepm=(event)=>{
-        event.stopPropagation();
-        document.getElementById(event.target.parentNode.parentNode.id).remove();
-    };
-
-    function enter_videochannel(){
-        document.querySelector(".main-chat").innerHTML = `<div class="emojis"></div>`;
-    document.querySelector(".video_div_wrapper").setAttribute("style","transform: translateY(0%);");
-    }
-
-    const view_profile=(event)=>{
-        event.stopPropagation();
-
-        document.querySelector(".alert").setAttribute("style", "display:block");
-        document.querySelector(".profile_div").classList = "profile_div";
-        document.querySelector(".profile_div").classList.add("activeb2");
-        document.querySelector(".profile_div").setAttribute("style", "animation: ZoomIn 0.3s ease-out");
-        socket.emit("load_profile",{id:document.querySelector(".pmchathead").id});
-    };
-
-    const view_profilef=(event)=>{
-        document.querySelector(".alert").setAttribute("style", "display:block");
-        document.querySelector(".profile_div").classList = "profile_div";
-        document.querySelector(".profile_div").classList.add("activeb2");
-        document.querySelector(".profile_div").setAttribute("style", "animation: ZoomIn 0.3s ease-out");
-        socket.emit("load_profile",{id:event.replace("frndp"," ").trim()});
-    };
-
-
-    function alertclose(event) {
-        event.preventDefault();
-
-        document.querySelector(".activeb2").classList.remove("activeb2");
-        document.querySelector(".alert").setAttribute("style", "display:none");
-    }
-
-    document.querySelector(".alert").addEventListener("click", (event) => { alertclose(event) });
-
-    document.getElementById("action").addEventListener("click", () => {
-        document.querySelector(".admin_action").classList.add("activeb2");
-        document.querySelector(".alert").setAttribute("style", "display:block");
-        document.querySelector(".admin_action").setAttribute("style", "animation: ZoomIn 0.3s ease-out");
-    });
-
-    document.getElementById("inbox").addEventListener("click", () => {
-        document.querySelector(".inbox").classList.add("activeb2");
-        document.querySelector(".alert").setAttribute("style", "display:block");
-        document.querySelector(".num_of_noti1").setAttribute("style", "display:none");
-        msg_noti = 0;
-        document.querySelector(".inbox").setAttribute("style", "animation: ZoomIn 0.3s ease-out");
-    });
-
-    document.getElementById("notification").addEventListener("click", () => {
-        document.querySelector(".alert").setAttribute("style", "display:block");
-        document.querySelector(".num_of_noti2").setAttribute("style", "display:none");
-        alert_noti = 0;
-        document.querySelector(".notification").classList.add("activeb2");
-        document.querySelector(".notification").setAttribute("style", "animation: ZoomIn 0.3s ease-out");
-    });
-
-    document.querySelector("#profile_div").addEventListener("click", () => {
-        if(event.target.className == "vprofile"){
-            document.querySelector(".alert").setAttribute("style", "display:block");
-            document.querySelector(".profile_div").classList.add("activeb2");
-            document.querySelector(".profile_div").setAttribute("style", "animation: ZoomIn 0.3s ease-out");
-            close_user_profile();
-            socket.emit("load_profile",{id:document.querySelector(".addfreind").id});
-        }
-    });
-
-    document.querySelector("#roomsetting").addEventListener("click", () => {
-        document.querySelector(".alert").setAttribute("style", "display:block");
-        document.querySelector(".Room_settings").classList.add("activeb2");
-        document.querySelector(".Room_settings").setAttribute("style", "animation: ZoomIn 0.3s ease-out");
-    });
-
-    document.querySelector(".addroom").addEventListener("click", () => {
-        document.querySelector(".alert").setAttribute("style", "display:block");
-        document.querySelector(".create_room").classList.add("activeb2");
-        document.querySelector(".create_room").setAttribute("style", "animation: ZoomIn 0.3s ease-out");
-    });
-
-    document.querySelector(".show_options").addEventListener("click", () => {
-        document.querySelector(".alert").setAttribute("style", "display:block");
-        document.querySelector(".video_options").classList.add("activeb2");
-        document.querySelector(".video_options").setAttribute("style", "animation: ZoomIn 0.3s ease-out");
-    });
-
-
-    document.querySelector(".inbox").addEventListener("click", (e) => {
-        if (e.target !== e.currentTarget) {
-            e.stopPropagation();
-        }
-    });
-
-    document.querySelector(".admin_action").addEventListener("click", (e) => {
-        if (e.target !== e.currentTarget) {
-            e.stopPropagation();
-        }
-    });
-
-    document.querySelector(".Room_settings").addEventListener("click", (e) => {
-        if (e.target !== e.currentTarget) {
-            e.stopPropagation();
-        }
-    });
-
-    document.querySelector(".notification").addEventListener("click", (e) => {
-        if (e.target !== e.currentTarget) {
-            e.stopPropagation();
-        }
-    });
-
-    document.querySelector(".create_room").addEventListener("click", (e) => {
-        if (e.target !== e.currentTarget) {
-            e.stopPropagation();
-        }
-    });
-
-    document.querySelector(".profile_div").addEventListener("click", (e) => {
-        if (e.target !== e.currentTarget) {
-            e.stopPropagation();
-        }
-    });
-
-    document.querySelector(".enter_roompass").addEventListener("click", (e) => {
-        if (e.target !== e.currentTarget) {
-            e.stopPropagation();
-        }
-    });
-
-    document.querySelector(".video_options").addEventListener("click", (e) => {
-        if (e.target !== e.currentTarget) {
-            e.stopPropagation();
-        }
-    });
-
-    let i=0;
-
-    const asmback=()=>{
-        document.querySelector("aside").setAttribute("style","right:-100%");
-    }
-
-    const showasm=()=>{
-        document.querySelector("aside").setAttribute("style","right:0%");
-    }
-
-
-    const showfrnds=()=>{
-        document.querySelector(".freinds").setAttribute("style","display:block");
-        document.querySelector(".rooms").setAttribute("style","display:none;");
-        document.querySelector(".users").setAttribute("style","display:none;");
-        document.querySelector(".voice_channels").setAttribute("style","display:none;");
-        document.getElementById("search_any").setAttribute("placeholder","Search friends here...");
-        document.getElementById("search_any").setAttribute("cur_option","frnd");
-    };
-
-    const showusers=()=>{
-        document.querySelector(".users").setAttribute("style","display:block;");
-        document.querySelector(".freinds").setAttribute("style","display:none;");
-        document.querySelector(".rooms").setAttribute("style","display:none;");
-        document.querySelector(".voice_channels").setAttribute("style","display:none;");
-        document.getElementById("search_any").setAttribute("placeholder","Search users here...");
-        document.getElementById("search_any").setAttribute("cur_option","user");
-    };
-
-    const showrooms=()=>{
-        document.querySelector(".users").setAttribute("style","display:none;");
-        document.querySelector(".freinds").setAttribute("style","left:100%");
-        document.querySelector(".rooms").setAttribute("style","display:block;");
-        document.querySelector(".voice_channels").setAttribute("style","display:none;");
-        document.getElementById("search_any").setAttribute("placeholder","Search rooms here...")
-        document.getElementById("search_any").setAttribute("cur_option","room");
-    };
-
-    const joinvc=()=>{
-        document.querySelector(".users").setAttribute("style","display:none;");
-        document.querySelector(".freinds").setAttribute("style","display:none");
-        document.querySelector(".rooms").setAttribute("style","display:none;");
-        document.querySelector(".voice_channels").setAttribute("style","display:block;");
-    };
-
-    document.querySelectorAll(".options span")[0].setAttribute("style","background-color: #F3407A;");
-
-
-    document.querySelectorAll(".options span")[0].addEventListener("click",()=>{
-        document.querySelectorAll(".options span")[0].setAttribute("style","background-color: #F3407A;");
-        document.querySelectorAll(".options span")[1].setAttribute("style","background-color: #75CAEB;");
-        document.querySelectorAll(".options span")[2].setAttribute("style","background-color: #75CAEB;");
-        document.querySelectorAll(".options span")[3].setAttribute("style","background-color: #75CAEB;");
-    });
-
-    document.querySelectorAll(".options span")[1].addEventListener("click",()=>{
-        document.querySelector(".user_details").setAttribute("style", "display:none");
-        document.querySelectorAll(".options span")[1].setAttribute("style","background-color: #F3407A;");
-        document.querySelectorAll(".options span")[0].setAttribute("style","background-color: #75CAEB;");
-        document.querySelectorAll(".options span")[2].setAttribute("style","background-color: #75CAEB;");
-        document.querySelectorAll(".options span")[3].setAttribute("style","background-color: #75CAEB;");
-    });
-
-    document.querySelectorAll(".options span")[2].addEventListener("click",()=>{
-        document.querySelector(".user_details").setAttribute("style", "display:none");
-        document.querySelectorAll(".options span")[2].setAttribute("style","background-color: #F3407A;");
-        document.querySelectorAll(".options span")[0].setAttribute("style","background-color: #75CAEB;");
-        document.querySelectorAll(".options span")[1].setAttribute("style","background-color: #75CAEB;");
-        document.querySelectorAll(".options span")[3].setAttribute("style","background-color: #75CAEB;");
-    });
-
-    document.querySelectorAll(".options span")[3].addEventListener("click",()=>{
-        document.querySelector(".user_details").setAttribute("style", "display:none");
-        document.querySelectorAll(".options span")[2].setAttribute("style","background-color: #75CAEB;");
-        document.querySelectorAll(".options span")[0].setAttribute("style","background-color: #75CAEB;");
-        document.querySelectorAll(".options span")[1].setAttribute("style","background-color: #75CAEB;");
-        document.querySelectorAll(".options span")[3].setAttribute("style","background-color: #F3407A;");
-    });
-
-
-    // display and other process
-
-    var curid ;
-
-    document.querySelector("#color3").classList.add("activecol")
-    document.querySelector(".activecol").innerHTML = `<i class="fas fa-check"></i>`;
-    var col1 = document.querySelector(".activecol").style.backgroundColor;
-    document.querySelector(".main-chat").setAttribute("style","background-color:"+col1);
-
-    var colors = ["#E5DDD5","#CBDAEC","#AED8C7","#7ACBA5","#66D2D5","#D6D0F0","#D1DABE","#E6E1B1","#FEEFA9","#FED297","#FD9A9B","#FB4668","#922040","#DC6E4F","#644D52","#517E7E","#1D2326","#35558A","#301E34","#FFFEA2"]
-
-    document.querySelectorAll(".color").forEach((element,index) => {
-        element.setAttribute("style",`background-color:${colors[index]}`);
-
-        element.addEventListener("mouseover",()=>{
-            if(document.getElementById("doodel").checked){
-                document.querySelector(".main-chat").setAttribute("style",`background-image:url("wallpapers/dbg${index+1}.jpg"`);
-            }else{
-                document.querySelector(".main-chat").setAttribute("style","background:"+colors[index]);
-            }
-        });
-
-        element.addEventListener("click",()=>{
-            if(document.querySelector(".activecol")){
-                document.querySelector(".activecol").innerHTML = ``;
-                document.querySelector(".activecol").classList.remove("activecol");
-            }
-            element.classList.add("activecol");
-            document.querySelector(".activecol").innerHTML = `<i class="fas fa-check"></i>`;
-        })
-
-        element.addEventListener("mouseout",()=>{
-            var col = document.querySelector(".activecol");
-
-            if(document.getElementById("doodel").checked){
-                if(col.id == "bgimage"){
-                    document.querySelector(".main-chat").setAttribute("style",`background-image:${col.style.backgroundImage};background-size:100% 100%`);
-                }else{
-                    let num =  col.id.split("color")[1];
-                    document.querySelector(".main-chat").setAttribute("style",`background-image:url("wallpapers/dbg${num}.jpg"`);
-                }
-            }else{
-                if(col.id == "bgimage"){
-                    document.querySelector(".main-chat").setAttribute("style",`background-image:${col.style.backgroundImage};background-size:100% 100%`);
-                }else{
-                    document.querySelector(".main-chat").setAttribute("style","background:"+col.style.backgroundColor);
-                }
-            }
-        });
-    });
-
-    const show_display=()=>{
-        document.getElementById("set_display").style.transform = "translateX(0%)";
-        if(window.innerWidth <= 825){
-            document.querySelector(".ui-left").setAttribute("style","transform:translatex(0%)")
-        }
-        asmback();
-        close_eprofile();
-    }
-
-    document.querySelector(".fa-arrow-left").addEventListener("click",()=>{
-        document.getElementById("set_display").style.transform = "translateX(100%)";
-    });
-
-
-    const set_wallpaper=()=>{
-        var file = document.getElementById("wp_select").files[0];
-        var reader  = new FileReader();
-
-
-        reader.onload = function(e)  {
-            var video = document.getElementById("bgimage");
-            var bgimage = document.querySelector(".main-chat");
-            let buffer = e.target.result;
-            let videoBlob = new Blob([new Uint8Array(buffer)]);
-            let url = window.URL.createObjectURL(videoBlob);
-            video.style.backgroundImage = `url(${url})`;
-            bgimage.setAttribute("style",`background-image:url("${url}");background-size:100% 100%;`);
-         }
-         reader.readAsArrayBuffer(file);
-         document.querySelector(".activecol").innerHTML = ``;
-        document.querySelector(".activecol").classList.remove("activecol");
-        document.getElementById("bgimage").classList.add("activecol");
-    }
-
-    const edit_profile=()=>{
-        document.getElementById("edit_profile").setAttribute("style","transform:translatex(0%)");
-        if(window.innerWidth <= 825){
-            document.querySelector(".ui-left").setAttribute("style","transform:translatex(0%)")
-        }
-        asmback();
-        close_user_profile();
-    }
-
-    const close_eprofile=()=>{
-        document.getElementById("edit_profile").setAttribute("style","transform:translatex(-100%)")
     }

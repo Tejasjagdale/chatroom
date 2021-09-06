@@ -28,20 +28,20 @@
 
         <div class="admin_action" tabindex="0">
             <div class="head">
-                <span><i class="fas fa-exclamation-circle"></i> Actions</span><i class="fas fa-times" onclick="alertclose(event)"></i>
+                <span><span id="action_dp"></span> tejas jagdale</span><i class="fas fa-times" onclick="alertclose(event)"></i>
             </div>
             <div class="action-container">
                 <div class="action-wrapper">
-                    <div class="actions" onclick=""><i class="fas fa-comment-slash"></i> Mute</div>
+                    <div class="actions" id="actions1" ><i class="fas fa-comment-slash"></i> Mute</div>
+                </div>
+                <div class="action-wrapper" >
+                    <div class="actions" id="actions4" onclick="addfreind('send',this.parentNode.parentNode.id)" ><i class="fas fa-user-plus"></i> Add Friend</div>
                 </div>
                 <div class="action-wrapper">
-                    <div class="actions" onclick=""><i class="fas fa-ban"></i> Block</div>
+                    <div class="actions" id="actions2" ><i class="fas fa-ban"></i> Block</div>
                 </div>
                 <div class="action-wrapper">
-                    <div class="actions" onclick=""><i class="fas fa-user-slash"></i> Ban</div>
-                </div>
-                <div class="action-wrapper">
-                    <div class="actions" onclick=""><i class="fas fa-user-plus"></i> Add Friend</div>
+                    <div class="actions" id="actions3" ><i class="fas fa-user-slash"></i> Ban</div>
                 </div>
             </div>
         </div>
@@ -99,24 +99,6 @@
                                     <span></span> <p>user5</p> <i class="fas fa-times" onclick="deletepm(event)"></i>
                                 </div>
                             </div> 
-
-                            <div  class="roomroles-wrapper">
-                                <div class="roomroles" onclick="">
-                                    <span></span> <p>user5</p> <i class="fas fa-times" onclick="deletepm(event)"></i>
-                                </div>
-                            </div> 
-
-                            <div  class="roomroles-wrapper">
-                                <div class="roomroles" onclick="">
-                                    <span></span> <p>user5</p> <i class="fas fa-times" onclick="deletepm(event)"></i>
-                                </div>
-                            </div> 
-
-                            <div  class="roomroles-wrapper">
-                                <div class="roomroles" onclick="">
-                                    <span></span> <p>user5</p> <i class="fas fa-times" onclick="deletepm(event)"></i>
-                                </div>
-                            </div> 
                         </div>
                     </div>
                 </div>
@@ -137,7 +119,6 @@
                     </div>   
                 </div> 
             </div> 
-        </div>
         </div>
 
         <div class="inbox" tabindex="0">
@@ -330,12 +311,12 @@
                     </div>
                     <div class="ud_body">
                         <div class="user-type" style="display:none"></div>
-                        <div class="vprofile" id="profile_div"><span><i class="fas fa-user-tie"></i></span> view profile
+                        <div class="vprofile" id="profile_div">
+                            <i class="fas fa-user-tie"></i> view profile
                         </div>
-                        <div class="addfreind" onclick="addfreind(this.id,event)">
-                            <span class="frd-icon"><i class="fas fa-user-plus"></i></span> Addfreind
+                        <div class="addfreind"  onclick="action(this.id)">
+                            <i class="fa fa-bolt" aria-hidden="true"></i> Action
                         </div>
-                        <div id="action" onclick="actions(this.id)"><i class="fas fa-exclamation-circle"></i> Action</div>
                         <div class="pm_chat" onclick="pmchat(this.id,this.classList,event)"  ><i class="fas fa-comments"></i> privatechat</div>
                     </div>
                 </div>
@@ -494,9 +475,9 @@
 <script src="/simple-peer/simplepeer.min.js"></script>
 <script src="main.js"></script>
 <script src="pmcall.js"></script>
-<script src="action.js"></script>
 <script src="emojis.js"></script>
 <script src="video_bot.js"></script>
 <script src="music_bot.js"></script>
 <script src="mobile.js"></script>
+<script src="action.js"></script>
 </html>
