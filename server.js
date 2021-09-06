@@ -228,19 +228,12 @@ io.on('connection', function(socket) {
             const verifyUser = jwt.verify(token,process.env.SECRET_KEY);
             
             activeusers.forEach((element,index) => {
-                // console.log(roomdata)
                 if(verifyUser._id == element.id){
-                    activeusers.splice(index,1);
-                    user_sockets.splice(index,1);
+                    user_sockets[index] = socket
                     console.log(roomdata)
-                    roomdata[0].roomusers.forEach((elem,ind)=>{
-                        if(elem.id == verifyUser._id){
-                            roomdata[0].roomusers.splice(ind,1)
-                        }
-                    })
                     roomdata[0].userssockets.forEach((elem,ind)=>{
                         if(elem.id == verifyUser._id){
-                            roomdata[0].userssockets.splice(ind,1)
+                            roomdata[0].userssockets[ind] = socket.id;
                         }
                     })
                 }
