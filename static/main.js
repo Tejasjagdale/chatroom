@@ -10,7 +10,7 @@
     var msg_noti = 0;
     var alert_noti = 0;
     var user_pms = 0;
-    const socket = io('https://temp-app-chatroom.herokuapp.com/');
+    const socket = io('http://localhost:3812');
    
     var ca = document.cookie.split(';').map(cookie => cookie.split('=')).reduce((accumulator,[key,value])=>({...accumulator, [key.trim()]:decodeURIComponent(value)}),{});
     
@@ -62,11 +62,12 @@
             if(username == data.name){
                 this_userid = data.id;
             }
-            room_user.id = "user" + data.id;
+            room_user.id ="user"+data.id;
             room_user.className = "user";
-            var name = data.name;
 
             document.querySelector(`.users`).appendChild(room_user);
+            document.getElementById("user"+data.id).setAttribute("onclick","user_profile(this.id)");
+
             document.getElementById("user" + data.id).innerHTML = `<span class="uprofile"></span><p class="username">${data.name}</p><div><img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`
 
             if(data.type == "guest"){
@@ -74,8 +75,6 @@
             }else{
                 document.getElementById("user" + data.id).classList.add('register');
             }
-
-            document.getElementById("user" + data.id).setAttribute("onclick", "user_profile(this.id)");
         }
     });
 
@@ -268,15 +267,6 @@
 
     socket.on("change-room",(data)=>{
         if(data.result =="passed"){
-            if(data.data.nroomname != "Main room"){
-                data.data.roles.forEach(element => {
-                    if(element._id == this_userid){
-                        document.querySelector(".rsetting").setAttribute("style","display:block");
-                     }else{
-                        document.querySelector(".rsetting").setAttribute("style","display:none");
-                     }
-                });
-            }
             document.querySelector(".room_name").id = data.data.nroomname;
             document.querySelector(".room_name").innerHTML = `<span><i class='fas fa-users'></i></span>${data.data.nroomname}`;
 
@@ -286,22 +276,37 @@
     });
 
     socket.on("change-room-left",(data)=>{
+        console.log(data)
         if(data.nroom == document.querySelector(".room_name").id){
             var room_user = document.createElement("DIV");
             room_user.id = "user" + data.user.id;
             room_user.className = "user";
-            var name = data.user.name;
+
 
             document.querySelector(`.users`).appendChild(room_user);
-            document.getElementById("user" + data.user.id).innerHTML = `<span class="uprofile"></span><p class="username">${data.user.name}</p><div><img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`
+            document.getElementById("user"+ data.user.id).setAttribute("onclick", "user_profile(this.id)");
 
-        if(data.type == "guest"){
-            document.getElementById("user"+data.user.id).classList.add('guest');
-        }else{
-            document.getElementById("user"+data.user.id).classList.add('register');
-        }
-        }
-        if(data.croom == document.querySelector(".room_name").id){
+            data.roomroles.every(function (element) {
+                if(element.userid.replace("user"," ").trim() == data.user.id){
+                    if(element.role == "admin"){
+                        document.getElementById("user" +data.user.id).innerHTML = `<span class="uprofile"></span><p class="username">${data.user.name}</p><div><i class="fas fa-crown"></i><img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
+                        return false;
+                    }else{
+                        document.getElementById("user" +data.user.id).innerHTML = `<span class="uprofile"></span><p class="username">${data.user.name}</p><div><i class="fas fa-user-shield"></i><img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
+                        return false;
+                    }
+                }else{
+                    document.getElementById("user" +data.user.id).innerHTML = `<span class="uprofile"></span><p class="username">${data.user.name}</p><div><img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
+                    return true;
+                }
+            });
+            
+            if(data.type == "guest"){
+                document.getElementById("user"+data.user.id).classList.add('guest');
+            }else{
+                document.getElementById("user"+data.user.id).classList.add('register');
+            }
+        }if(data.croom == document.querySelector(".room_name").id){
             document.getElementById("user" + data.user.id).remove();
         }
     });
@@ -313,23 +318,65 @@
         document.querySelector(".persnol_chat_model").classList.remove("activepm");
 
 
+        data.roomroles.every(function (element) {
+            if(element.userid == this_userid){
+                document.querySelector("#roomsetting").setAttribute("style","display:flex");
+                return false;
+            }else{
+                document.querySelector("#roomsetting").setAttribute("style","display:none");
+                return true;
+            }
+        });
+
+        data.roomroles.forEach(element => {
+            if(element.userid.replace("user"," ").trim() == this_userid){
+                if(element.role == "admin"){
+                    data.roomroles.forEach(element=>{
+                        console.log(element)
+                        if(element.role == "admin"){
+                            var room_user = document.createElement("DIV");
+                            room_user.id = "admin"+element.userid;
+                            room_user.className = "roomroles-wrapper";
+
+                            document.querySelector(`.admin_cont`).appendChild(room_user);
+                            document.getElementById("admin"+element.userid).innerHTML = `<div class="roomroles" ><span></span> <p>${element.username}</p> <i class="fas fa-times" onclick="deletepm(event)"></i></div>`
+                        }else{
+                            var room_user = document.createElement("DIV");
+                            room_user.id = "moderator"+element.userid;
+                            room_user.className = "roomroles-wrapper";
+
+                            document.querySelector(`.moderator_cont`).appendChild(room_user);
+                            document.getElementById("moderator"+element.userid).innerHTML = `<div class="roomroles" ><span></span> <p>${element.username}</p> <i class="fas fa-times" onclick="deletepm(event)"></i></div>`
+                        }
+                    });
+                }
+            }else{
+                
+            }
+        });
+
         data.roomusers.forEach(function(item,index){
             var room_user = document.createElement("DIV");
             country = data.country;
-            room_user.id = "user" + item.id;
+            room_user.id = "user"+item.id;
             room_user.className = "user";
-            var name = item.name;
 
             document.querySelector(`.users`).appendChild(room_user);
-            data.roomroles.forEach(element => {
-                if(element.userid == item.id){
+            document.getElementById("user"+item.id).setAttribute("onclick", "user_profile(this.id)");
+
+            data.roomroles.every(function (element) {
+                console.log(element.userid,item.id)
+                if(element.userid.replace("user"," ").trim() == item.id){
                     if(element.role == "admin"){
                         document.getElementById("user" + item.id).innerHTML = `<span class="uprofile"></span><p class="username">${item.name}</p><div><i class="fas fa-crown"></i><img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`
+                        return false;
                     }else{
                         document.getElementById("user" + item.id).innerHTML = `<span class="uprofile"></span><p class="username">${item.name}</p><div><i class="fas fa-user-shield"></i><img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`
+                        return false;
                     }
                 }else{
                     document.getElementById("user" + item.id).innerHTML = `<span class="uprofile"></span><p class="username">${item.name}</p><div><img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`
+                    return true;
                 }
             });
             
@@ -340,7 +387,6 @@
                 document.getElementById("user" + item.id).classList.add('register');
             }
 
-            document.getElementById("user" + item.id).setAttribute("onclick", "user_profile(this.id)");
         });
 
         data.roommsgs.forEach(function(item,index){
@@ -849,8 +895,6 @@
 
     socket.on("load-frnds",(data)=>{
         frnds_list =  data.frnds
-
-        console.log(frnds_list);
          
         data.frnds.forEach((item,index)=>{
             if(item.status == "accepted"){
@@ -960,7 +1004,7 @@
             frnd.className = "freind";
 
             document.querySelector(`.freinds`).appendChild(frnd);
-            document.getElementById("frnd" + event.target.parentNode.parentNode.id.replace("alert"," ").trim()).innerHTML = `<span class="uprofile" name="hmm"></span><p class="username">${event.target.id}</p><div><img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
+            document.getElementById("frnd" + event.target.parentNode.parentNode.id.replace("alert"," ").trim()).innerHTML = `<span class="uprofile" ></span><p class="username">${event.target.id}</p><div><img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
             document.getElementById("frnd" + event.target.parentNode.parentNode.id.replace("alert"," ").trim()).classList.add('register');
             document.getElementById("frnd" + event.target.parentNode.parentNode.id.replace("alert"," ").trim()).setAttribute("onclick", "user_profile(this.id)");
             frnds_list.push(frnd_query);
@@ -1108,4 +1152,15 @@
 
     function closepm() {
         document.querySelector(".persnol_chat_model").classList.remove("activepm");
+    }
+
+    const make_mod=(userid)=>{
+        var mod ={
+            "role":"Moderator",
+            "username":document.querySelector(".admin_action .head span").innerText,
+            "userid":userid,
+        }
+
+        socket.emit("make_mod",[mod,document.querySelector(".room_name").innerText]);
+        alertclose(event);
     }

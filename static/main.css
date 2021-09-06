@@ -849,7 +849,9 @@ body {
     display: flex;
     width: 100%;
     height: 10%;
+    min-height: 55px;
     z-index: 10;
+    background-color: white;
     border-bottom: 0.5px solid  lightgrey;
 }
 
@@ -964,7 +966,8 @@ body {
     height: 80%;
     position: absolute;
     top:10%;
-    display: block;
+    display: flex;
+    flex-direction: column;
     overflow-x: hidden;
     overflow-y: scroll;
     background-color: #AED8C7;
@@ -1164,6 +1167,7 @@ footer {
     bottom:0;
     width: 100%;
     height: 10%;
+    min-height: 55px;
     display: flex;
     border-top: 1px solid lightgrey;
     background-color: white;
@@ -1585,6 +1589,10 @@ aside ul li:nth-child(3) ul li{
     border:none
 }
 
+#roomsetting{
+    display:none;
+}
+
 #rset_option .rset_warpper label{
     font-size: 17px;
     margin-left: 10%;
@@ -1923,6 +1931,10 @@ aside ul li:nth-child(3) ul li{
 
 #actions4 i{
     color: green;
+}
+
+#actions5 i{
+    color:#4D426D;
 }
 
 .inbox {

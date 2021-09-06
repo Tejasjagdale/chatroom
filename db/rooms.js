@@ -36,6 +36,17 @@ const roomSchema = new mongoose.Schema({
         "userid":{
             type:String,
         }
+    }],
+    banedusers:[{
+        "usertype":{
+            type:String,
+        },
+        "username":{
+            type:String,
+        },
+        "userid":{
+            type:String,
+        }
     }]
 });
 

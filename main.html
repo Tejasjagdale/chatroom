@@ -5,7 +5,7 @@
     <title>
         Main Room
     </title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width,maximum-scale=1.0, initial-scale=1.0,user-scalable=no"">
     <link rel="icon" href="favicon.png">
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
         integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
@@ -42,6 +42,9 @@
                 </div>
                 <div class="action-wrapper">
                     <div class="actions" id="actions3" ><i class="fas fa-user-slash"></i> Ban</div>
+                </div>
+                <div class="action-wrapper">
+                    <div class="actions" id="actions5" onclick="make_mod(this.parentNode.parentNode.id)"><i class="fas fa-user-shield"></i> Moderator</div>
                 </div>
             </div>
         </div>
@@ -80,25 +83,13 @@
                 <div id="room_roles">
                     <div class="rr_container">
                         <label>Room Owner</label>
-                        <div class="room_roles_container">
-
-                            <div  class="roomroles-wrapper">
-                                <div class="roomroles" onclick="">
-                                    <span></span> <p>user5</p> <i class="fas fa-times" onclick="deletepm(event)"></i>
-                                </div>
-                            </div> 
-
+                        <div class="room_roles_container admin_cont">
                         </div>
                     </div>
 
                     <div class="rr_container">
                         <label>Moderator</label>
-                        <div>
-                            <div  class="roomroles-wrapper">
-                                <div class="roomroles" onclick="">
-                                    <span></span> <p>user5</p> <i class="fas fa-times" onclick="deletepm(event)"></i>
-                                </div>
-                            </div> 
+                        <div class="room_roles_container moderator_cont">
                         </div>
                     </div>
                 </div>
@@ -464,12 +455,13 @@
                     <li class="rsetting" id="roomsetting"><div class="aside-wrapper"><span><i class="far fa-cog"></i></span> Room Settings</div></li>
                     <li onclick="show_display()"><div class="aside-wrapper"><span><i class="far fa-image"></i></span> Display</div></li>
                     <li onclick="logout()"><div class="aside-wrapper"><span><i class="fas fa-sign-out-alt"></i></span> Logout</div></li>
+                    <li onclick="clear_allmsg()"><div class="aside-wrapper"><span></span> Clear messages</div></li>
                 </ul>
             </aside>
         </div>
     </div>
 </body>
-<script src ="https://temp-app-chatroom.herokuapp.com/socket.io/socket.io.js"></script>
+<script src ="http://localhost:3812/socket.io/socket.io.js"></script>
 <script src="/socket.io-stream/socket.io-stream.js"></script>
 <script src="https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js"></script>
 <script src="/simple-peer/simplepeer.min.js"></script>

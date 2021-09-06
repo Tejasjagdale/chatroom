@@ -37,7 +37,6 @@ document.getElementById("search_any").addEventListener("keyup",(event)=>{
 });
 
 const action=(id)=>{
-    console.log(id);
     document.querySelector(".action-container").id = id.replace("frnd","user");
     document.querySelector(".admin_action .head span").innerHTML =`<span id="action_dp"></span> ${document.querySelector(".user_details .ud_head p").innerText}`
     document.querySelector(".admin_action").classList.add("activeb2");

@@ -452,7 +452,7 @@ io.on('connection', function(socket) {
                 await Register.updateOne( 
                     { _id : data.sender_id, "frnds.sender":data.receiver},
                     { $set: { "frnds.$.status": "accepted" }}
-                  );
+                );
     
                 await Register.updateOne( 
                     { _id : data.receiver_id.trim(),"frnds.receiver":data.sender},
@@ -542,7 +542,11 @@ io.on('connection', function(socket) {
                         items.roomusers.splice(i, 1);
                         items.userssockets.splice(i, 1);
 
-                        socket.broadcast.emit("change-room-left",{"croom":data.croomname,"nroom":data.nroomname,"user":activeusers[i2]});
+                        roomdata.forEach((item) => {
+                            if(item.roomname == data.nroomname){
+                                socket.broadcast.emit("change-room-left",{"croom":data.croomname,"nroom":data.nroomname,"user":activeusers[i2],"roomroles":item.roomroles});
+                            }
+                        });
                     }
                     if(items.roomname == data.nroomname){
                         var i = user_sockets.indexOf(socket.id);
@@ -572,6 +576,25 @@ io.on('connection', function(socket) {
             console.log(error)
         }
     });
+
+    socket.on('make_mod', async (data)=>{
+        console.log(data)
+        try {
+            await Rooms.updateOne( 
+                { roomname: data[1]},
+                { $push: { roomroles : data[0] } }
+            );
+
+            roomdata.forEach((items,index) => {
+                if(items.roomname == data[1]){
+                    item.roomroles.push(data[0]);
+                }
+            });
+
+        } catch (error) {
+            console.log(error)
+        }
+    })
 
    socket.on('disconnect', function () {
       var i = user_sockets.indexOf(socket.id);
