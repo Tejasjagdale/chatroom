@@ -32,16 +32,16 @@
             </div>
             <div class="action-container">
                 <div class="action-wrapper">
-                    <div class="actions" id="actions1" ><i class="fas fa-comment-slash"></i> Mute</div>
+                    <div class="actions" id="actions1" onclick="mute_user(this.parentNode.parentNode.id)"><i class="fas fa-comment-slash"></i> Mute</div>
                 </div>
                 <div class="action-wrapper" >
                     <div class="actions" id="actions4" onclick="addfreind('send',this.parentNode.parentNode.id)" ><i class="fas fa-user-plus"></i> Add Friend</div>
                 </div>
                 <div class="action-wrapper">
-                    <div class="actions" id="actions2" ><i class="fas fa-ban"></i> Block</div>
+                    <div class="actions" id="actions2" onclick="block_user(this.parentNode.parentNode.id)"><i class="fas fa-ban"></i> Block</div>
                 </div>
                 <div class="action-wrapper">
-                    <div class="actions" id="actions3" ><i class="fas fa-user-slash"></i> Ban</div>
+                    <div class="actions" id="actions3" onclick="ban_user(this.parentNode.parentNode.id)"><i class="fas fa-user-slash"></i> Ban</div>
                 </div>
                 <div class="action-wrapper">
                     <div class="actions" id="actions5" onclick="make_mod(this.parentNode.parentNode.id)"><i class="fas fa-user-shield"></i> Moderator</div>
@@ -455,7 +455,7 @@
                     <li class="rsetting" id="roomsetting"><div class="aside-wrapper"><span><i class="far fa-cog"></i></span> Room Settings</div></li>
                     <li onclick="show_display()"><div class="aside-wrapper"><span><i class="far fa-image"></i></span> Display</div></li>
                     <li onclick="logout()"><div class="aside-wrapper"><span><i class="fas fa-sign-out-alt"></i></span> Logout</div></li>
-                    <li onclick="clear_allmsg()"><div class="aside-wrapper"><span></span> Clear messages</div></li>
+                    <li onclick="clear_allmsg()"><div class="aside-wrapper"><span><i class="fas fa-trash-alt"></i></span> Clear Messages</div></li>
                 </ul>
             </aside>
         </div>

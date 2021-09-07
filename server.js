@@ -198,6 +198,8 @@ async function loader(){
             "userssockets":new Array(),
             "roommsgs":new Array(),
             "roomroles":[{role:"admin",username:"admin",userid:"admin"}],
+            "muteusers":new Array(),
+            "banusers":new Array(),
             "roomactive":false
         });
 
@@ -209,6 +211,8 @@ async function loader(){
             "userssockets":new Array(),
             "roommsgs":new Array(),
             "roomroles":items.roomroles,
+            "muteusers":new Array(),
+            "banusers":items.banedusers,
             "roomactive":false
         });
         });
@@ -258,7 +262,7 @@ io.on('connection', function(socket) {
                 roomdata[0].userssockets = [...roomdata[0].userssockets,socket.id];
             }
 
-            activeusers.push({"name":user.name,"id":user._id,"country":user.country,"type":user.type,"current_room":"Main Room"});
+            activeusers.push({"name":user.name,"id":user._id,"country":user.country,"type":user.type,"current_room":"Main Room",blocks:user.blocks});
             user_sockets.push(socket.id);
 
             socket.emit('user-joined',{"name":user.name,"id":user._id,"country":user.country,"type":user.type,"current_room":"Main Room"});
@@ -503,6 +507,8 @@ io.on('connection', function(socket) {
                 "userssockets":new Array(),
                 "roommsgs":new Array(),
                 "roomroles":data2.roomroles,
+                "muteusers":new Array(),
+                "banusers":new Array(),
                 "roomactive": false
             });
 
@@ -578,7 +584,6 @@ io.on('connection', function(socket) {
     });
 
     socket.on('make_mod', async (data)=>{
-        console.log(data)
         try {
             await Rooms.updateOne( 
                 { roomname: data[1]},
@@ -587,14 +592,62 @@ io.on('connection', function(socket) {
 
             roomdata.forEach((items,index) => {
                 if(items.roomname == data[1]){
-                    item.roomroles.push(data[0]);
+                    items.roomroles.push(data[0]);
                 }
             });
 
         } catch (error) {
             console.log(error)
         }
-    })
+    });
+
+    socket.on('mute_user', async (data)=>{
+        try {
+            roomdata.forEach((items) => {
+                if(items.roomname == data[1]){
+                    items.muteusers.push(data[0]);
+                }
+            });
+        } catch (error) {
+            console.log(error)
+        }
+    });
+
+    socket.on('ban_user', async (data)=>{
+        try {
+            await Rooms.updateOne( 
+                { roomname: data[1]},
+                { $push: { banedusers : data[0] } }
+            );
+
+            roomdata.forEach((items) => {
+                if(items.roomname == data[1]){
+                    items.banedusers.push(data[0]);
+                }
+            });
+
+        } catch (error) {
+            console.log(error)
+        }
+    });
+
+    socket.on('block_user', async (data)=>{
+        try {
+            await Register.updateOne( 
+                { roomname: data[1]},
+                { $push: { blocks : data[0] } }
+            );
+
+            // roomdata.forEach((items) => {
+            //     if(items.roomname == data[1]){
+            //         items.banedusers.push(data[0]);
+            //     }
+            // });
+
+        } catch (error) {
+            console.log(error)
+        }
+    });
 
    socket.on('disconnect', function () {
       var i = user_sockets.indexOf(socket.id);

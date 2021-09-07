@@ -319,11 +319,19 @@
 
 
         data.roomroles.every(function (element) {
-            if(element.userid == this_userid){
+            if(element.userid.replace("user"," ").trim() == this_userid){
                 document.querySelector("#roomsetting").setAttribute("style","display:flex");
+                document.getElementById("actions1").parentNode.setAttribute("style","display:flex");
+                document.getElementById("actions3").parentNode.setAttribute("style","display:flex");
+                if(element.role == "admin"){
+                    document.getElementById("actions5").parentNode.setAttribute("style","display:flex");
+                }
                 return false;
             }else{
                 document.querySelector("#roomsetting").setAttribute("style","display:none");
+                document.getElementById("actions1").parentNode.setAttribute("style","display:none");
+                document.getElementById("actions3").parentNode.setAttribute("style","display:none");
+                document.getElementById("actions5").parentNode.setAttribute("style","display:none");
                 return true;
             }
         });
@@ -735,15 +743,17 @@
     const changeroom=(room)=>{
         let new_room_name = document.querySelector(`#${room} p`).innerText;
 
-        if(new_room_name == "Main Room"){
-            document.querySelector(".enter_roompass .head  span").innerHTML = new_room_name;
-            roompass();
-        }else{
-            document.querySelector(".enter_roompass .head  span").innerHTML = new_room_name;
+        if(new_room_name != document.querySelector(".room_name").id){
+            if(new_room_name == "Main Room"){
+                document.querySelector(".enter_roompass .head  span").innerHTML = new_room_name;
+                roompass();
+            }else{
+                document.querySelector(".enter_roompass .head  span").innerHTML = new_room_name;
 
-            document.querySelector(".alert").setAttribute("style", "display:block");
-            document.querySelector(".enter_roompass").classList.add("activeb2");
-            document.querySelector(".enter_roompass").setAttribute("style", "animation: ZoomIn 0.3s ease-out");
+                document.querySelector(".alert").setAttribute("style", "display:block");
+                document.querySelector(".enter_roompass").classList.add("activeb2");
+                document.querySelector(".enter_roompass").setAttribute("style", "animation: ZoomIn 0.3s ease-out");
+            }
         }
     };
 
@@ -1152,15 +1162,4 @@
 
     function closepm() {
         document.querySelector(".persnol_chat_model").classList.remove("activepm");
-    }
-
-    const make_mod=(userid)=>{
-        var mod ={
-            "role":"Moderator",
-            "username":document.querySelector(".admin_action .head span").innerText,
-            "userid":userid,
-        }
-
-        socket.emit("make_mod",[mod,document.querySelector(".room_name").innerText]);
-        alertclose(event);
     }

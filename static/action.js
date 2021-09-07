@@ -359,3 +359,47 @@ const edit_profile=()=>{
 const close_eprofile=()=>{
     document.getElementById("edit_profile").setAttribute("style","transform:translatex(-100%)")
 }
+
+const make_mod=(userid)=>{
+    var mod ={
+        "role":"Moderator",
+        "username":document.querySelector(".admin_action .head span").innerText,
+        "userid":userid,
+    }
+
+    socket.emit("make_mod",[mod,document.querySelector(".room_name").innerText]);
+    alertclose(event);
+}
+
+const mute_user=(userid)=>{
+    var mod ={
+        "usertype":"Moderator",
+        "username":document.querySelector(".admin_action .head span").innerText,
+        "userid":userid,
+    }
+
+    socket.emit("mute_user",[mod,document.querySelector(".room_name").innerText]);
+    alertclose(event);
+}
+
+const ban_user=(userid)=>{
+    var mod ={
+        "usertype":"Moderator",
+        "username":document.querySelector(".admin_action .head span").innerText,
+        "userid":userid,
+    }
+
+    socket.emit("ban_user",[mod,document.querySelector(".room_name").innerText]);
+    alertclose(event);
+}
+
+const block_user=(userid)=>{
+    var mod ={
+        "usertype":"Moderator",
+        "username":document.querySelector(".admin_action .head span").innerText,
+        "userid":userid,
+    }
+
+    socket.emit("block_user",[mod,this_userid]);
+    alertclose(event);
+}

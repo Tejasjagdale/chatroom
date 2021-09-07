@@ -1415,6 +1415,17 @@ aside ul li:nth-child(6){
     align-items: center;
 }
 
+aside ul li:nth-child(7){
+    font-size: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+aside ul li:nth-child(7):hover{
+    background-color: #F70000;
+}
+
 
 aside ul li:nth-child(3) ul{
     position: absolute;
