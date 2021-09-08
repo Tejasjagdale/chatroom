@@ -27,24 +27,24 @@ const roomSchema = new mongoose.Schema({
         }
     }],
     roomroles:[{
+        "userid":{
+            type:String,
+        },
         "role":{
             type:String,
         },
         "username":{
             type:String,
         },
-        "userid":{
-            type:String,
-        }
     }],
     banedusers:[{
+        "userid":{
+            type:String,
+        },
         "usertype":{
             type:String,
         },
         "username":{
-            type:String,
-        },
-        "userid":{
             type:String,
         }
     }]

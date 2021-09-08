@@ -37,7 +37,7 @@ document.getElementById("search_any").addEventListener("keyup",(event)=>{
 });
 
 const action=(id)=>{
-    document.querySelector(".action-container").id = id.replace("frnd","user");
+    document.querySelector(".action-container").id = id.replace("frnd","action");
     document.querySelector(".admin_action .head span").innerHTML =`<span id="action_dp"></span> ${document.querySelector(".user_details .ud_head p").innerText}`
     document.querySelector(".admin_action").classList.add("activeb2");
     document.querySelector(".alert").setAttribute("style", "display:block");
@@ -47,6 +47,15 @@ const action=(id)=>{
             document.querySelector("#actions4").innerHTML = `<i class="fas fa-user-times"></i> Remove freind`;
             document.querySelector("#actions4 i").setAttribute("style","color:red");
             document.querySelector("#actions4").setAttribute("onclick","RemoveFreind(this.parentNode.parentNode.id)");
+        }
+    });
+    room_roles_track.every(function (elem){
+        console.log(elem.userid,document.querySelector(".action-container").id.replace("action"," ").trim())
+        if(elem.userid == document.querySelector(".action-container").id.replace("action"," ").trim()){
+            console.log("hmm")
+            document.getElementById("actions1").parentNode.setAttribute("style","display:none")
+            document.getElementById("actions3").parentNode.setAttribute("style","display:none")
+            document.getElementById("actions5").parentNode.setAttribute("style","display:none")
         }
     });
     close_user_profile();
@@ -364,7 +373,7 @@ const make_mod=(userid)=>{
     var mod ={
         "role":"Moderator",
         "username":document.querySelector(".admin_action .head span").innerText,
-        "userid":userid,
+        "userid":userid.replace("actionuser","user"),
     }
 
     socket.emit("make_mod",[mod,document.querySelector(".room_name").innerText]);
@@ -375,18 +384,19 @@ const mute_user=(userid)=>{
     var mod ={
         "usertype":"Moderator",
         "username":document.querySelector(".admin_action .head span").innerText,
-        "userid":userid,
+        "userid":userid.replace("actionuser","user"),
     }
 
     socket.emit("mute_user",[mod,document.querySelector(".room_name").innerText]);
     alertclose(event);
 }
 
+
 const ban_user=(userid)=>{
     var mod ={
         "usertype":"Moderator",
         "username":document.querySelector(".admin_action .head span").innerText,
-        "userid":userid,
+        "userid":userid.replace("actionuser","user"),
     }
 
     socket.emit("ban_user",[mod,document.querySelector(".room_name").innerText]);
@@ -395,11 +405,48 @@ const ban_user=(userid)=>{
 
 const block_user=(userid)=>{
     var mod ={
-        "usertype":"Moderator",
+        "usertype":"any",
         "username":document.querySelector(".admin_action .head span").innerText,
-        "userid":userid,
+        "userid":userid.replace("actionuser","user"),
     }
 
     socket.emit("block_user",[mod,this_userid]);
     alertclose(event);
+}
+
+const removerole=(userid)=>{
+    var mod ={
+        "role":"Moderator",
+        "userid":userid.replace("moderatoruser","user"),
+        "username":document.querySelector(".admin_action .head span").innerText,
+    }
+
+    socket.emit("remove_mod",[mod,document.querySelector(".room_name").innerText]);
+    alertclose(event);
+}
+
+const removemute=(userid)=>{
+    var mod ={
+        "user_type":"register",
+        "userid":userid.replace("muteuser","user"),
+        "username":document.querySelector(".admin_action .head span").innerText,
+    }
+
+    socket.emit("remove_mute",[mod,document.querySelector(".room_name").innerText]);
+    alertclose(event);
+}
+
+const removeban=(userid)=>{
+    var mod ={
+        "user_type":"register",
+        "userid":userid.replace("banuser","user"),
+        "username":document.querySelector(".admin_action .head span").innerText,
+    }
+
+    socket.emit("remove_ban",[mod,document.querySelector(".room_name").innerText]);
+    alertclose(event);
+}
+
+const clear_allmsg=()=>{
+    socket.on("clearmsg",{room:document.querySelector(".room_name").innerText,username:username})
 }

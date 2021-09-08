@@ -197,7 +197,7 @@ async function loader(){
             "roomusers":new Array(),
             "userssockets":new Array(),
             "roommsgs":new Array(),
-            "roomroles":[{role:"admin",username:"admin",userid:"admin"}],
+            "roomroles":[{role:"admin",username:"tejas",userid:"6137236ace08af10f49e304c"}],
             "muteusers":new Array(),
             "banusers":new Array(),
             "roomactive":false
@@ -234,7 +234,6 @@ io.on('connection', function(socket) {
             activeusers.forEach((element,index) => {
                 if(verifyUser._id == element.id){
                     user_sockets[index] = socket
-                    console.log(roomdata)
                     roomdata[0].userssockets.forEach((elem,ind)=>{
                         if(elem.id == verifyUser._id){
                             roomdata[0].userssockets[ind] = socket.id;
@@ -254,19 +253,19 @@ io.on('connection', function(socket) {
             socket.emit('load-rooms',roomsname);
 
             if(roomdata[0].roomusers.length == 0){
-                roomdata[0].roomusers[0] = {"name":user.name,"id":user._id,"country":user.country,"type":user.type,"current_room":"Main Room"};
+                roomdata[0].roomusers[0] = {"name":user.name,"id":user._id,"country":user.country,"type":user.type,"blocks":user.blocks,"current_room":"Main Room"};
                 roomdata[0].userssockets[0] = socket.id;
                 roomdata[0].roomactive =  true;
             }else{
-                roomdata[0].roomusers = [...roomdata[0].roomusers,{"name":user.name,"id":user._id,"country":user.country,"type":user.type,"current_room":"Main Room"}]
+                roomdata[0].roomusers = [...roomdata[0].roomusers,{"name":user.name,"id":user._id,"country":user.country,"type":user.type,"blocks":user.blocks,"current_room":"Main Room"}]
                 roomdata[0].userssockets = [...roomdata[0].userssockets,socket.id];
             }
 
-            activeusers.push({"name":user.name,"id":user._id,"country":user.country,"type":user.type,"current_room":"Main Room",blocks:user.blocks});
+            activeusers.push({"name":user.name,"id":user._id,"country":user.country,"type":user.type,"blocks":user.blocks,"current_room":"Main Room"});
             user_sockets.push(socket.id);
 
-            socket.emit('user-joined',{"name":user.name,"id":user._id,"country":user.country,"type":user.type,"current_room":"Main Room"});
-            socket.broadcast.emit('user-joined',{"name":user.name,"id":user._id,"country":user.country,"type":user.type,"current_room":"Main Room"});
+            socket.emit('user-joined',{"name":user.name,"id":user._id,"country":user.country,"type":user.type,"blocks":user.blocks,"current_room":"Main Room"});
+            socket.broadcast.emit('user-joined',{"name":user.name,"id":user._id,"country":user.country,"type":user.type,"blocks":user.blocks,"current_room":"Main Room"});
             socket.emit('load-msgs',roomdata[0].roommsgs);
             socket.emit('room-users',roomdata);
             socket.broadcast.emit('room-users',roomdata);
@@ -293,8 +292,8 @@ io.on('connection', function(socket) {
             if(roomdata[index].roommsgs.length >= 10){
                 roomdata[index].roommsgs.splice(0, 1);
                 roomdata[index].roommsgs.push(data1)
-                socket.emit('msg-clear', data1);
-                socket.broadcast.emit('msg-clear', data1);
+                socket.emit('auto-msg-clear', data1);
+                socket.broadcast.emit('auto-msg-clear', data1);
             }else{
                 roomdata[index].roommsgs.push(data1)
             }
@@ -396,7 +395,7 @@ io.on('connection', function(socket) {
              }
             }
         });
-    })
+    });
 
     socket.on("pmcall",(data)=>{
         activeusers.forEach((item,index)=> {
@@ -524,26 +523,39 @@ io.on('connection', function(socket) {
     });
 
     socket.on("change-room",async (data)=>{
+        var isMatch ;
         try {
-
-            roomdata.forEach((items,index)=> {
-                 if(items == data.nroomname){
-                    items.roomactive = true;
-                 }
-            });
+            // roomdata.forEach((items,index)=> {
+            //      if(items == data.nroomname){
+            //         items.roomactive = true;
+            //      }
+            // });
 
             if(data.nroomname == "Main Room"){
-                var isMatch = true
+                isMatch = true
             }else{
-                var room = await Rooms.findOne({roomname:data.nroomname}); 
-                var isMatch =  await bcrypt.compare(data.roompass,room.roompass);
+                var room = await Rooms.findOne({roomname:data.nroomname});
+                isMatch =  await bcrypt.compare(data.roompass,room.roompass);
             }
-            
 
             if(isMatch){
+                var i2 = user_sockets.indexOf(socket.id);
+                
+                roomdata.forEach((element)=>{
+                    if(element.roomname == data.nroomname){
+                        element.banusers.forEach((elem)=>{
+                            if(activeusers[i2].id == elem.userid.replace("user"," ").trim()){
+                                isMatch = "baned";
+                            }
+                        })
+                    }
+                })
+
+                if(isMatch == "baned"){
+                    socket.emit("change-room", {"result":"baned"});
+                }else{
                 roomdata.forEach((items,index) => {
                     if(items.roomname == data.croomname){
-                        var i2 = user_sockets.indexOf(socket.id);
                         var i = items.userssockets.indexOf(socket.id);
                         items.roomusers.splice(i, 1);
                         items.userssockets.splice(i, 1);
@@ -574,6 +586,7 @@ io.on('connection', function(socket) {
                 socket.emit("change-room", {"result":"passed","data":data});
                 socket.emit('room-users',roomdata);
                 socket.broadcast.emit('room-users',roomdata);
+            }
             }else{
                 socket.emit("change-room", {"result":"failed"});
             }
@@ -596,6 +609,8 @@ io.on('connection', function(socket) {
                 }
             });
 
+            socket.emit('made_mod',data);
+            socket.broadcast.emit('made_mod',data);
         } catch (error) {
             console.log(error)
         }
@@ -608,8 +623,11 @@ io.on('connection', function(socket) {
                     items.muteusers.push(data[0]);
                 }
             });
+
+            socket.emit('user_muted',data);
+            socket.broadcast.emit('user_muted',data);
         } catch (error) {
-            console.log(error)
+            console.log(error);
         }
     });
 
@@ -617,15 +635,17 @@ io.on('connection', function(socket) {
         try {
             await Rooms.updateOne( 
                 { roomname: data[1]},
-                { $push: { banedusers : data[0] } }
+                { $push: { banedusers : {userid:data[0].userid} } }
             );
 
             roomdata.forEach((items) => {
                 if(items.roomname == data[1]){
-                    items.banedusers.push(data[0]);
+                    items.banusers.push(data[0]);
                 }
             });
 
+            socket.emit('baned_user',data);
+            socket.broadcast.emit('baned_user',data);
         } catch (error) {
             console.log(error)
         }
@@ -633,10 +653,10 @@ io.on('connection', function(socket) {
 
     socket.on('block_user', async (data)=>{
         try {
-            await Register.updateOne( 
-                { roomname: data[1]},
-                { $push: { blocks : data[0] } }
-            );
+            // await Register.updateOne( 
+            //     { roomname: data[1]},
+            //     { $push: { blocks : data[0] } }
+            // );
 
             // roomdata.forEach((items) => {
             //     if(items.roomname == data[1]){
@@ -648,6 +668,93 @@ io.on('connection', function(socket) {
             console.log(error)
         }
     });
+
+    socket.on('remove_mod', async (data)=>{
+        try {
+            await Rooms.updateOne( 
+                { roomname: data[1]},
+                { $pull: { roomroles : {userid:data[0].userid} } }
+            );
+
+            roomdata.forEach((items,index1) => {
+                if(items.roomname == data[1]){
+                    items.roomroles.forEach((item,index)=>{
+                        if(item.userid = data[0].userid){
+                            roomdata[index1].roomroles.splice(index,1);
+                        }
+                    })
+                }
+            });
+
+            socket.emit('mod_removed',data);
+            socket.broadcast.emit('mod_removed',data);
+            console.log(roomdata);
+        } catch (error) {
+            console.log(error);
+        }
+
+        console.log(roomdata[1])
+    });
+
+    socket.on('remove_mute', async (data)=>{
+        try {
+            roomdata.forEach((items,index1) => {
+                if(items.roomname == data[1]){
+                    items.muteusers.forEach((item,index)=>{
+                        if(item.userid = data[0].userid){
+                            roomdata[index1].muteusers.splice(index,1);
+                        }
+                    })
+                }
+            });
+
+            socket.emit('mute_removed',data);
+            socket.broadcast.emit('mute_removed',data);
+            console.log(roomdata);
+        } catch (error) {
+            console.log(error)
+        }
+    });
+
+    socket.on('remove_ban', async (data)=>{
+        try {
+            await Rooms.updateOne( 
+                { roomname: data[1]},
+                { $pull: { banedusers : {userid:data[0].userid} } }
+            );
+
+            roomdata.forEach((items,index1) => {
+                if(items.roomname == data[1]){
+                    items.banusers.forEach((item,index)=>{
+                        if(item.userid = data[0].userid){
+                            roomdata[index1].banusers.splice(index,1);
+                        }
+                    })
+                }
+            });
+
+            socket.emit('remove_ban',data);
+            socket.broadcast.emit('remove_ban',data);
+            console.log(roomdata);
+        } catch (error) {
+            console.log(error);
+        }
+    });
+
+    socket.on('clearmsg',async (data)=>{
+        try {
+            roomdata.forEach((items) => {
+                if(items.roomname == data.room){
+                    items.roommsgs = [];
+                }
+            });
+
+            socket.emit('all-msg-cleard',data);
+            socket.broadcast.emit('all-msg-cleard',data);
+        } catch (error) {
+            console.log(error)
+        }
+    })
 
    socket.on('disconnect', function () {
       var i = user_sockets.indexOf(socket.id);

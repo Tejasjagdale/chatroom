@@ -1417,7 +1417,7 @@ aside ul li:nth-child(6){
 
 aside ul li:nth-child(7){
     font-size: 20px;
-    display: flex;
+    display: none;
     justify-content: center;
     align-items: center;
 }

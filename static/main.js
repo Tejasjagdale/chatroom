@@ -6,6 +6,7 @@
 
     var frnds_list = [];
     var active_streams = [];
+    var room_roles_track = []
     var t=0;
     var msg_noti = 0;
     var alert_noti = 0;
@@ -58,6 +59,7 @@
 
     socket.on('user-joined',(data)=>{
         if(data.current_room == document.querySelector(".room_name").id){
+            console.log("hmm")
             var room_user = document.createElement("DIV");
             if(username == data.name){
                 this_userid = data.id;
@@ -227,7 +229,7 @@
         }
     });
 
-    socket.on('msg-clear',(data)=>{
+    socket.on('auto-msg-clear',(data)=>{
         if(data.room == document.querySelector(".room_name").id){
             console.log(data);
             var element1 = document.querySelectorAll(".y-chat")[0].id.split("msg")[1];
@@ -249,7 +251,7 @@
 
     socket.on('user-left',(data)=>{
         if(data.current_room == document.querySelector(".room_name").id){
-            document.getElementById("user"+data.id).remove();
+            document.querySelector(`.users #user${data.id}`).remove();
         }
     });
 
@@ -262,14 +264,21 @@
         document.querySelector(`.rooms`).appendChild(newroom);
         document.getElementById("room"+t).innerHTML = `<span class="uprofile"></span><p class="username">${data.roomname}</p><div class="num_of_users">0<i class="fas fa-user"></i></div>`;
         document.getElementById("room"+t).setAttribute("onclick","changeroom(this.id)");
+        data.roomroles.forEach((elem)=>{
+            if(elem.userid == this_userid){
+                document.getElementById("room"+t).click();
+            }
+        })
     });
 
 
     socket.on("change-room",(data)=>{
+        console.log(data);
         if(data.result =="passed"){
             document.querySelector(".room_name").id = data.data.nroomname;
             document.querySelector(".room_name").innerHTML = `<span><i class='fas fa-users'></i></span>${data.data.nroomname}`;
-
+        }else if(data.result =="baned"){
+            alert("you are baned from this room");
         }else{
             alert("you entered wrong password!");
         }
@@ -307,7 +316,7 @@
                 document.getElementById("user"+data.user.id).classList.add('register');
             }
         }if(data.croom == document.querySelector(".room_name").id){
-            document.getElementById("user" + data.user.id).remove();
+            document.getElementById("user"+data.user.id).remove();
         }
     });
 
@@ -316,18 +325,22 @@
         document.querySelector(".users").innerHTML = ``;
         document.querySelector(".main-chat").innerHTML = `<div class="emojis"></div>`;
         document.querySelector(".persnol_chat_model").classList.remove("activepm");
+        document.querySelector(".options span:nth-child(1)").click();
 
+        room_roles_track = data.roomroles;
 
         data.roomroles.every(function (element) {
             if(element.userid.replace("user"," ").trim() == this_userid){
-                document.querySelector("#roomsetting").setAttribute("style","display:flex");
+                document.querySelector("aside ul li:nth-child(7)").setAttribute("style","display:flex");
                 document.getElementById("actions1").parentNode.setAttribute("style","display:flex");
                 document.getElementById("actions3").parentNode.setAttribute("style","display:flex");
                 if(element.role == "admin"){
+                    document.querySelector("#roomsetting").setAttribute("style","display:flex");
                     document.getElementById("actions5").parentNode.setAttribute("style","display:flex");
                 }
                 return false;
             }else{
+                document.querySelector("aside ul li:nth-child(7)").setAttribute("style","display:none");
                 document.querySelector("#roomsetting").setAttribute("style","display:none");
                 document.getElementById("actions1").parentNode.setAttribute("style","display:none");
                 document.getElementById("actions3").parentNode.setAttribute("style","display:none");
@@ -336,30 +349,55 @@
             }
         });
 
+        data.muteusers.every(function(elem){
+            if(elem.userid.replace("user"," ").trim() == this_userid){
+                document.querySelector(".type_msg").setAttribute("disabled",true);
+                return false;
+            }else{
+                document.querySelector(".type_msg").setAttribute("disabled",false);
+                return true;
+            }
+        });
+
         data.roomroles.forEach(element => {
             if(element.userid.replace("user"," ").trim() == this_userid){
                 if(element.role == "admin"){
                     data.roomroles.forEach(element=>{
-                        console.log(element)
                         if(element.role == "admin"){
                             var room_user = document.createElement("DIV");
                             room_user.id = "admin"+element.userid;
                             room_user.className = "roomroles-wrapper";
 
                             document.querySelector(`.admin_cont`).appendChild(room_user);
-                            document.getElementById("admin"+element.userid).innerHTML = `<div class="roomroles" ><span></span> <p>${element.username}</p> <i class="fas fa-times" onclick="deletepm(event)"></i></div>`
+                            document.getElementById("admin"+element.userid).innerHTML = `<div class="roomroles" ><span></span> <p>${element.username}</p> <i class="fas fa-times"></i></div>`
                         }else{
                             var room_user = document.createElement("DIV");
                             room_user.id = "moderator"+element.userid;
                             room_user.className = "roomroles-wrapper";
 
                             document.querySelector(`.moderator_cont`).appendChild(room_user);
-                            document.getElementById("moderator"+element.userid).innerHTML = `<div class="roomroles" ><span></span> <p>${element.username}</p> <i class="fas fa-times" onclick="deletepm(event)"></i></div>`
+                            document.getElementById("moderator"+element.userid).innerHTML = `<div class="roomroles" ><span></span> <p>${element.username}</p> <i class="fas fa-times" onclick="removerole(this.parentNode.parentNode.id)"></i></div>`
                         }
                     });
+
+                    data.muteusers.forEach(element=>{
+                        var room_user = document.createElement("DIV");
+                        room_user.id = "mute"+element.userid;
+                        room_user.className = "muted-wrapper";
+
+                        document.querySelector(`#muted_list`).appendChild(room_user);
+                        document.getElementById("mute"+element.userid).innerHTML = `<div class="muted" onclick=""><span></span> <p>${element.username}</p> <i class="fas fa-times" onclick="removemute(this.parentNode.parentNode.id)"></i></div>`
+                    });
+
+                    data.banusers.forEach(element=>{
+                        var room_user = document.createElement("DIV");
+                        room_user.id = "baned"+element.userid;
+                        room_user.className = "baned-wrapper";
+
+                        document.querySelector(`#baned_list`).appendChild(room_user);
+                        document.getElementById("baned"+element.userid).innerHTML = `<div class="baned" onclick=""><span></span> <p>${element.username}</p> <i class="fas fa-times" onclick="removeban(this.parentNode.parentNode.id)"></i></div>`
+                    });
                 }
-            }else{
-                
             }
         });
 
@@ -373,7 +411,6 @@
             document.getElementById("user"+item.id).setAttribute("onclick", "user_profile(this.id)");
 
             data.roomroles.every(function (element) {
-                console.log(element.userid,item.id)
                 if(element.userid.replace("user"," ").trim() == item.id){
                     if(element.role == "admin"){
                         document.getElementById("user" + item.id).innerHTML = `<span class="uprofile"></span><p class="username">${item.name}</p><div><i class="fas fa-crown"></i><img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`
@@ -732,7 +769,7 @@
         var rname = document.getElementById("Croomname").value;
         var rpassword = document.getElementById("Croompassword").value;
 
-        socket.emit("new-room",{"roomname":rname,"roompass":rpassword,"roomroles":[{"role":"admin","username":username,"userid":this_userid}]});
+        socket.emit("new-room",{"roomname":rname,"roompass":rpassword,"roomroles":[{"role":"admin","username":username,"userid":`user${this_userid}`}]});
 
         document.getElementById("Croomname").value = "";
         document.getElementById("Croompassword").value = "";
@@ -906,7 +943,7 @@
     socket.on("load-frnds",(data)=>{
         frnds_list =  data.frnds
          
-        data.frnds.forEach((item,index)=>{
+        data.frnds.forEach((item)=>{
             if(item.status == "accepted"){
                 var frnd = document.createElement("DIV");
                 if(item.sender == username){
@@ -947,7 +984,7 @@
         if (user_type == "register") {
             if (user_div.classList[1] == "register") {
                 document.querySelector(".user_details .addfreind").setAttribute("style", "display:flex");
-                document.querySelector(".user_details .addfreind").id = user_div.id;
+                document.querySelector(".user_details .addfreind").id = user_div.id.replace("user","frnduser");
             } 
             if (user_div.classList[1] == "guest") {
                 document.querySelector(".user_details .addfreind").setAttribute("style", "display:none");
@@ -955,7 +992,7 @@
         }
         if (user_type == "guest") {
             document.querySelector(".user_details .addfreind").setAttribute("style", "display:none");
-            document.querySelector(".user_details .addfreind").id = user_div.id;
+            document.querySelector(".user_details .addfreind").id = user_div.id.replace("user","frnduser");
         }
 
         document.querySelector(".user_details").setAttribute("style", `display:block;top:${top+30}px`);
@@ -980,7 +1017,7 @@
                     document.querySelector(".user_details .addfreind").setAttribute("style", "display:flex");
                 }
                 document.querySelector(".pm_chat").setAttribute("onclick","pmchat(this.id,this.classList,event)")
-                document.querySelector(".pm_chat").id = user_div.id;
+                document.querySelector(".pm_chat").id = user_div.id.replace("user","pmuser");
                 document.querySelector(".pm_chat").classList = "pm_chat";
                 document.querySelector(".pm_chat").classList.add(document.querySelector(`#${event} .username`).innerText);
                 document.querySelector(".pm_chat").classList.add(user_div.classList[1]);
@@ -1037,7 +1074,7 @@
                 "sender":username,
                 "receiver": document.querySelector(".admin_action .head span").innerText.trim(),
                 "sender_id":this_userid,
-                "receiver_id": recv_id,
+                "receiver_id": recv_id.replace("frnduser","user"),
                 "status":"send",
             }
             socket.emit("frnd_query",frnd_query);
@@ -1048,10 +1085,10 @@
     const RemoveFreind=(id)=>{
         if(id.includes("user")){
             document.getElementById(id.replace("user","frnd")).remove();
-            var recv_id =  id;
+            var recv_id=  id;
         }else{
             document.getElementById(id).remove();
-            var recv_id =  id.replace("frnd","user");
+            var recv_id =  id
         }
 
         const receiver = document.querySelector(".admin_action .head span").innerText;
@@ -1115,7 +1152,89 @@
         }
     }
 
+    socket.on('made_mod',(data)=>{
+        var room_user = document.createElement("DIV");
+        room_user.id = "moderator"+data[0].userid;
+        room_user.className = "roomroles-wrapper";
+
+        document.querySelector(`.moderator_cont`).appendChild(room_user);
+        document.getElementById("moderator"+data[0].userid).innerHTML = `<div class="roomroles" ><span></span> <p>${data[0].username}</p> <i class="fas fa-times" onclick="removerole(this.parentNode.parentNode.id)"></i></div>`
+
+        if(data[1] == document.querySelector(".room_name").id){
+            if(data[0].userid.replace("user"," ").trim() == this_userid){
+                console.log('hmm_new');
+                if(document.getElementById(data[0].userid)){
+                    document.getElementById(data[0].userid).innerHTML = `<span class="uprofile"></span><p class="username">${data[0].username}</p><div><i class="fas fa-user-shield"></i><img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
+                }
+                document.querySelector("aside ul li:nth-child(7)").setAttribute("style","display:flex");
+                document.getElementById("actions1").parentNode.setAttribute("style","display:flex");
+                document.getElementById("actions3").parentNode.setAttribute("style","display:flex");
+
+            }else{
+                if(document.getElementById(data[0].userid)){
+                    console.log(data[0].userid);
+                    document.getElementById(data[0].userid).innerHTML = `<span class="uprofile"></span><p class="username">${data[0].username}</p><div><i class="fas fa-user-shield"></i><img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
+                }
+            }
+        }
+    });
+
+    socket.on('mod_removed',(data)=>{
+        console.log(data);
+        if(data[1] == document.querySelector(".room_name").id){
+            document.getElementById(data[0].userid).innerHTML = `<span class="uprofile"></span><p class="username">${data[0].username}</p><div><img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
+            document.getElementById("moderator"+data[0].userid).remove();
+        }
+    });
+
+    socket.on('user_muted',(data)=>{
+        if(data[0].userid.replace("user"," ").trim() == this_userid){
+            document.querySelector(".type_msg").setAttribute("disabled",true);
+        }
+
+        var room_user = document.createElement("DIV");
+        room_user.id = "mute"+data[0].userid;
+        room_user.className = "muted-wrapper";
+
+        document.querySelector(`#muted_list`).appendChild(room_user);
+        document.getElementById("mute"+data[0].userid).innerHTML = `<div class="muted" onclick=""><span></span> <p>${data[0].username}</p> <i class="fas fa-times" onclick="removemute(this.parentNode.parentNode.id)"></i></div>`
+    });
+
+    socket.on('mute_removed',(data)=>{
+        if(data[1] == document.querySelector(".room_name").id){
+            document.getElementById("mute"+data[0].userid).remove();
+        }
+    });
+
+    socket.on('baned_user',(data)=>{
+        if(data[0].userid.replace("user"," ").trim() == this_userid){
+            document.getElementById("mainroom").click()
+        }
+
+        if(data[1] == document.querySelector(".room_name").id){
+            var room_user = document.createElement("DIV");
+            room_user.id = "baned"+data[0].userid;
+            room_user.className = "baned-wrapper";
+
+            document.querySelector(`#baned_list`).appendChild(room_user);
+            document.getElementById("baned"+element.userid).innerHTML = `<div class="baned" onclick=""><span></span> <p>${data[0].username}</p> <i class="fas fa-times" onclick="removeban(this.parentNode.parentNode.id)"></i></div>`
+        }
+    });
+
+    socket.on('remove_ban',(data)=>{
+        if(data[1] == document.querySelector(".room_name").id){
+            document.getElementById(data[0].userid).remove();
+        }
+    });
+
+    socket.on('all-msg-cleard',(data)=>{
+        if(data.room == document.querySelector(".room_name").id){
+            document.querySelector(".main-chat").innerHTML = ``;
+        }
+    })
+
     function pmchat(id,name,event) {
+        var id = id.replace("pmuser","user");
         if(typeof(name) == "object"){
             var receiver = name[1];
         }else{
