@@ -688,7 +688,6 @@ io.on('connection', function(socket) {
 
             socket.emit('mod_removed',data);
             socket.broadcast.emit('mod_removed',data);
-            console.log(roomdata);
         } catch (error) {
             console.log(error);
         }
@@ -710,7 +709,6 @@ io.on('connection', function(socket) {
 
             socket.emit('mute_removed',data);
             socket.broadcast.emit('mute_removed',data);
-            console.log(roomdata);
         } catch (error) {
             console.log(error)
         }
@@ -735,7 +733,6 @@ io.on('connection', function(socket) {
 
             socket.emit('remove_ban',data);
             socket.broadcast.emit('remove_ban',data);
-            console.log(roomdata);
         } catch (error) {
             console.log(error);
         }

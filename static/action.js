@@ -45,19 +45,60 @@ const action=(id)=>{
     frnds_list.forEach((item)=> {
         if(item.sender_id.trim() == id.replace("user"," ").trim() || item.receiver_id.replace("user"," ").trim() == id.replace("user"," ").trim() || item.sender_id.trim() == id.replace("frnd"," ").trim() || item.receiver_id.replace("user"," ").trim() == id.replace("frnd"," ").trim()){
             document.querySelector("#actions4").innerHTML = `<i class="fas fa-user-times"></i> Remove freind`;
-            document.querySelector("#actions4 i").setAttribute("style","color:red");
+            document.querySelector("#actions4").setAttribute("style","color:red");
             document.querySelector("#actions4").setAttribute("onclick","RemoveFreind(this.parentNode.parentNode.id)");
         }
     });
-    room_roles_track.every(function (elem){
-        console.log(elem.userid,document.querySelector(".action-container").id.replace("action"," ").trim())
+
+    if(document.querySelector(".room_name").id == "Main Room"){
+        document.getElementById("actions1").parentNode.setAttribute("style","display:none")
+        document.getElementById("actions3").parentNode.setAttribute("style","display:none")
+        document.getElementById("actions5").parentNode.setAttribute("style","display:none")
+    }
+
+    room_roles_track.forEach((elem) => {
+        if(elem.userid.replace("user"," ").trim() == this_userid){
+            document.getElementById("actions1").parentNode.setAttribute("style","display:flex");
+            document.getElementById("actions3").parentNode.setAttribute("style","display:flex");
+            if(elem.role == "admin"){
+                document.querySelector("#actions5").parentNode.setAttribute("style","display:flex");
+            }
+        }
+    });
+
+    room_roles_track.forEach((elem) => {
         if(elem.userid == document.querySelector(".action-container").id.replace("action"," ").trim()){
-            console.log("hmm")
+            document.querySelector("#actions5").innerHTML = `<i class="fas fa-user-shield"></i> Remove moderator`;
+            document.querySelector("#actions5").setAttribute("style","color:red");
+            document.querySelector("#actions5").setAttribute("onclick","removerole2(this.parentNode.parentNode.id)");
+        }
+    });
+
+    mute_users_track.forEach((elem)=>{
+        if(elem.userid == document.querySelector(".action-container").id.replace("action"," ").trim()){
+            document.querySelector("#actions1").innerHTML = `<i class="fas fa-comment"></i> Unmute`;
+            document.querySelector("#actions1").setAttribute("style","color:red");
+            document.querySelector("#actions1").setAttribute("onclick","removemute2(this.parentNode.parentNode.id)");
+        }
+    });
+
+    baned_users_track.forEach((elem)=>{
+        if(elem.userid == document.querySelector(".action-container").id.replace("action"," ").trim()){
+            document.querySelector("#actions3").innerHTML = `<i class="fas fa-user"></i> Unban`;
+            document.querySelector("#actions3").setAttribute("style","color:red");
+            document.querySelector("#actions3").setAttribute("onclick","removeban2(this.parentNode.parentNode.id)");
+        }
+    })
+
+    room_roles_track.every(function (elem){
+        if(elem.userid == document.querySelector(".action-container").id.replace("action"," ").trim()){
             document.getElementById("actions1").parentNode.setAttribute("style","display:none")
             document.getElementById("actions3").parentNode.setAttribute("style","display:none")
             document.getElementById("actions5").parentNode.setAttribute("style","display:none")
+            return false;
         }
     });
+
     close_user_profile();
 }
 
@@ -418,7 +459,7 @@ const removerole=(userid)=>{
     var mod ={
         "role":"Moderator",
         "userid":userid.replace("moderatoruser","user"),
-        "username":document.querySelector(".admin_action .head span").innerText,
+        "username":document.querySelector(`#${userid} div p`).innerText,
     }
 
     socket.emit("remove_mod",[mod,document.querySelector(".room_name").innerText]);
@@ -429,7 +470,7 @@ const removemute=(userid)=>{
     var mod ={
         "user_type":"register",
         "userid":userid.replace("muteuser","user"),
-        "username":document.querySelector(".admin_action .head span").innerText,
+        "username":document.querySelector(`#${userid} div p`).innerText,
     }
 
     socket.emit("remove_mute",[mod,document.querySelector(".room_name").innerText]);
@@ -440,6 +481,39 @@ const removeban=(userid)=>{
     var mod ={
         "user_type":"register",
         "userid":userid.replace("banuser","user"),
+        "username":document.querySelector(`#${userid} div p`).innerText,
+    }
+
+    socket.emit("remove_ban",[mod,document.querySelector(".room_name").innerText]);
+    alertclose(event);
+}
+
+const removerole2=(userid)=>{
+    var mod ={
+        "role":"Moderator",
+        "userid":userid.replace("action"," ").trim(),
+        "username":document.querySelector(".admin_action .head span").innerText,
+    }
+
+    socket.emit("remove_mod",[mod,document.querySelector(".room_name").innerText]);
+    alertclose(event);
+}
+
+const removemute2=(userid)=>{
+    var mod ={
+        "user_type":"register",
+        "userid":userid.replace("action"," ").trim(),
+        "username":document.querySelector(".admin_action .head span").innerText,
+    }
+
+    socket.emit("remove_mute",[mod,document.querySelector(".room_name").innerText]);
+    alertclose(event);
+}
+
+const removeban2=(userid)=>{
+    var mod ={
+        "user_type":"register",
+        "userid":userid.replace("action"," ").trim(),
         "username":document.querySelector(".admin_action .head span").innerText,
     }
 
@@ -448,5 +522,5 @@ const removeban=(userid)=>{
 }
 
 const clear_allmsg=()=>{
-    socket.on("clearmsg",{room:document.querySelector(".room_name").innerText,username:username})
+    socket.emit("clearmsg",{room:document.querySelector(".room_name").innerText,username:username})
 }

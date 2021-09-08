@@ -6,7 +6,10 @@
 
     var frnds_list = [];
     var active_streams = [];
-    var room_roles_track = []
+    var room_roles_track = [];
+    var baned_users_track = [];
+    var mute_users_track = [];
+
     var t=0;
     var msg_noti = 0;
     var alert_noti = 0;
@@ -273,7 +276,6 @@
 
 
     socket.on("change-room",(data)=>{
-        console.log(data);
         if(data.result =="passed"){
             document.querySelector(".room_name").id = data.data.nroomname;
             document.querySelector(".room_name").innerHTML = `<span><i class='fas fa-users'></i></span>${data.data.nroomname}`;
@@ -328,8 +330,12 @@
         document.querySelector(".options span:nth-child(1)").click();
 
         room_roles_track = data.roomroles;
+        baned_users_track = data.muteusers;
+        mute_users_track = data.banusers;
 
         data.roomroles.every(function (element) {
+            console.log(element.userid.replace("user"," ").trim())
+            console.log(this_userid);
             if(element.userid.replace("user"," ").trim() == this_userid){
                 document.querySelector("aside ul li:nth-child(7)").setAttribute("style","display:flex");
                 document.getElementById("actions1").parentNode.setAttribute("style","display:flex");
@@ -351,10 +357,10 @@
 
         data.muteusers.every(function(elem){
             if(elem.userid.replace("user"," ").trim() == this_userid){
-                document.querySelector(".type_msg").setAttribute("disabled",true);
+                document.querySelector(".type_msg").setAttribute("disabled","disabled");
                 return false;
             }else{
-                document.querySelector(".type_msg").setAttribute("disabled",false);
+                document.querySelector(".type_msg").removeAttribute("disabled");
                 return true;
             }
         });
@@ -1161,8 +1167,9 @@
         document.getElementById("moderator"+data[0].userid).innerHTML = `<div class="roomroles" ><span></span> <p>${data[0].username}</p> <i class="fas fa-times" onclick="removerole(this.parentNode.parentNode.id)"></i></div>`
 
         if(data[1] == document.querySelector(".room_name").id){
+            room_roles_track.push(data[0]);
+
             if(data[0].userid.replace("user"," ").trim() == this_userid){
-                console.log('hmm_new');
                 if(document.getElementById(data[0].userid)){
                     document.getElementById(data[0].userid).innerHTML = `<span class="uprofile"></span><p class="username">${data[0].username}</p><div><i class="fas fa-user-shield"></i><img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
                 }
@@ -1180,16 +1187,30 @@
     });
 
     socket.on('mod_removed',(data)=>{
-        console.log(data);
         if(data[1] == document.querySelector(".room_name").id){
+            room_roles_track.forEach((element,ind) => {
+                if(element.userid == data[0].userid){
+                    room_roles_track.splice(ind,1)
+                }
+            });
+
             document.getElementById(data[0].userid).innerHTML = `<span class="uprofile"></span><p class="username">${data[0].username}</p><div><img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
-            document.getElementById("moderator"+data[0].userid).remove();
+            if(document.getElementById("moderator"+data[0].userid)){
+                document.getElementById("moderator"+data[0].userid).remove();
+            }
+            if(data[0].userid.replace("user"," ").trim() == this_userid){
+                document.querySelector("aside ul li:nth-child(7)").setAttribute("style","display:none");
+                document.getElementById("actions1").parentNode.setAttribute("style","display:none");
+                document.getElementById("actions3").parentNode.setAttribute("style","display:none");
+            }
         }
     });
 
     socket.on('user_muted',(data)=>{
+        mute_users_track.push(data[0])
+
         if(data[0].userid.replace("user"," ").trim() == this_userid){
-            document.querySelector(".type_msg").setAttribute("disabled",true);
+            document.querySelector(".type_msg").setAttribute("disabled","disabled");
         }
 
         var room_user = document.createElement("DIV");
@@ -1202,11 +1223,27 @@
 
     socket.on('mute_removed',(data)=>{
         if(data[1] == document.querySelector(".room_name").id){
-            document.getElementById("mute"+data[0].userid).remove();
+            mute_users_track.forEach((elem,ind)=>{
+                if(elem.userid == data[0].userid){
+                    mute_users_track.splice(ind,1);
+                }
+            })
+
+            if(document.getElementById("mute"+data[0].userid)){
+                if(data[1] == document.querySelector(".room_name").id){
+                    document.getElementById("mute"+data[0].userid).remove();
+                }
+            }
+    
+            if(data[0].userid.replace("user"," ").trim() == this_userid){
+                document.querySelector(".type_msg").removeAttribute("disabled")
+            }
         }
     });
 
     socket.on('baned_user',(data)=>{
+        baned_users_track.push(data[0]);
+
         if(data[0].userid.replace("user"," ").trim() == this_userid){
             document.getElementById("mainroom").click()
         }
@@ -1217,23 +1254,35 @@
             room_user.className = "baned-wrapper";
 
             document.querySelector(`#baned_list`).appendChild(room_user);
-            document.getElementById("baned"+element.userid).innerHTML = `<div class="baned" onclick=""><span></span> <p>${data[0].username}</p> <i class="fas fa-times" onclick="removeban(this.parentNode.parentNode.id)"></i></div>`
+            document.getElementById("baned"+data[0].userid).innerHTML = `<div class="baned" onclick=""><span></span> <p>${data[0].username}</p> <i class="fas fa-times" onclick="removeban(this.parentNode.parentNode.id)"></i></div>`
         }
     });
 
     socket.on('remove_ban',(data)=>{
         if(data[1] == document.querySelector(".room_name").id){
-            document.getElementById(data[0].userid).remove();
+            baned_users_track.forEach((elem,ind)=>{
+                if(elem.userid == data[0].userid){
+                    baned_users_track.splice(ind,1);
+                }
+            })
+
+            if(document.getElementById(data[0].userid)){
+                document.getElementById(data[0].userid).remove();
+            }
         }
     });
 
     socket.on('all-msg-cleard',(data)=>{
+        console.log(data)
         if(data.room == document.querySelector(".room_name").id){
-            document.querySelector(".main-chat").innerHTML = ``;
+            document.querySelector(".main-chat").innerHTML = "";
         }
     })
 
     function pmchat(id,name,event) {
+
+        document.querySelector('.type_msg').removeAttribute("disabled");
+
         var id = id.replace("pmuser","user");
         if(typeof(name) == "object"){
             var receiver = name[1];
@@ -1280,5 +1329,11 @@
     }
 
     function closepm() {
+        mute_users_track.forEach((elem)=>{
+            if(elem.userid.replace("user"," ").trim() == this_userid){
+                document.querySelector('.type_msg').setAttribute("disabled","disable");
+            }
+        })
+
         document.querySelector(".persnol_chat_model").classList.remove("activepm");
     }

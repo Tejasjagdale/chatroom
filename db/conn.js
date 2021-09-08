@@ -10,6 +10,7 @@ mongoose.connect(process.env.DB,{
 var db=mongoose.connection;
 
 db.on('error', console.log.bind(console, "connection error"));
+
 db.once('open', ()=>{
     console.log("connection to database succeeded!");
 });
