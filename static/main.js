@@ -9,6 +9,7 @@
     var room_roles_track = [];
     var baned_users_track = [];
     var mute_users_track = [];
+    var block_users_track = [];
 
     var t=0;
     var msg_noti = 0;
@@ -80,18 +81,29 @@
             }else{
                 document.getElementById("user" + data.id).classList.add('register');
             }
+
+            data.roomdata.roomroles.forEach((elem)=>{
+                if(elem.userid.replace("user"," ").trim() == this_userid){
+                    if(elem.role == "admin"){
+                        document.getElementById("user"+this_userid).innerHTML = `<span class="uprofile"></span><p class="username">${elem.username}</p><div><i class="fas fa-crown"></i><img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
+                    }else{
+                        document.getElementById("user"+this_userid).innerHTML = `<span class="uprofile"></span><p class="username">${elem.username}</p><div><i class="fas fa-user-shield"></i><img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
+                    }
+                }
+            });
+
+            block_users_track = data.blocks;
         }
     });
 
     
 
     socket.on('load-users',(data)=>{
-        data.forEach(function(item, index) {
+        data[0].forEach(function(item, index) {
         var room_user = document.createElement("DIV");
-        country = data.country;
+        country = data[0].country;
         room_user.id = "user" + item.id;
         room_user.className = "user";
-        var name = item.name;
 
         document.querySelector(`.users`).appendChild(room_user);
        
@@ -104,7 +116,16 @@
         }
 
         document.getElementById("user" + item.id).setAttribute("onclick", "user_profile(this.id)");
+        data[1].forEach(element => {
+            if(element.userid.replace("user"," ").trim() == item.id){
+                if(element.role == "admin"){
+                    document.getElementById("user"+item.id).innerHTML = `<span class="uprofile"></span><p class="username">${element.username}</p><div><i class="fas fa-crown"></i><img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
+                }else{
+                    document.getElementById("user"+item.id).innerHTML = `<span class="uprofile"></span><p class="username">${element.username}</p><div><i class="fas fa-user-shield"></i><img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
+                }
+            }
         });
+    });
     });
 
     socket.on('load-msgs',(data)=>{
@@ -733,21 +754,32 @@
         var msg = $('.type_msg').val();
 
         if(document.querySelector(".activepm")){
-            var user_chat = {"sender": username,"sender_id":this_userid,"sender_type":user_type,"receiver_type":document.querySelector(".pm_type").classList[1],"message": msg,"receiver":document.querySelector(".pmchathead").innerText.trim(),"receiver_id":document.querySelector(".pmchathead").id,"time": time};
+            var blocked=false;
+            block_users_track.forEach((elem)=>{
+                if(elem.userid == document.querySelector(".pmchathead").id){
+                    blocked = true;
+                }
+            });
 
-            if ($('.type_msg').val() != "") {
-                socket.emit("pmmsg-send",user_chat);
+            if(!(blocked)){
+                var user_chat = {"sender": username,"sender_id":this_userid,"sender_type":user_type,"receiver_type":document.querySelector(".pm_type").classList[1],"message": msg,"receiver":document.querySelector(".pmchathead").innerText.trim(),"receiver_id":document.querySelector(".pmchathead").id,"time": time};
 
-                var message = document.createElement("DIV");
-                message.id = "msg"+t;
-                message.className = "y-chat";
+                if ($('.type_msg').val() != "") {
+                    socket.emit("pmmsg-send",user_chat);
 
-                document.querySelector(`.pmchat_msg`).appendChild(message);
-                document.getElementById("msg"+t).innerHTML = `<p class="y-chat-msg"> <span class="y-chat-name">you</span>${msg}<span class="y-chat-time">${time}</span></p><span class="y-profile"></span>`;
-                var objDiv = document.querySelector(`.pmchat_msg`);
-                objDiv.scrollTop = objDiv.scrollHeight;
+                    var message = document.createElement("DIV");
+                    message.id = "msg"+t;
+                    message.className = "y-chat";
 
-                document.querySelector('.type_msg').value = "";
+                    document.querySelector(`.pmchat_msg`).appendChild(message);
+                    document.getElementById("msg"+t).innerHTML = `<p class="y-chat-msg"> <span class="y-chat-name">you</span>${msg}<span class="y-chat-time">${time}</span></p><span class="y-profile"></span>`;
+                    var objDiv = document.querySelector(`.pmchat_msg`);
+                    objDiv.scrollTop = objDiv.scrollHeight;
+
+                    document.querySelector('.type_msg').value = "";
+                }
+            }else{
+                alert("you have blocked this user!")
             }
         }else{
             var user_chat = {"sender": username,"message": msg,"id":this_userid,"time": time,"room":document.querySelector(".room_name").id};
@@ -987,41 +1019,26 @@
         var user_div = document.getElementById(event);
         var top = user_div.offsetTop;
 
-        if (user_type == "register") {
-            if (user_div.classList[1] == "register") {
-                document.querySelector(".user_details .addfreind").setAttribute("style", "display:flex");
-                document.querySelector(".user_details .addfreind").id = user_div.id.replace("user","frnduser");
-            } 
-            if (user_div.classList[1] == "guest") {
-                document.querySelector(".user_details .addfreind").setAttribute("style", "display:none");
-            }
-        }
-        if (user_type == "guest") {
-            document.querySelector(".user_details .addfreind").setAttribute("style", "display:none");
-            document.querySelector(".user_details .addfreind").id = user_div.id.replace("user","frnduser");
-        }
+        document.querySelector(".admin_action .head").id = user_div.classList[1];
 
         document.querySelector(".user_details").setAttribute("style", `display:block;top:${top+30}px`);
         
         if (document.querySelector(".user_details .ud_head p").innerText == document.querySelector(`#${event} .username`).innerText) {
             close_user_profile();
-        } 
+        }
         else {
             if (event == `user${this_userid}`) {
+                document.querySelector(".user_details .addfreind").setAttribute("style", "display:none");
                 document.querySelector(".pm_chat").innerHTML = `<i class="far fa-edit"></i> Edit`;
                 document.querySelector(".pm_chat").setAttribute("onclick","edit_profile()");
-                document.querySelector(".user_details .addfreind").setAttribute("style", "display:none");
                 document.querySelector(".user_details .ud_head p").innerText = document.querySelector(`#${event} .username`).innerText;
             } 
             else {
-                document.querySelector(".user_details .addfreind").innerHTML = `<i class="fa fa-bolt" aria-hidden="true"></i> Action`;
                 
                 if (document.querySelector(".pm_chat").innerHTML == `<i class="far fa-edit"></i> Edit`) {
                     document.querySelector(".pm_chat").innerHTML = `<i class="fas fa-comments"></i> privatechat`;
                 }
-                if (user_type != "guest" && user_div.classList[1] != "guest") {
-                    document.querySelector(".user_details .addfreind").setAttribute("style", "display:flex");
-                }
+                document.querySelector(".user_details .addfreind").setAttribute("style", "display:flex");
                 document.querySelector(".pm_chat").setAttribute("onclick","pmchat(this.id,this.classList,event)")
                 document.querySelector(".pm_chat").id = user_div.id.replace("user","pmuser");
                 document.querySelector(".pm_chat").classList = "pm_chat";
@@ -1272,12 +1289,24 @@
         }
     });
 
+    socket.on('remove_blocks',(data)=>{
+        block_users_track.forEach((elem,ind)=>{
+            if(elem.userid == data[0].userid){
+                block_users_track.splice(ind,1);
+            }
+        })
+    });
+
     socket.on('all-msg-cleard',(data)=>{
         console.log(data)
         if(data.room == document.querySelector(".room_name").id){
             document.querySelector(".main-chat").innerHTML = "";
         }
-    })
+    });
+
+    socket.on('blocked_user',(data)=>{
+        block_users_track.push(data[0]);
+    });
 
     function pmchat(id,name,event) {
 

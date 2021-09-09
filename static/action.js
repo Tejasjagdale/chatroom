@@ -50,10 +50,26 @@ const action=(id)=>{
         }
     });
 
-    if(document.querySelector(".room_name").id == "Main Room"){
+    if(user_type == "guest"){
         document.getElementById("actions1").parentNode.setAttribute("style","display:none")
         document.getElementById("actions3").parentNode.setAttribute("style","display:none")
         document.getElementById("actions5").parentNode.setAttribute("style","display:none")
+        document.getElementById("actions4").parentNode.setAttribute("style","display:none")
+    }else{
+        if(document.querySelector(".admin_action .head").id == "guest"){
+            console.log("habjhasvb")
+            document.getElementById("actions1").parentNode.setAttribute("style","display:flex")
+            document.getElementById("actions3").parentNode.setAttribute("style","display:flex")
+            document.getElementById("actions5").parentNode.setAttribute("style","display:none")
+            document.getElementById("actions2").parentNode.setAttribute("style","display:flex")
+            document.getElementById("actions4").parentNode.setAttribute("style","display:none")
+        }else{
+            document.getElementById("actions1").parentNode.setAttribute("style","display:flex")
+            document.getElementById("actions3").parentNode.setAttribute("style","display:flex")
+            document.getElementById("actions5").parentNode.setAttribute("style","display:none")
+            document.getElementById("actions2").parentNode.setAttribute("style","display:flex")
+            document.getElementById("actions4").parentNode.setAttribute("style","display:flex")
+        }
     }
 
     room_roles_track.forEach((elem) => {
@@ -78,9 +94,17 @@ const action=(id)=>{
         if(elem.userid == document.querySelector(".action-container").id.replace("action"," ").trim()){
             document.querySelector("#actions1").innerHTML = `<i class="fas fa-comment"></i> Unmute`;
             document.querySelector("#actions1").setAttribute("style","color:red");
-            document.querySelector("#actions1").setAttribute("onclick","removemute2(this.parentNode.parentNode.id)");
+            document.querySelector("#actions1").setAttribute("onclick","removeblock2(this.parentNode.parentNode.id)");
         }
     });
+
+    block_users_track.forEach((elem)=>{
+        if(elem.userid == document.querySelector(".action-container").id.replace("action"," ").trim()){
+            document.querySelector("#actions2").innerHTML = `<i class="fas fa-comment"></i> Unblock`;
+            document.querySelector("#actions2").setAttribute("style","color:red");
+            document.querySelector("#actions2").setAttribute("onclick","removemute2(this.parentNode.parentNode.id)");
+        }
+    })
 
     baned_users_track.forEach((elem)=>{
         if(elem.userid == document.querySelector(".action-container").id.replace("action"," ").trim()){
@@ -449,9 +473,22 @@ const block_user=(userid)=>{
         "usertype":"any",
         "username":document.querySelector(".admin_action .head span").innerText,
         "userid":userid.replace("actionuser","user"),
+        "id":this_userid,
     }
 
     socket.emit("block_user",[mod,this_userid]);
+    alertclose(event);
+}
+
+const removeblock=(userid)=>{
+    var mod ={
+        "usertype":"any",
+        "username":document.querySelector(".admin_action .head span").innerText,
+        "userid":userid.replace("actionuser","user"),
+        "id":this_userid,
+    }
+
+    socket.emit("remove_block",[mod,this_userid]);
     alertclose(event);
 }
 
@@ -518,6 +555,18 @@ const removeban2=(userid)=>{
     }
 
     socket.emit("remove_ban",[mod,document.querySelector(".room_name").innerText]);
+    alertclose(event);
+}
+
+const removeblock2=(userid)=>{
+    var mod ={
+        "usertype":"any",
+        "username":document.querySelector(".admin_action .head span").innerText,
+        "userid":userid.replace("action"," ").trim(),
+        "id":this_userid,
+    }
+
+    socket.emit("remove_block",[mod,this_userid]);
     alertclose(event);
 }
 
