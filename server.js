@@ -204,7 +204,7 @@ async function loader() {
         {
           role: "admin",
           username: "tejas",
-          userid: "6137236ace08af10f49e304c",
+          userid: "613a08584495eb4688ddd96d",
         },
       ],
       muteusers: new Array(),
@@ -387,11 +387,11 @@ io.on("connection", function (socket) {
 
   socket.on("pmmsg-send", function (data1) {
     var receiver = data1.receiver_id.split("user")[1];
-
     activeusers.forEach((elem, ind) => {
       if (elem.id == receiver) {
         activeusers[ind].blocks.forEach(async function (elemt){
-          if (elemt.userid == data1.sender_id) {
+            console.log(elemt.userid,data1.sender_id);
+          if (elemt.userid.replace("user","") == data1.sender_id) {
               socket.emit("pmblock","you can't send message currently to this user!")
           } 
           else {
@@ -725,6 +725,7 @@ io.on("connection", function (socket) {
   });
 
   socket.on("block_user", async (data) => {
+      console.log(data[0])
     try {
       await Register.updateOne(
         { _id: data[1] },
@@ -814,13 +815,14 @@ io.on("connection", function (socket) {
 
   socket.on("remove_block", async (data) => {
     try {
+        console.log(data[0].userid);
         await Register.updateOne(
             { _id : data[1] },
             { $pull: { blocks: { userid: data[0].userid } } }
         );
 
         activeusers.forEach((items, index1) => {
-            if (element.id = data[0].id) {
+            if (items.id = data[0].id) {
                 items.blocks.forEach((item, index) => {
                     if (item.userid = data[0].userid) {
                         activeusers[index1].blocks.splice(index, 1);
@@ -829,7 +831,7 @@ io.on("connection", function (socket) {
             }
         });
 
-      socket.emit("remove_block", data);
+        socket.emit("remove_block", data);
     } catch (error) {
       console.log(error);
     }

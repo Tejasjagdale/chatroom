@@ -63,7 +63,6 @@
 
     socket.on('user-joined',(data)=>{
         if(data.current_room == document.querySelector(".room_name").id){
-            console.log("hmm")
             var room_user = document.createElement("DIV");
             if(username == data.name){
                 this_userid = data.id;
@@ -90,9 +89,18 @@
                         document.getElementById("user"+this_userid).innerHTML = `<span class="uprofile"></span><p class="username">${elem.username}</p><div><i class="fas fa-user-shield"></i><img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
                     }
                 }
+                if(elem.userid.replace("user"," ").trim() == data.id){
+                    if(elem.role == "admin"){
+                        document.getElementById("user"+data.id).innerHTML = `<span class="uprofile"></span><p class="username">${elem.username}</p><div><i class="fas fa-crown"></i><img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
+                    }else{
+                        document.getElementById("user"+data.id).innerHTML = `<span class="uprofile"></span><p class="username">${elem.username}</p><div><i class="fas fa-user-shield"></i><img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
+                    }
+                }
             });
 
-            block_users_track = data.blocks;
+            if(data.id == this_userid){
+                block_users_track = data.blocks;
+            }
         }
     });
 
@@ -1019,6 +1027,7 @@
         var user_div = document.getElementById(event);
         var top = user_div.offsetTop;
 
+        document.querySelector(".addfreind").id = event.replace("user","frnd");
         document.querySelector(".admin_action .head").id = user_div.classList[1];
 
         document.querySelector(".user_details").setAttribute("style", `display:block;top:${top+30}px`);
@@ -1294,7 +1303,8 @@
             if(elem.userid == data[0].userid){
                 block_users_track.splice(ind,1);
             }
-        })
+        });
+        console.log(block_users_track)
     });
 
     socket.on('all-msg-cleard',(data)=>{
@@ -1307,6 +1317,10 @@
     socket.on('blocked_user',(data)=>{
         block_users_track.push(data[0]);
     });
+
+    socket.on('pmblock',(data)=>{
+        alert(data);
+    })
 
     function pmchat(id,name,event) {
 

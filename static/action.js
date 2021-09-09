@@ -37,7 +37,7 @@ document.getElementById("search_any").addEventListener("keyup",(event)=>{
 });
 
 const action=(id)=>{
-    document.querySelector(".action-container").id = id.replace("frnd","action");
+    document.querySelector(".action-container").setAttribute("id",id.replace("frnd","action"));
     document.querySelector(".admin_action .head span").innerHTML =`<span id="action_dp"></span> ${document.querySelector(".user_details .ud_head p").innerText}`
     document.querySelector(".admin_action").classList.add("activeb2");
     document.querySelector(".alert").setAttribute("style", "display:block");
@@ -73,7 +73,7 @@ const action=(id)=>{
     }
 
     room_roles_track.forEach((elem) => {
-        if(elem.userid.replace("user"," ").trim() == this_userid){
+        if(elem.userid.replace("user","") == this_userid){
             document.getElementById("actions1").parentNode.setAttribute("style","display:flex");
             document.getElementById("actions3").parentNode.setAttribute("style","display:flex");
             if(elem.role == "admin"){
@@ -83,7 +83,7 @@ const action=(id)=>{
     });
 
     room_roles_track.forEach((elem) => {
-        if(elem.userid == document.querySelector(".action-container").id.replace("action"," ").trim()){
+        if(elem.userid.replace("user","") == document.querySelector(".action-container").id.replace("action"," ").trim()){
             document.querySelector("#actions5").innerHTML = `<i class="fas fa-user-shield"></i> Remove moderator`;
             document.querySelector("#actions5").setAttribute("style","color:red");
             document.querySelector("#actions5").setAttribute("onclick","removerole2(this.parentNode.parentNode.id)");
@@ -91,7 +91,7 @@ const action=(id)=>{
     });
 
     mute_users_track.forEach((elem)=>{
-        if(elem.userid == document.querySelector(".action-container").id.replace("action"," ").trim()){
+        if(elem.userid.replace("user","") == document.querySelector(".action-container").id.replace("action"," ").trim()){
             document.querySelector("#actions1").innerHTML = `<i class="fas fa-comment"></i> Unmute`;
             document.querySelector("#actions1").setAttribute("style","color:red");
             document.querySelector("#actions1").setAttribute("onclick","removeblock2(this.parentNode.parentNode.id)");
@@ -99,15 +99,15 @@ const action=(id)=>{
     });
 
     block_users_track.forEach((elem)=>{
-        if(elem.userid == document.querySelector(".action-container").id.replace("action"," ").trim()){
-            document.querySelector("#actions2").innerHTML = `<i class="fas fa-comment"></i> Unblock`;
+        if(elem.userid.replace("user","") == document.querySelector(".action-container").id.replace("action"," ").trim()){
+            document.querySelector("#actions2").innerHTML = `<i class="fas fa-ban"></i> Unblock`;
             document.querySelector("#actions2").setAttribute("style","color:red");
-            document.querySelector("#actions2").setAttribute("onclick","removemute2(this.parentNode.parentNode.id)");
+            document.querySelector("#actions2").setAttribute("onclick","removeblock2(this.parentNode.parentNode.id)");
         }
     })
 
     baned_users_track.forEach((elem)=>{
-        if(elem.userid == document.querySelector(".action-container").id.replace("action"," ").trim()){
+        if(elem.userid.replace("user","") == document.querySelector(".action-container").id.replace("action"," ").trim()){
             document.querySelector("#actions3").innerHTML = `<i class="fas fa-user"></i> Unban`;
             document.querySelector("#actions3").setAttribute("style","color:red");
             document.querySelector("#actions3").setAttribute("onclick","removeban2(this.parentNode.parentNode.id)");
@@ -115,7 +115,7 @@ const action=(id)=>{
     })
 
     room_roles_track.every(function (elem){
-        if(elem.userid == document.querySelector(".action-container").id.replace("action"," ").trim()){
+        if(elem.userid.replace("user","") == document.querySelector(".action-container").id.replace("action"," ").trim()){
             document.getElementById("actions1").parentNode.setAttribute("style","display:none")
             document.getElementById("actions3").parentNode.setAttribute("style","display:none")
             document.getElementById("actions5").parentNode.setAttribute("style","display:none")
@@ -438,7 +438,7 @@ const make_mod=(userid)=>{
     var mod ={
         "role":"Moderator",
         "username":document.querySelector(".admin_action .head span").innerText,
-        "userid":userid.replace("actionuser","user"),
+        "userid":userid.replace("action","user"),
     }
 
     socket.emit("make_mod",[mod,document.querySelector(".room_name").innerText]);
@@ -449,7 +449,7 @@ const mute_user=(userid)=>{
     var mod ={
         "usertype":"Moderator",
         "username":document.querySelector(".admin_action .head span").innerText,
-        "userid":userid.replace("actionuser","user"),
+        "userid":userid.replace("action","user"),
     }
 
     socket.emit("mute_user",[mod,document.querySelector(".room_name").innerText]);
@@ -461,7 +461,7 @@ const ban_user=(userid)=>{
     var mod ={
         "usertype":"Moderator",
         "username":document.querySelector(".admin_action .head span").innerText,
-        "userid":userid.replace("actionuser","user"),
+        "userid":userid.replace("action","user"),
     }
 
     socket.emit("ban_user",[mod,document.querySelector(".room_name").innerText]);
@@ -472,7 +472,7 @@ const block_user=(userid)=>{
     var mod ={
         "usertype":"any",
         "username":document.querySelector(".admin_action .head span").innerText,
-        "userid":userid.replace("actionuser","user"),
+        "userid":userid.replace("action","user"),
         "id":this_userid,
     }
 
@@ -484,7 +484,7 @@ const removeblock=(userid)=>{
     var mod ={
         "usertype":"any",
         "username":document.querySelector(".admin_action .head span").innerText,
-        "userid":userid.replace("actionuser","user"),
+        "userid":userid.replace("action","user"),
         "id":this_userid,
     }
 
@@ -528,7 +528,7 @@ const removeban=(userid)=>{
 const removerole2=(userid)=>{
     var mod ={
         "role":"Moderator",
-        "userid":userid.replace("action"," ").trim(),
+        "userid":userid.replace("action","user").trim(),
         "username":document.querySelector(".admin_action .head span").innerText,
     }
 
@@ -539,7 +539,7 @@ const removerole2=(userid)=>{
 const removemute2=(userid)=>{
     var mod ={
         "user_type":"register",
-        "userid":userid.replace("action"," ").trim(),
+        "userid":userid.replace("action","user").trim(),
         "username":document.querySelector(".admin_action .head span").innerText,
     }
 
@@ -550,7 +550,7 @@ const removemute2=(userid)=>{
 const removeban2=(userid)=>{
     var mod ={
         "user_type":"register",
-        "userid":userid.replace("action"," ").trim(),
+        "userid":userid.replace("action","user").trim(),
         "username":document.querySelector(".admin_action .head span").innerText,
     }
 
@@ -562,7 +562,7 @@ const removeblock2=(userid)=>{
     var mod ={
         "usertype":"any",
         "username":document.querySelector(".admin_action .head span").innerText,
-        "userid":userid.replace("action"," ").trim(),
+        "userid":userid.replace("action","user").trim(),
         "id":this_userid,
     }
 
