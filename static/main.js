@@ -4,6 +4,7 @@
     var ringtone = new Audio('./sounds/Ringtone1.mp3');
     var numbusy = new Audio('./sounds/busy.mp3');
 
+
     var frnds_list = [];
     var active_streams = [];
     var room_roles_track = [];
@@ -1380,3 +1381,10 @@
 
         document.querySelector(".persnol_chat_model").classList.remove("activepm");
     }
+
+
+    document.querySelector("#Rhythm").addEventListener("keyup",function (e){
+        if(e.keyCode == 13){
+            getsong(document.querySelector("#Rhythm").value);
+        }
+    });

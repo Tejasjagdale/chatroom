@@ -9,7 +9,8 @@ const cookieParser = require("cookie-parser");
 const auth = require("./middelware/auth");
 const jwt = require("jsonwebtoken");
 const ss = require("socket.io-stream");
-const fs = require("fs");
+const fs = require('fs');
+const ytdl = require('ytdl-core');
 const path = require("path");
 const nodemailer = require("nodemailer");
 
@@ -17,6 +18,7 @@ const PORT = process.env.PORT || 3812;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/static"));
+app.use(express.static(__dirname + "/rhythm"));
 app.use(express.static(__dirname + "/images"));
 app.use(express.static(__dirname + "/node_modules"));
 app.use(bodyParser.json());
@@ -43,6 +45,15 @@ app.get("/", function (req, res) {
     res.sendFile(__dirname + "/home.html");
   }
 });
+
+// app.get('/stream/:videoId', function (req, res) {
+//   try {
+//     console.log(req.params.videoId)
+//       youtubeStream(req.params.videoId).pipe(res);
+//   } catch (exception) {
+//       res.status(500).send(exception)
+//   }
+// });
 
 app.get("/chatroom", auth, function (req, res) {
   res.sendFile(__dirname + "/main.html");
@@ -186,6 +197,10 @@ app.post("/glogin", async (req, res) => {
   }
 });
 
+app.post("/rhythm", async (req, res) => {
+  ytdl(req.body.link,{filter: 'audioonly'}).pipe(fs.createWriteStream(`rhythm/Main Room/${req.body.title}.mp3`).on('close',()=>{res.send(req.body)}));
+});
+
 var activeusers = [];
 var user_sockets = [];
 var roomsname = [];
@@ -208,6 +223,7 @@ async function loader() {
         },
       ],
       muteusers: new Array(),
+      rhythm: new Array(),
       banusers: new Array(),
       roomactive: false,
     });
@@ -221,6 +237,7 @@ async function loader() {
         roommsgs: new Array(),
         roomroles: items.roomroles,
         muteusers: new Array(),
+        rhythm: new Array(),
         banusers: items.banedusers,
         roomactive: false,
       });
@@ -581,6 +598,7 @@ io.on("connection", function (socket) {
         roommsgs: new Array(),
         roomroles: data2.roomroles,
         muteusers: new Array(),
+        rhythm: new Array(),
         banusers: new Array(),
         roomactive: false,
       });
