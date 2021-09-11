@@ -16,7 +16,7 @@
     var msg_noti = 0;
     var alert_noti = 0;
     var user_pms = 0;
-    const socket = io('http://localhost:3812');
+    const socket = io('https://temp-app-chatroom.herokuapp.com');
    
     var ca = document.cookie.split(';').map(cookie => cookie.split('=')).reduce((accumulator,[key,value])=>({...accumulator, [key.trim()]:decodeURIComponent(value)}),{});
     
