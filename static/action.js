@@ -42,6 +42,7 @@ const action=(id)=>{
     document.querySelector(".admin_action").classList.add("activeb2");
     document.querySelector(".alert").setAttribute("style", "display:block");
     document.querySelector(".admin_action").setAttribute("style", "animation: ZoomIn 0.3s ease-out");
+
     frnds_list.forEach((item)=> {
         if(item.sender_id.trim() == id.replace("user"," ").trim() || item.receiver_id.replace("user"," ").trim() == id.replace("user"," ").trim() || item.sender_id.trim() == id.replace("frnd"," ").trim() || item.receiver_id.replace("user"," ").trim() == id.replace("frnd"," ").trim()){
             document.querySelector("#actions4").innerHTML = `<i class="fas fa-user-times"></i> Remove freind`;
@@ -51,21 +52,20 @@ const action=(id)=>{
     });
 
     if(user_type == "guest"){
-        document.getElementById("actions1").parentNode.setAttribute("style","display:none")
-        document.getElementById("actions3").parentNode.setAttribute("style","display:none")
-        document.getElementById("actions5").parentNode.setAttribute("style","display:none")
-        document.getElementById("actions4").parentNode.setAttribute("style","display:none")
+        document.getElementById("actions1").parentNode.setAttribute("style","display:none");
+        document.getElementById("actions3").parentNode.setAttribute("style","display:none");
+        document.getElementById("actions5").parentNode.setAttribute("style","display:none");
+        document.getElementById("actions4").parentNode.setAttribute("style","display:none");
     }else{
         if(document.querySelector(".admin_action .head").id == "guest"){
-            console.log("habjhasvb")
-            document.getElementById("actions1").parentNode.setAttribute("style","display:flex")
-            document.getElementById("actions3").parentNode.setAttribute("style","display:flex")
+            document.getElementById("actions1").parentNode.setAttribute("style","display:none")
+            document.getElementById("actions3").parentNode.setAttribute("style","display:none")
             document.getElementById("actions5").parentNode.setAttribute("style","display:none")
             document.getElementById("actions2").parentNode.setAttribute("style","display:flex")
             document.getElementById("actions4").parentNode.setAttribute("style","display:none")
         }else{
-            document.getElementById("actions1").parentNode.setAttribute("style","display:flex")
-            document.getElementById("actions3").parentNode.setAttribute("style","display:flex")
+            document.getElementById("actions1").parentNode.setAttribute("style","display:none")
+            document.getElementById("actions3").parentNode.setAttribute("style","display:none")
             document.getElementById("actions5").parentNode.setAttribute("style","display:none")
             document.getElementById("actions2").parentNode.setAttribute("style","display:flex")
             document.getElementById("actions4").parentNode.setAttribute("style","display:flex")
@@ -74,10 +74,13 @@ const action=(id)=>{
 
     room_roles_track.forEach((elem) => {
         if(elem.userid.replace("user","") == this_userid){
+            console.log(elem.userid.replace("user",""), this_userid)
             document.getElementById("actions1").parentNode.setAttribute("style","display:flex");
             document.getElementById("actions3").parentNode.setAttribute("style","display:flex");
             if(elem.role == "admin"){
-                document.querySelector("#actions5").parentNode.setAttribute("style","display:flex");
+                if(document.querySelector(".admin_action .head").id != "guest"){
+                    document.querySelector("#actions5").parentNode.setAttribute("style","display:flex");
+                }
             }
         }
     });
@@ -87,6 +90,10 @@ const action=(id)=>{
             document.querySelector("#actions5").innerHTML = `<i class="fas fa-user-shield"></i> Remove moderator`;
             document.querySelector("#actions5").setAttribute("style","color:red");
             document.querySelector("#actions5").setAttribute("onclick","removerole2(this.parentNode.parentNode.id)");
+        }else{
+            document.querySelector("#actions5").innerHTML = `<i class="fas fa-user-shield"></i> Moderator`;
+            document.querySelector("#actions5").setAttribute("style","color:black");
+            document.querySelector("#actions5").setAttribute("onclick","make_mod(this.parentNode.parentNode.id)");
         }
     });
 
@@ -94,7 +101,11 @@ const action=(id)=>{
         if(elem.userid.replace("user","") == document.querySelector(".action-container").id.replace("action"," ").trim()){
             document.querySelector("#actions1").innerHTML = `<i class="fas fa-comment"></i> Unmute`;
             document.querySelector("#actions1").setAttribute("style","color:red");
-            document.querySelector("#actions1").setAttribute("onclick","removeblock2(this.parentNode.parentNode.id)");
+            document.querySelector("#actions1").setAttribute("onclick","removemute2(this.parentNode.parentNode.id)");
+        }else{
+            document.querySelector("#actions1").innerHTML = `<i class="fas fa-comment-slash"></i> Mute`;
+            document.querySelector("#actions1").setAttribute("style","color:black");
+            document.querySelector("#actions1").setAttribute("onclick","mute_user(this.parentNode.parentNode.id)");
         }
     });
 
@@ -103,6 +114,10 @@ const action=(id)=>{
             document.querySelector("#actions2").innerHTML = `<i class="fas fa-ban"></i> Unblock`;
             document.querySelector("#actions2").setAttribute("style","color:red");
             document.querySelector("#actions2").setAttribute("onclick","removeblock2(this.parentNode.parentNode.id)");
+        }else{
+            document.querySelector("#actions2").innerHTML = `<i class="fas fa-ban"></i> Block`;
+            document.querySelector("#actions2").setAttribute("style","color:black");
+            document.querySelector("#actions2").setAttribute("onclick","block_user(this.parentNode.parentNode.id)");
         }
     })
 
@@ -111,6 +126,10 @@ const action=(id)=>{
             document.querySelector("#actions3").innerHTML = `<i class="fas fa-user"></i> Unban`;
             document.querySelector("#actions3").setAttribute("style","color:red");
             document.querySelector("#actions3").setAttribute("onclick","removeban2(this.parentNode.parentNode.id)");
+        }else{
+            document.querySelector("#actions3").innerHTML = `<i class="fas fa-user-slash"></i> Ban`;
+            document.querySelector("#actions3").setAttribute("style","color:black");
+            document.querySelector("#actions3").setAttribute("onclick","ban_user(this.parentNode.parentNode.id)");
         }
     })
 

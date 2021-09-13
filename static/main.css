@@ -1074,7 +1074,7 @@ body {
     background-position: center;
     margin-left: 10px;
     margin-right: 10px;
-    box-shadow: 0px 0px 26px -8px rgba(0,0,0,0.75);
+    box-shadow: 0 1px .5px rgba(rgba(0,0,0,0.75),.13);
 }
 
 .chat-msg{
@@ -1085,7 +1085,7 @@ body {
     padding:25px 10px 15px 10px;
     font-size: 16px;
     min-width: 150px;
-    box-shadow: 0px 0px 26px -8px rgba(0,0,0,0.75);
+    box-shadow: 0 1px .5px rgba(rgba(0,0,0,0.75),.13);
    }
 
 .chat-name{
@@ -1131,7 +1131,7 @@ body {
     background-size: 100% 100%;
     background-position: center;
     border:3px solid white;
-    box-shadow: 0px 0px 26px -8px rgba(0,0,0,0.75);
+    box-shadow: 0 1px .5px rgba(rgba(0,0,0,0.75),.13);
 }
 
 .y-chat-msg{
@@ -1144,7 +1144,7 @@ body {
     font-size: 16px;
     min-width: 150px;
     margin-right: 10px;
-    box-shadow: 0px 0px 26px -8px rgba(0,0,0,0.75);
+    box-shadow: 0 1px .5px rgba(rgba(0,0,0,0.75),.13);
    }
 
 .y-chat-name{
@@ -3192,6 +3192,113 @@ animation-delay:0.4s;
 
 /* music player */
 
-/* #ytplayer{
-    display: none;
-} */
+.Bots_cmd{
+    width:auto;
+    height:75px;
+    color:white;
+    position: absolute;
+    right:0px;
+    top:50px;
+    z-index: 1;
+    transform-style: preserve-3d;
+    transform:translateZ(100px);
+}
+
+.Bot_wrapper{
+    width:auto;
+    height:auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+#bot_wrapper1{
+    background:LINEAR-GRADIENT(TO RIGHT,#1B1B1F,#F81433);
+}
+
+#bot_wrapper2{
+    background:LINEAR-GRADIENT(TO RIGHT,#1B1B1F,#4BF42A);
+}
+
+#bot_wrapper3{
+    background:LINEAR-GRADIENT(TO RIGHT,#1B1B1F,#2AF4DC);
+}
+
+#bot_wrapper4{
+    background:LINEAR-GRADIENT(TO RIGHT,#1B1B1F,#F4D22A);
+}
+
+.command-feild{
+    width:200px;
+    height:75px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    z-index: 10;
+    margin-left: 15px;
+}
+
+.bot_name{
+    font-size: 18px;
+    margin: 0px;
+    background: -webkit-linear-gradient(white,#ABD0DE);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+#Rhythm{
+    width:200px;
+    height:30px;
+    font-size: 18px;
+    outline: none;
+    background-color: #40444B;
+    color:#ABD0DE;
+    padding-left: 10px;
+}
+
+#Rhythm::placeholder{
+    font-size: 16px;
+    color:white;
+}
+
+.bots_cube{
+    width:75px;
+    height:75px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.face{
+    width:50px;
+    height:50px;
+    background-position: center;
+    background-size: 100% 100%;
+    background-color: white;
+    border:2px solid black;
+}
+
+#face1{
+    background-image: url('mbot.png');
+}
+
+#face2{
+    background-image: url('vbot.png');
+}
+
+#face3{
+    background-image: url('qbot.jpg');
+}
+
+#face4{
+    background-image: url('bot.png');
+}
+
+.fa-crown{
+    color:#FF0000;
+    text-shadow:2px 3px 7px #D6133A;
+}
+
+.fa-user-shield{
+    color:rgb(206, 206, 66);
+}

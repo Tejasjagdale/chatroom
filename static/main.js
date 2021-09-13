@@ -101,6 +101,7 @@
 
             if(data.id == this_userid){
                 block_users_track = data.blocks;
+                room_roles_track = data.roomdata.roomroles;
             }
         }
     });
@@ -317,7 +318,6 @@
     });
 
     socket.on("change-room-left",(data)=>{
-        console.log(data)
         if(data.nroom == document.querySelector(".room_name").id){
             var room_user = document.createElement("DIV");
             room_user.id = "user" + data.user.id;
@@ -342,7 +342,7 @@
                 }
             });
             
-            if(data.type == "guest"){
+            if(data.user.type == "guest"){
                 document.getElementById("user"+data.user.id).classList.add('guest');
             }else{
                 document.getElementById("user"+data.user.id).classList.add('register');
@@ -1383,8 +1383,8 @@
     }
 
 
-    document.querySelector("#Rhythm").addEventListener("keyup",function (e){
-        if(e.keyCode == 13){
-            getsong(document.querySelector("#Rhythm").value);
+    document.querySelector("#Rhythm").addEventListener("keyup", function (e) {
+        if (e.keyCode == 13) {
+          getsong(document.querySelector("#Rhythm").value);
         }
-    });
+      });
