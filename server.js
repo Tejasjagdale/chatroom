@@ -367,9 +367,15 @@ io.on("connection", function (socket) {
 
   socket.on("load_profile", async (data) => {
     try {
-      var user = await Register.findOne({
-        _id: data.id.replace("user", " ").trim(),
-      });
+      if(data.id.includes("frnd")){
+        var user = await Register.findOne({
+          _id: data.id.replace("frnd","")
+        });
+      }else{
+        var user = await Register.findOne({
+          _id: data.id.replace("user","")
+        });
+      }
       socket.emit("load_details", user);
     } catch (error) {
       console.log(error);

@@ -74,7 +74,7 @@
             document.querySelector(`.users`).appendChild(room_user);
             document.getElementById("user"+data.id).setAttribute("onclick","user_profile(this.id)");
 
-            document.getElementById("user" + data.id).innerHTML = `<span class="uprofile"></span><p class="username">${data.name}</p><div><img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`
+            document.getElementById("user" + data.id).innerHTML = `<span class="uprofile"></span><p class="username">${data.name}</p><div><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`
 
             if(data.type == "guest"){
                 document.getElementById("user" + data.id).classList.add('guest');
@@ -85,16 +85,16 @@
             data.roomdata.roomroles.forEach((elem)=>{
                 if(elem.userid.replace("user"," ").trim() == this_userid){
                     if(elem.role == "admin"){
-                        document.getElementById("user"+this_userid).innerHTML = `<span class="uprofile"></span><p class="username">${elem.username}</p><div><i class="fas fa-crown"></i><img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
+                        document.getElementById("user"+this_userid).innerHTML = `<span class="uprofile"></span><p class="username">${elem.username}</p><div><i class="fas fa-crown"></i><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
                     }else{
-                        document.getElementById("user"+this_userid).innerHTML = `<span class="uprofile"></span><p class="username">${elem.username}</p><div><i class="fas fa-user-shield"></i><img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
+                        document.getElementById("user"+this_userid).innerHTML = `<span class="uprofile"></span><p class="username">${elem.username}</p><div><i class="fas fa-user-shield"></i><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
                     }
                 }
                 if(elem.userid.replace("user"," ").trim() == data.id){
                     if(elem.role == "admin"){
-                        document.getElementById("user"+data.id).innerHTML = `<span class="uprofile"></span><p class="username">${elem.username}</p><div><i class="fas fa-crown"></i><img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
+                        document.getElementById("user"+data.id).innerHTML = `<span class="uprofile"></span><p class="username">${elem.username}</p><div><i class="fas fa-crown"></i><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
                     }else{
-                        document.getElementById("user"+data.id).innerHTML = `<span class="uprofile"></span><p class="username">${elem.username}</p><div><i class="fas fa-user-shield"></i><img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
+                        document.getElementById("user"+data.id).innerHTML = `<span class="uprofile"></span><p class="username">${elem.username}</p><div><i class="fas fa-user-shield"></i><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
                     }
                 }
             });
@@ -117,7 +117,7 @@
 
         document.querySelector(`.users`).appendChild(room_user);
        
-        document.getElementById("user" + item.id).innerHTML = `<span class="uprofile"></span><p class="username">${item.name}</p><div><img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`
+        document.getElementById("user" + item.id).innerHTML = `<span class="uprofile"></span><p class="username">${item.name}</p><div><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`
 
         if(item.type == "guest"){
             document.getElementById("user" + item.id).classList.add('guest');
@@ -129,9 +129,9 @@
         data[1].forEach(element => {
             if(element.userid.replace("user"," ").trim() == item.id){
                 if(element.role == "admin"){
-                    document.getElementById("user"+item.id).innerHTML = `<span class="uprofile"></span><p class="username">${element.username}</p><div><i class="fas fa-crown"></i><img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
+                    document.getElementById("user"+item.id).innerHTML = `<span class="uprofile"></span><p class="username">${element.username}</p><div><i class="fas fa-crown"></i><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
                 }else{
-                    document.getElementById("user"+item.id).innerHTML = `<span class="uprofile"></span><p class="username">${element.username}</p><div><i class="fas fa-user-shield"></i><img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
+                    document.getElementById("user"+item.id).innerHTML = `<span class="uprofile"></span><p class="username">${element.username}</p><div><i class="fas fa-user-shield"></i><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
                 }
             }
         });
@@ -284,6 +284,7 @@
     });
 
     socket.on('user-left',(data)=>{
+        console.log(data)
         if(data.current_room == document.querySelector(".room_name").id){
             document.querySelector(`.users #user${data.id}`).remove();
         }
@@ -330,14 +331,14 @@
             data.roomroles.every(function (element) {
                 if(element.userid.replace("user"," ").trim() == data.user.id){
                     if(element.role == "admin"){
-                        document.getElementById("user" +data.user.id).innerHTML = `<span class="uprofile"></span><p class="username">${data.user.name}</p><div><i class="fas fa-crown"></i><img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
+                        document.getElementById("user" +data.user.id).innerHTML = `<span class="uprofile"></span><p class="username">${data.user.name}</p><div><i class="fas fa-crown"></i><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
                         return false;
                     }else{
-                        document.getElementById("user" +data.user.id).innerHTML = `<span class="uprofile"></span><p class="username">${data.user.name}</p><div><i class="fas fa-user-shield"></i><img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
+                        document.getElementById("user" +data.user.id).innerHTML = `<span class="uprofile"></span><p class="username">${data.user.name}</p><div><i class="fas fa-user-shield"></i><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
                         return false;
                     }
                 }else{
-                    document.getElementById("user" +data.user.id).innerHTML = `<span class="uprofile"></span><p class="username">${data.user.name}</p><div><img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
+                    document.getElementById("user" +data.user.id).innerHTML = `<span class="uprofile"></span><p class="username">${data.user.name}</p><div><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
                     return true;
                 }
             });
@@ -449,14 +450,14 @@
             data.roomroles.every(function (element) {
                 if(element.userid.replace("user"," ").trim() == item.id){
                     if(element.role == "admin"){
-                        document.getElementById("user" + item.id).innerHTML = `<span class="uprofile"></span><p class="username">${item.name}</p><div><i class="fas fa-crown"></i><img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`
+                        document.getElementById("user" + item.id).innerHTML = `<span class="uprofile"></span><p class="username">${item.name}</p><div><i class="fas fa-crown"></i><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`
                         return false;
                     }else{
-                        document.getElementById("user" + item.id).innerHTML = `<span class="uprofile"></span><p class="username">${item.name}</p><div><i class="fas fa-user-shield"></i><img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`
+                        document.getElementById("user" + item.id).innerHTML = `<span class="uprofile"></span><p class="username">${item.name}</p><div><i class="fas fa-user-shield"></i><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`
                         return false;
                     }
                 }else{
-                    document.getElementById("user" + item.id).innerHTML = `<span class="uprofile"></span><p class="username">${item.name}</p><div><img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`
+                    document.getElementById("user" + item.id).innerHTML = `<span class="uprofile"></span><p class="username">${item.name}</p><div><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`
                     return true;
                 }
             });
@@ -624,7 +625,7 @@
                 frnd.className = "freind";
 
                 document.querySelector(`.freinds`).appendChild(frnd);
-                document.getElementById("frnd" + frnd_id).innerHTML = `<span class="uprofile"></span><p class="username">${name}</p><div><img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
+                document.getElementById("frnd" + frnd_id).innerHTML = `<span class="uprofile"></span><p class="username">${name}</p><div><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
                 document.getElementById("frnd" + frnd_id).classList.add('register');
                 document.getElementById("frnd" + frnd_id).setAttribute("onclick", "user_profile(this.id)");
             }else{
@@ -634,7 +635,7 @@
                 frnd.className = "freind";
 
                 document.querySelector(`.freinds`).appendChild(frnd);
-                document.getElementById("frnd" + data.sender_id).innerHTML = `<span class="uprofile"></span><p class="username">${name}</p><div><img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
+                document.getElementById("frnd" + data.sender_id).innerHTML = `<span class="uprofile"></span><p class="username">${name}</p><div><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
                 document.getElementById("frnd" + data.sender_id).classList.add('register');
                 document.getElementById("frnd" + data.sender_id).setAttribute("onclick", "user_profile(this.id)");
             }
@@ -1005,7 +1006,7 @@
                 frnd.className = "freind";
 
                 document.querySelector(`.freinds`).appendChild(frnd);
-                document.getElementById("frnd" + frnd_id).innerHTML = `<span class="uprofile"></span><p class="username">${name}</p><div><img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
+                document.getElementById("frnd" + frnd_id).innerHTML = `<span class="uprofile"></span><p class="username">${name}</p><div><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
                 document.getElementById("frnd" + frnd_id).classList.add('register');
                 document.getElementById("frnd" + frnd_id).setAttribute("onclick", "user_profile(this.id)");
             }
@@ -1084,7 +1085,7 @@
             frnd.className = "freind";
 
             document.querySelector(`.freinds`).appendChild(frnd);
-            document.getElementById("frnd" + event.target.parentNode.parentNode.id.replace("alert"," ").trim()).innerHTML = `<span class="uprofile" ></span><p class="username">${event.target.id}</p><div><img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
+            document.getElementById("frnd" + event.target.parentNode.parentNode.id.replace("alert"," ").trim()).innerHTML = `<span class="uprofile" ></span><p class="username">${event.target.id}</p><div><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
             document.getElementById("frnd" + event.target.parentNode.parentNode.id.replace("alert"," ").trim()).classList.add('register');
             document.getElementById("frnd" + event.target.parentNode.parentNode.id.replace("alert"," ").trim()).setAttribute("onclick", "user_profile(this.id)");
             frnds_list.push(frnd_query);
@@ -1198,7 +1199,7 @@
 
             if(data[0].userid.replace("user"," ").trim() == this_userid){
                 if(document.getElementById(data[0].userid)){
-                    document.getElementById(data[0].userid).innerHTML = `<span class="uprofile"></span><p class="username">${data[0].username}</p><div><i class="fas fa-user-shield"></i><img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
+                    document.getElementById(data[0].userid).innerHTML = `<span class="uprofile"></span><p class="username">${data[0].username}</p><div><i class="fas fa-user-shield"></i><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
                 }
                 document.querySelector("aside ul li:nth-child(7)").setAttribute("style","display:flex");
                 document.getElementById("actions1").parentNode.setAttribute("style","display:flex");
@@ -1207,7 +1208,7 @@
             }else{
                 if(document.getElementById(data[0].userid)){
                     console.log(data[0].userid);
-                    document.getElementById(data[0].userid).innerHTML = `<span class="uprofile"></span><p class="username">${data[0].username}</p><div><i class="fas fa-user-shield"></i><img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
+                    document.getElementById(data[0].userid).innerHTML = `<span class="uprofile"></span><p class="username">${data[0].username}</p><div><i class="fas fa-user-shield"></i><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
                 }
             }
         }
@@ -1221,7 +1222,7 @@
                 }
             });
 
-            document.getElementById(data[0].userid).innerHTML = `<span class="uprofile"></span><p class="username">${data[0].username}</p><div><img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
+            document.getElementById(data[0].userid).innerHTML = `<span class="uprofile"></span><p class="username">${data[0].username}</p><div><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
             if(document.getElementById("moderator"+data[0].userid)){
                 document.getElementById("moderator"+data[0].userid).remove();
             }

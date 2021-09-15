@@ -97,6 +97,7 @@ body {
 
 .options span{
     background-color: #F3407A;
+    font-size: 30px;
 }
 
 .voice_channels{
@@ -3296,7 +3297,6 @@ animation-delay:0.4s;
 
 .fa-crown{
     color:#FF0000;
-    text-shadow:2px 3px 7px #D6133A;
 }
 
 .fa-user-shield{

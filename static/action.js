@@ -170,7 +170,7 @@ const view_profilef=(event)=>{
     document.querySelector(".profile_div").classList = "profile_div";
     document.querySelector(".profile_div").classList.add("activeb2");
     document.querySelector(".profile_div").setAttribute("style", "animation: ZoomIn 0.3s ease-out");
-    socket.emit("load_profile",{id:event.replace("frndp"," ").trim()});
+    socket.emit("load_profile",{id:event.replace("frndp",""),usertype:"register"});
 };
 
 
@@ -204,7 +204,7 @@ document.querySelector("#profile_div").addEventListener("click", () => {
         document.querySelector(".profile_div").classList.add("activeb2");
         document.querySelector(".profile_div").setAttribute("style", "animation: ZoomIn 0.3s ease-out");
         close_user_profile();
-        socket.emit("load_profile",{id:document.querySelector(".addfreind").id});
+        socket.emit("load_profile",{id:document.querySelector(".addfreind").id,usertype:"register"});
     }
 });
 
@@ -416,7 +416,7 @@ const show_display=()=>{
 }
 
 document.querySelector(".fa-arrow-left").addEventListener("click",()=>{
-    document.getElementById("set_display").style.transform = "translateX(100%)";
+    document.getElementById("set_display").style.transform = "translateX(-100%)";
 });
 
 
