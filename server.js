@@ -239,6 +239,7 @@ async function loader() {
         muteusers: new Array(),
         rhythm: new Array(),
         banusers: items.banedusers,
+        voiceuser: new Array(),
         roomactive: false,
       });
     });
@@ -675,6 +676,7 @@ io.on("connection", function (socket) {
             }
           });
 
+
           roomdata.forEach((items, index) => {
             if (items.roomname == data.nroomname) {
               data.roles = items.roomroles;
@@ -875,6 +877,31 @@ io.on("connection", function (socket) {
       console.log(error);
     }
   });
+
+  socket.on('join_voice',(data)=>{
+    roomdata.forEach((items,ind) => {
+      if (items.roomname == data.current_room) {
+          delete data.current_room;
+          roomdata[ind].voiceuser.push(data);
+      }
+    });
+
+    socket.emit('new_vuser_join',data);
+    socket.broadcast.emit('new_vuser_join',data)
+  })
+
+  socket.on('leave_voice',(data)=>{
+    roomdata.forEach((items,ind) => {
+      if (items.roomname == data.current_room) {
+          items.voiceuser.forEach(()=>{
+
+          });
+      }
+    });
+
+    socket.emit('vuser_left',data);
+    socket.broadcast.emit('vuser_left',data);
+  })
 
   socket.on("disconnect", function () {
     var i = user_sockets.indexOf(socket.id);

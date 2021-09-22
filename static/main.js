@@ -11,12 +11,13 @@
     var baned_users_track = [];
     var mute_users_track = [];
     var block_users_track = [];
+    var vc_users = [];
 
     var t=0;
     var msg_noti = 0;
     var alert_noti = 0;
     var user_pms = 0;
-    const socket = io('https://temp-app-chatroom.herokuapp.com');
+    const socket = io('http://localhost:3812');
    
     var ca = document.cookie.split(';').map(cookie => cookie.split('=')).reduce((accumulator,[key,value])=>({...accumulator, [key.trim()]:decodeURIComponent(value)}),{});
     
@@ -319,11 +320,15 @@
     });
 
     socket.on("change-room-left",(data)=>{
+        console.log(data)
         if(data.nroom == document.querySelector(".room_name").id){
             var room_user = document.createElement("DIV");
             room_user.id = "user" + data.user.id;
             room_user.className = "user";
 
+            vc_users.filter((elem)=>{
+
+            });
 
             document.querySelector(`.users`).appendChild(room_user);
             document.getElementById("user"+ data.user.id).setAttribute("onclick", "user_profile(this.id)");
@@ -355,6 +360,7 @@
 
 
     socket.on("change-room-load",(data)=>{
+        console.log(data)
         document.querySelector(".users").innerHTML = ``;
         document.querySelector(".main-chat").innerHTML = `<div class="emojis"></div>`;
         document.querySelector(".persnol_chat_model").classList.remove("activepm");
@@ -363,10 +369,9 @@
         room_roles_track = data.roomroles;
         baned_users_track = data.muteusers;
         mute_users_track = data.banusers;
+        vc_users = data.voiceuser;
 
         data.roomroles.every(function (element) {
-            console.log(element.userid.replace("user"," ").trim())
-            console.log(this_userid);
             if(element.userid.replace("user"," ").trim() == this_userid){
                 document.querySelector("aside ul li:nth-child(7)").setAttribute("style","display:flex");
                 document.getElementById("actions1").parentNode.setAttribute("style","display:flex");
@@ -1338,29 +1343,19 @@
         if(id.includes("frnd")){
             id = id.replace("frnd","user");
         }
-            document.querySelector(".persnol_chat_model").innerHTML = `<div class="pmchathead"><div class="pm_type ${document.querySelector(`.users #${id}`).classList[1]}"><span class="pm_profile" onclick="view_profile(event)"></span> ${receiver}</div>
-                                                                        <div class="pm-options"><i class="fas fa-video" id="startvideocall" onclick="pmvideostart()"></i><i class="fas fa-phone-volume" id="startaudiocall"" onclick="pmaudiostart()"></i><i class="fas fa-times"onclick="closepm()"></i></div></div>
-                                                                        <div class="pmchat_msg">
-                                                                        <div class="pm_video_div">
-                                                                        <div class="pmvideo_wrapper">
-                                                                        <video autoplay="true" id="pmvideoElement1"  muted></video>
-                                                                        <video autoplay="true" id="pmvideoElement2"></video>
-                                                                        <video autoplay="true" id="pmscreenshare1"></video>
-                                                                        <video autoplay="true" id="pmscreenshare1"></video>
-                                                                        <div class="css_filters">
-                                                                        <span onclick="cssfilter('sub')"><i class="fas fa-caret-left"></i></span><p id="cur_filter">normal</p><span onclick="cssfilter('add')"><i class="fas fa-caret-right"></i></span>
-                                                                        </div>
-                                                                        </div>
-                                                                        <div class="pmvideo_control_wrapper">
-                                                                        <div class="pmvideo_control">
-                                                                        <button class="pmvideo_btn" onclick="muteCam()"><i class="fas fa-video"></i></button>
-                                                                        <button class="pmshare_btn" onclick="startCapture()"></button>
-                                                                        <button class="pmmic_btn" onclick="muteMic()"><i class="fas fa-microphone"></i></button>
-                                                                        <button class="pmcall_btn" onclick="call_disc()"><i class="fas fa-phone-slash"></i></button>
-                                                                        </div>
-                                                                        <i class="fas fa-cog pmvideo_setting" onclick="toggel_filter()"></i>
-                                                                        <i class="fas fa-expand-wide pmvideo_enlarge" onclick="enlarge()"></i>
-                                                                        </div></div></div>`;
+            document.querySelector(".persnol_chat_model").innerHTML = `     <div class="pmchathead">
+                                                                            <div class="pm_type ${document.querySelector(`.users #${id}`).classList[1]}">
+                                                                                <span class="pm_profile" onclick="view_profile(event)"></span> ${receiver}
+                                                                            </div>
+                                                                            <div class="pm-options">
+                                                                                <i class="fas fa-video" id="startvideocall" onclick="pmvideostart()"></i>
+                                                                                <i class="fas fa-phone-volume" id="startaudiocall"" onclick="pmaudiostart()"></i>
+                                                                                <i class="fas fa-times"onclick="closepm()"></i>
+                                                                            </div>
+                                                                            </div>
+                                                                            <div class="pmchat_msg">
+                                                                            </div>
+                                                                        `;
             document.querySelector(".persnol_chat_model").classList.add("activepm");
             document.querySelector(".pmchathead").id = id;
             document.querySelector(".user_details").setAttribute("style", "display:none");

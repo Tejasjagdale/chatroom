@@ -76,7 +76,7 @@ async function pmvideostart(){
             document.getElementById("pmvideoElement2").style.opacity = 1;
         });
 
-        peer.on('close', (data) => {
+        peer.on('dissconnect', (data) => {
             document.getElementById("pmvideoElement2").setAttribute("style","display:none");
 
             var tracks = MyStream.getTracks();
@@ -131,7 +131,7 @@ async function pmaudiostart(){
             document.getElementById("pmvideoElement2").style.opacity = 1;
         });
 
-        peer.on('close', (data) => {
+        peer.on('dissconnect', (data) => {
             document.getElementById("pmvideoElement2").setAttribute("style","display:none");
             
             var tracks = MyStream.getTracks();
@@ -198,17 +198,22 @@ async function acceptcall(event){
     });
 
     peer.on("signal",data =>{
-        socket.emit("callAccepted",{signal:data,id:document.querySelector(".pmchathead").id});
+        if(data === 'screenshare'){
+            console.log(data)
+        }else{
+            socket.emit("callAccepted",{signal:data,id:document.querySelector(".pmchathead").id});
+        }
     });
 
     peer.on("stream",stream =>{
+        console.log(stream.getVideoTracks())
         document.getElementById("pmvideoElement1").srcObject = MyStream;
         document.getElementById("pmvideoElement2").srcObject = stream;
         muteCam();
         muteMic();
     });
 
-    peer.on('close', (data) => {
+    peer.on('dissconnect', (data) => {
         document.getElementById("pmvideoElement2").setAttribute("style","display:none");
         
         var tracks = MyStream.getTracks();
@@ -243,8 +248,8 @@ async function startCapture(displayMediaOptions) {
 
     try {
         captureStream = await navigator.mediaDevices.getDisplayMedia(displayMediaOptions);
-        document.getElementById("pmvideoElement1").setAttribute("style","width: 400px;height: 220px;border-radius: 10px;transform:rotatey(0deg)");
-        document.getElementById("pmvideoElement2").setAttribute("style","width: 400px;height: 220px;border-radius: 10px;opacity:1");
+        document.getElementById("pmvideoElement1").setAttribute("style","width: 50%;height: 100%;transform:rotatey(0deg)");
+        document.getElementById("pmvideoElement2").setAttribute("style","width: 50%;height: 100%;opacity:1");
 
         captureStream.onended =  function(){
             stopCapture();
@@ -256,6 +261,8 @@ async function startCapture(displayMediaOptions) {
     document.querySelector(".pmshare_btn").setAttribute("onclick","stopCapture()");
     document.querySelector(".pmshare_btn").setAttribute("style","background-image:url('cshare.png')")
     document.getElementById("pmvideoElement1").srcObject = captureStream;
+    peer.send('screanshare')
+    // peer.addStream(captureStream.getVideoTracks()[0])
     peer.replaceTrack(peer.streams[0].getVideoTracks()[0], captureStream.getVideoTracks()[0], peer.streams[0]);
 }
 
@@ -269,7 +276,7 @@ async function stopCapture() {
 
 function enlarge(){
     document.querySelector(".pmvideo_enlarge").setAttribute("onclick","backtosize()");
-    document.querySelector(".pm_video_div").setAttribute("style","min-height:100%;display:block");
+    document.querySelector(".pm_video_div").setAttribute("style","min-height:100vh;width:100vw;top:0%;display:block");
     document.getElementById("pmvideoElement1").setAttribute("style","width:50%;height:100%;");
     document.getElementById("pmvideoElement2").setAttribute("style","width:50%;height:100%;");
     document.getElementById("pmvideoElement2").style.opacity = 1;
@@ -279,7 +286,7 @@ function enlarge(){
 
 function backtosize(){
     document.querySelector(".pmvideo_enlarge").setAttribute("onclick","enlarge()");
-    document.querySelector(".pm_video_div").setAttribute("style","height:65%;display:block");
+    document.querySelector(".pm_video_div").setAttribute("style","height:80%;display:block");
     document.getElementById("pmvideoElement1").setAttribute("style","width:50%;height:100%");
     document.getElementById("pmvideoElement2").setAttribute("style","width:50%;height:100%");
     document.getElementById("pmvideoElement2").style.opacity = 1;
@@ -300,7 +307,7 @@ function call_disc() {
 
     document.getElementById("pmvideoElement1").srcObject = null;
     document.querySelector(".pm_video_div").setAttribute("style","display:none");
-    peer.destroy();
+    peer.close();
     userinpmcall = false;
 }
 
@@ -347,4 +354,11 @@ function cssfilter(opr){
             document.getElementById("cur_filter").innerText = filters[filterIndex];
           document.getElementById("pmvideoElement1").className = filters[filterIndex];
       }
+}
+
+const zoomvideo=(id)=>{
+    ['pmvideoElement1','pmvideoElement2','pmscreenshare1','pmscreenshare2'].forEach((elem)=>{
+        document.getElementById(elem).setAttribute('style',"display:none")
+    });
+    document.getElementById(id).setAttribute("style","display:flex;width:100%;height:100%;marging:0px;border-radius:10px");
 }

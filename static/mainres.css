@@ -294,26 +294,44 @@
     height: 200px;
   }
 
+  .pm_video_div{
+    position: absolute;
+    top:0%;
+    right:0%;
+    width:100%;
+    height:100%;
+    background-color: black;
+    z-index: 50;
+    display: none;
+}
+
   #pmvideoElement1 {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    width: 50px;
+    height: 90px;
+    margin: 0px;
+    border-radius: 0px;
+    z-index: 51;
+  }
+
+  #pmvideoElement2 {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-  }
-
-  #pmvideoElement2 {
-    position: absolute;
-    right: 10px;
-    top: 10px;
-    width: 70px;
-    height: 90px;
+    margin: 0px;
+    border-radius: 0px;
+    z-index: 50;
   }
 
   .pmvideo_control button {
     width: 35px;
     height: 35px;
     font-size: 15px;
+    z-index: 53;
   }
 
   .room_name {

@@ -333,14 +333,12 @@
                 </div>
 
                 <div class="voice_channels">
-                    <h1 class="channel_type"><span class="show_hide_user"><i class="fal fa-chevron-right"></i></span>TEXT CHANNELS</h1>
                     <div class="Text_channel">
-                        <span class="text_icon"><i class="fas fa-hashtag"></i></span><p>General</p>
+                        <span class="text_icon"><i class="fas fa-hashtag"></i></span><p>Text_channel</p>
                     </div>
 
-                    <h1 class="channel_type"><span class="show_hide_user"><i class="fal fa-chevron-right"></i></span>VOICE CHANNELS</h1>
-                    <div class="voice_channel">
-                        <span class="voice_icon"><i class="fas fa-volume"></i></span><p>General</p>
+                    <div class="voice_channel" onclick="group_call()">
+                        <div class="voice_head"><span class="voice_icon"><i class="fas fa-volume"></i></span><p>Voice_channel</p></div>
                         <div class="channel_users" id="General_channel_users">
                             <!-- <div><span></span> tejas jagdale</div> -->
                         </div>
@@ -396,6 +394,28 @@
                     <li><a href="#log_profile" id="log_profile" onclick="showasm()"><i class="fas fa-bars"></i></a></li>
                 </ul>
             </header>
+
+            <div class="pm_video_div" >
+                <div class="pmvideo_wrapper">
+                <video autoplay="true"  id="pmvideoElement1" onclick="zoomvideo(this.id)" muted></video>
+                <video autoplay="true" id="pmvideoElement2" onclick="zoomvideo(this.id)" ></video>
+                <!-- <video autoplay="true" id="pmscreenshare1" onclick="zoomvideo(this.id)" muted></video>
+                <video autoplay="true" id="pmscreenshare2" onclick="zoomvideo(this.id)" ></video> -->
+                <div class="css_filters">
+                <span onclick="cssfilter('sub')"><i class="fas fa-caret-left"></i></span><p id="cur_filter">normal</p><span onclick="cssfilter('add')"><i class="fas fa-caret-right"></i></span>
+                </div>
+                </div>
+                <div class="pmvideo_control_wrapper">
+                <div class="pmvideo_control">
+                <button class="pmvideo_btn" onclick="muteCam()"><i class="fas fa-video"></i></button>
+                <button class="pmshare_btn" onclick="startCapture()"></button>
+                <button class="pmmic_btn" onclick="muteMic()"><i class="fas fa-microphone"></i></button>
+                <button class="pmcall_btn" onclick="call_disc()"><i class="fas fa-phone-slash"></i></button>
+                </div>
+                <i class="fas fa-cog pmvideo_setting" onclick="toggel_filter()"></i>
+                <i class="fas fa-expand-wide pmvideo_enlarge" onclick="enlarge()"></i>
+                </div>
+            </div>
 
             <div class="main-chat">
                 <div class="Bots_cmd">
@@ -493,7 +513,7 @@
         </div>
     </div>
 </body>
-<script src ="https://temp-app-chatroom.herokuapp.com/socket.io/socket.io.js"></script>
+<script src ="http://localhost:3812/socket.io/socket.io.js"></script>
 <script src="/socket.io-stream/socket.io-stream.js"></script>
 <script src="https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js"></script>
 <script src="/simple-peer/simplepeer.min.js"></script>
@@ -504,5 +524,6 @@
 <script src="music_bot.js"></script>
 <script src="mobile.js"></script>
 <script src="action.js"></script>
+<script src="groupcall.js"></script>
 </html>
 

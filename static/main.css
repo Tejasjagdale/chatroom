@@ -35,8 +35,8 @@ body {
 }
 
 .main-wrapper{
-    width:90%;
-    height:94%;
+    width:100%;
+    height:100%;
     background-color:#FFFFFF;
     box-shadow: 0px 5px 50px rgba(0, 0, 0, 0.15);
     display: flex;
@@ -53,7 +53,7 @@ body {
 
 .ui-left{
     position: relative;
-    width:28%;
+    width:25%;
     height:100%;
     background-color: #5865F2;
     overflow-x: hidden;
@@ -182,8 +182,8 @@ body {
 }
 
 .voice_channel{
-    width:85%;
-    height:36px;
+    width:90%;
+    height:auto;
     font-size: 20px;
     color: white;
     display: flex;
@@ -197,11 +197,16 @@ body {
     cursor: pointer;
 }
 
-.voice_channel:hover{
+.voice_head{
+    width:100%;
+    height:35px;
+}
+
+.voice_head:hover{
     background-color: #75CAEB;
 }
 
-.voice_channel span{
+.voice_head span{
     width:40px;
     height:100%;
     font-size: 20px;
@@ -211,13 +216,13 @@ body {
     align-items: center;
 }
 
-.voice_channel span:nth-child(1){
+.voice_head span:nth-child(1){
     position: absolute;
     top:0px;
     left:25px;
 }
 
-.voice_channel p{
+.voice_head p{
     width:90%;
     height:100%;
     display: flex;
@@ -233,9 +238,30 @@ body {
     width:100%;
     height:auto;
     position: absolute;
-    bottom: -100%;
+    top:100%;
     left: 10%;
 }
+
+.channel_users div{
+    display: flex;
+    align-items: center;
+    width:80%;
+    height:35px;
+    font-size: 16px;
+    padding-left: 20px;
+}
+
+.channel_users div span{
+    width:28px;
+    height:28px;
+    border-radius: 50%;
+    background-color: blue;
+    margin-right: 15px;
+    background-image: url(profile/default_dp7.png);
+    background-size: 100% 100%;
+    background-position: center;
+}
+
 
 .vc-options{
     position: absolute;
@@ -759,7 +785,7 @@ body {
 
 .ui-right{
     position: relative;
-    width:72%;
+    width:75%;
     height:100%;
 }
 
@@ -2583,11 +2609,11 @@ aside ul li:nth-child(3) ul li{
 
 
 .pm_video_div{
-    position: sticky;
+    position: absolute;
     top:0%;
-    left:0;
+    right:0%;
     width:100%;
-    height:60%;
+    height:55%;
     background-color: black;
     z-index: 50;
     display: none;
@@ -2596,10 +2622,11 @@ aside ul li:nth-child(3) ul li{
 .pmvideo_wrapper{
     width:100%;
     height:100%;
-    display: flex;
+    display:flex;
     justify-content: space-around;
     align-items: center;
     position: relative;
+    padding:10px;
 }
 
 .activefil{
@@ -2705,8 +2732,7 @@ aside ul li:nth-child(3) ul li{
 
 
 #pmvideoElement1 {
-	width: 50%;
-	height: 100%;
+    border-radius: 10px;
 	background-color: #FEA726;
     object-fit: cover;
     transform: rotateY(180deg);
@@ -2714,11 +2740,16 @@ aside ul li:nth-child(3) ul li{
     background-size: 100% 100%;
     background-position: center;
     cursor: pointer;
+    flex:1;
+    margin: 10px;
+    min-width: 100px;
+    min-height: 60px;
+    max-height: 100%;
+    max-width: 100%;
 }
 
 #pmvideoElement2 {
-	width: 50%;
-	height: 100%;
+    border-radius: 10px;
 	background-color: #5865F2;
     object-fit: cover;
     transform: rotateY(180deg);
@@ -2727,37 +2758,49 @@ aside ul li:nth-child(3) ul li{
     background-size: 100% 100%;
     background-position: center;
     opacity: 0.4;
+    flex:1;
+    margin: 10px;
+    min-width: 100px;
+    min-height: 60px;
+    max-height: 100%;
+    max-width: 100%;
 }
 
 
-#pmscreenshare1 {
-	width: 400px;
-	height: 220px;
+/* #pmscreenshare1 {
     border-radius: 10px;
 	background-color: #FEA726;
     object-fit: cover;
-    transform: rotateY(180deg);
     background-image:url('profile/video_default1.png');
     background-size: 100% 100%;
     background-position: center;
     cursor: pointer;
-    display:none
+    flex:1;
+    margin: 10px;
+    min-width: 100px;
+    min-height: 60px;
+    max-height: 100%;
+    max-width: 100%;
+    display:none;
 }
 
 
 #pmscreenshare2 {
-	width: 400px;
-	height: 220px;
     border-radius: 10px;
-	background-color: #FEA726;
+	background-color: #5865F2;
     object-fit: cover;
-    transform: rotateY(180deg);
     background-image:url('profile/video_default1.png');
     background-size: 100% 100%;
     background-position: center;
     cursor: pointer;
-    display: none;
-}
+    flex:1;
+    margin: 10px;
+    min-width: 100px;
+    min-height: 60px;
+    max-height: 100%;
+    max-width: 100%;
+    display:none;
+} */
 
 .incoming_pmcall{
     position: absolute;
