@@ -278,6 +278,7 @@ io.on("connection", function (socket) {
       socket.emit("load-rooms", roomsname);
 
       if (roomdata[0].roomusers.length == 0) {
+
         roomdata[0].roomusers[0] = {
           name: user.name,
           id: user._id,
@@ -374,7 +375,7 @@ io.on("connection", function (socket) {
         });
       }else{
         var user = await Register.findOne({
-          _id: data.id.replace("user","")
+          _id: data.id.replace("action","")
         });
       }
       socket.emit("load_details", user);
@@ -395,11 +396,11 @@ io.on("connection", function (socket) {
     try {
       if (data.type == "register") {
         var pm_loaded = await Register.find({
-          _id: data.id.replace("user", " ").trim(),
+          _id: data.id.replace("user", ""),
         });
       } else {
         var pm_loaded = await Gusers.find({
-          _id: data.id.replace("user", " ").trim(),
+          _id: data.id.replace("user", ""),
         });
       }
 
@@ -540,7 +541,7 @@ io.on("connection", function (socket) {
         );
 
         await Register.updateOne(
-          { _id: data.receiver_id.replace("user", " ").trim() },
+          { _id: data.receiver_id.replace("action", "") },
           { $push: { frnds: data } }
         );
       }
@@ -558,33 +559,26 @@ io.on("connection", function (socket) {
       }
 
       if (data.status == "declined") {
-        if (data.receiver_id.includes("user")) {
           var result1 = await Register.updateOne(
             { _id: data.sender_id },
-            {
-              $pull: {
-                frnds: {
-                  sender_id: data.receiver_id.replace("user", " ").trim(),
-                },
-              },
-            }
-          );
+            { $pull: {frnds: { sender_id: data.receiver_id.replace("action","") } } }
+          )
 
           var result2 = await Register.updateOne(
-            { _id: data.receiver_id.replace("user", " ").trim() },
+            { _id: data.receiver_id.replace("action","")},
             { $pull: { frnds: { receiver: data.sender } } }
-          );
-        } else {
-          var result1 = await Register.updateOne(
+          );;
+
+          
+          var result3 = await Register.updateOne(
             { _id: data.sender_id },
-            { $pull: { frnds: { sender_id: data.receiver_id.trim() } } }
+            { $pull: { frnds: { receiver_id: data.receiver_id } } }
           );
 
-          var result2 = await Register.updateOne(
-            { _id: data.receiver_id.trim() },
-            { $pull: { frnds: { receiver: data.sender } } }
+          var result4 = await Register.updateOne(
+            { _id: data.receiver_id.replace("action","")},
+            { $pull: { frnds: { sender: data.sender } } }
           );
-        }
       }
     } catch (error) {
       console.log(error);

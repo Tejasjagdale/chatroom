@@ -1086,6 +1086,7 @@ body {
     width:80%;
     display: flex;
     margin-top:10px;
+    margin-right: 20%;
 }
 
 .profile{
@@ -2547,7 +2548,7 @@ aside ul li:nth-child(3) ul li{
 
 .persnol_chat_model .pmchathead {
     width: 100%;
-    min-height: 15%;
+    min-height: 13%;
     background-color: #4D426D;
     color: white;
     font-size: 25px;
@@ -2599,7 +2600,7 @@ aside ul li:nth-child(3) ul li{
 
 .pmchat_msg{
     width: 100%;
-    height:85%;
+    height:88%;
     display: flex;
     flex-direction: column;
     align-items: end;
@@ -2615,7 +2616,7 @@ aside ul li:nth-child(3) ul li{
     width:100%;
     height:55%;
     background-color: black;
-    z-index: 50;
+    z-index: 41;
     display: none;
 }
 
@@ -2626,7 +2627,59 @@ aside ul li:nth-child(3) ul li{
     justify-content: space-around;
     align-items: center;
     position: relative;
-    padding:10px;
+}
+
+.video_wrapper1{
+    position: relative;
+    width:50%;
+    height:100%;
+    max-height: 100%;
+    max-width: 100%;
+}
+
+.video_wrapper1 label{
+    padding:5px 20px;
+    position: absolute;
+    top:10px;
+    left:10px;
+    font-size: 18px;
+    background-color: rgba( 0, 0, 0, 0.5);
+    color:white;
+    border-radius: 10px;
+}
+
+.video_wrapper2{
+    position: relative;
+    width:50%;
+    height:100%;
+    max-height: 100%;
+    max-width: 100%;
+    font-size: 18px;
+}
+
+.video_wrapper2 label{
+    padding:5px 20px;
+    position: absolute;
+    top:10px;
+    left:10px;
+    background-color: rgba( 0, 0, 0, 0.5);
+    color:white;
+    border-radius: 10px;
+}
+
+.video_wrapper2 span{
+    position: absolute;
+    top:10px;
+    right:10px;
+    font-size: 15px;
+    width:30px;
+    height:30px;
+    background-color: rgba( 0, 0, 0, 0.5);
+    color:white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .activefil{
@@ -2732,38 +2785,28 @@ aside ul li:nth-child(3) ul li{
 
 
 #pmvideoElement1 {
-    border-radius: 10px;
 	background-color: #FEA726;
     object-fit: cover;
-    transform: rotateY(180deg);
     background-image:url('profile/video_default1.png');
-    background-size: 100% 100%;
+    background-size: 100px 100px;
+    background-repeat: no-repeat;
     background-position: center;
     cursor: pointer;
     flex:1;
-    margin: 10px;
-    min-width: 100px;
-    min-height: 60px;
-    max-height: 100%;
-    max-width: 100%;
+    width: 100%;
+    height:100%;
 }
 
 #pmvideoElement2 {
-    border-radius: 10px;
 	background-color: #5865F2;
     object-fit: cover;
-    transform: rotateY(180deg);
     cursor: pointer;
     background-image:url('profile/video_default4.png');
     background-size: 100% 100%;
     background-position: center;
-    opacity: 0.4;
     flex:1;
-    margin: 10px;
-    min-width: 100px;
-    min-height: 60px;
-    max-height: 100%;
-    max-width: 100%;
+    width:100%;
+    height:100%;
 }
 
 

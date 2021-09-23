@@ -3,6 +3,7 @@ var userinpmcall;
 var userinroomcall;
 var callerSignal;
 var MyStream;
+var captureStream = null;
 
 
 async function getstream(){
@@ -40,9 +41,9 @@ function muteCam() {
     if(MyStream){
             MyStream.getVideoTracks().forEach(track => track.enabled = !track.enabled);
         if(MyStream.getVideoTracks()[0].enabled){
-            document.querySelector(".pmvideo_btn").innerHTML = `<i class="fas fa-video-slash"></i>`;
-        }else{
             document.querySelector(".pmvideo_btn").innerHTML = `<i class="fas fa-video"></i>`;
+        }else{
+            document.querySelector(".pmvideo_btn").innerHTML = `<i class="fas fa-video-slash"></i>`;
         }
     }
 }
@@ -54,7 +55,8 @@ async function pmvideostart(){
         const stream = await getstream();
         MyStream = stream;
         document.querySelector(".pm_video_div").setAttribute("style","display:block");
-        
+        document.querySelector(".video_wrapper1 label").innerText = username;
+        document.querySelector(".video_wrapper2 label").innerText = document.querySelector(".pm_type").innerText;
         document.getElementById("pmvideoElement1").srcObject = MyStream;
         document.querySelector(".pmvideo_btn").innerHTML = `<i class="fas fa-video-slash"></i>`;
 
@@ -67,13 +69,31 @@ async function pmvideostart(){
         peer.on('error', err => console.log('error', err));
 
         peer.on("signal",data =>{
+            if(data === 'screenshare'){
+                console.log(data)
+            }else{
             socket.emit("pmcall",{"id":this_userid,"name":username,"rcallid":document.querySelector(".pmchathead").id,"call":"video","signal":data});
+            }
         });
 
         peer.on("stream",stream =>{
-            document.getElementById("pmvideoElement2").setAttribute("style","display:block");
             document.getElementById("pmvideoElement2").srcObject = stream;
-            document.getElementById("pmvideoElement2").style.opacity = 1;
+            if(stream){
+                stream.getAudioTracks().forEach(track => track.enabled = !track.enabled);
+                if(stream.getAudioTracks()[0].enabled){
+                    document.querySelector(".pmmic_btn").innerHTML = `<i class="fas fa-microphone"></i>`;
+                    document.querySelector(".mainmic").innerHTML = `<i class="fas fa-microphone"></i>`;
+                }else{
+                    document.querySelector(".pmmic_btn").innerHTML = `<i class="fas fa-microphone-slash"></i>`;
+                    document.querySelector(".mainmic").innerHTML = `<i class="fas fa-microphone-slash"></i>`;
+                }
+            }else{
+                if(document.querySelector(".mainmic").innerHTML == `<i class="fas fa-microphone"></i>`){
+                    document.querySelector(".mainmic").innerHTML = `<i class="fas fa-microphone-slash"></i>`;
+                }else{
+                    document.querySelector(".mainmic").innerHTML = `<i class="fas fa-microphone"></i>`;
+                }
+            }
         });
 
         peer.on('dissconnect', (data) => {
@@ -110,7 +130,6 @@ async function pmaudiostart(){
         const stream = await getstream();
         MyStream = stream;
         document.querySelector(".pm_video_div").setAttribute("style","display:block");
-
         document.getElementById("pmvideoElement1").srcObject = MyStream;
 
         peer = new SimplePeer({
@@ -123,12 +142,15 @@ async function pmaudiostart(){
         peer.on('error', err => console.log('error', err));
 
         peer.on("signal",data =>{
+            if(data === 'screenshare'){
+                console.log(data)
+            }else{
             socket.emit("pmcall",{"id":this_userid,"name":username,"rcallid":document.querySelector(".pmchathead").id,"call":"video","signal":data});
+            }
         });
 
         peer.on("stream",stream =>{
             document.getElementById("pmvideoElement2").srcObject = stream;
-            document.getElementById("pmvideoElement2").style.opacity = 1;
         });
 
         peer.on('dissconnect', (data) => {
@@ -186,6 +208,9 @@ async function acceptcall(event){
     ringtone.pause();
     ringtone.src = ringtone.src;
 
+    document.querySelector(".video_wrapper1 label").innerText = username;
+    document.querySelector(".video_wrapper2 label").innerText = document.querySelector(".scall_name").innerText;
+
     pmchat(document.querySelector(".incoming_pmcall").id,document.querySelector(".scall_name").innerText,event);
     const stream = await getstream();
     MyStream = stream;
@@ -206,7 +231,6 @@ async function acceptcall(event){
     });
 
     peer.on("stream",stream =>{
-        console.log(stream.getVideoTracks())
         document.getElementById("pmvideoElement1").srcObject = MyStream;
         document.getElementById("pmvideoElement2").srcObject = stream;
         muteCam();
@@ -231,8 +255,7 @@ async function acceptcall(event){
     peer.signal(callerSignal);
 
     document.querySelector(".incoming_pmcall").setAttribute("style","display:none");
-    document.querySelector(".pm_video_div").setAttribute("style","display:block");
-    document.getElementById("pmvideoElement2").style.opacity = 1;   
+    document.querySelector(".pm_video_div").setAttribute("style","display:block");  
 }
 
 async function declinecall(){
@@ -244,54 +267,51 @@ async function declinecall(){
 
 
 async function startCapture(displayMediaOptions) {
-    let captureStream = null;
-
     try {
         captureStream = await navigator.mediaDevices.getDisplayMedia(displayMediaOptions);
-        document.getElementById("pmvideoElement1").setAttribute("style","width: 50%;height: 100%;transform:rotatey(0deg)");
-        document.getElementById("pmvideoElement2").setAttribute("style","width: 50%;height: 100%;opacity:1");
 
-        captureStream.onended =  function(){
+        captureStream.addEventListener('ended', () => {
             stopCapture();
-        }
-
+            console.log("aiugasiy")
+        });
     } catch(err) {
         console.error("Error: " + err);
     }
     document.querySelector(".pmshare_btn").setAttribute("onclick","stopCapture()");
     document.querySelector(".pmshare_btn").setAttribute("style","background-image:url('cshare.png')")
-    document.getElementById("pmvideoElement1").srcObject = captureStream;
-    peer.send('screanshare')
-    // peer.addStream(captureStream.getVideoTracks()[0])
+    if(window.innerWidth >= 525){
+        document.getElementById("pmvideoElement1").srcObject = captureStream;
+    }else{
+        document.getElementById("pmvideoElement1").style.display = 'none';
+    }
+    peer.send('screanshare');
     peer.replaceTrack(peer.streams[0].getVideoTracks()[0], captureStream.getVideoTracks()[0], peer.streams[0]);
 }
 
 async function stopCapture() {
+    console.log(captureStream)
     document.querySelector(".pmshare_btn").setAttribute("onclick","startCapture()");
     document.querySelector(".pmshare_btn").setAttribute("style","background-image:url('share.png')")
     document.getElementById("pmvideoElement1").srcObject = MyStream;
     peer.replaceTrack(peer.streams[0].getVideoTracks()[0],MyStream.getVideoTracks()[0],peer.streams[0])
-    document.getElementById("pmvideoElement1").setAttribute("style","transform:rotateY(180deg)")
 }
 
 function enlarge(){
     document.querySelector(".pmvideo_enlarge").setAttribute("onclick","backtosize()");
     document.querySelector(".pm_video_div").setAttribute("style","min-height:100vh;width:100vw;top:0%;display:block");
-    document.getElementById("pmvideoElement1").setAttribute("style","width:50%;height:100%;");
-    document.getElementById("pmvideoElement2").setAttribute("style","width:50%;height:100%;");
-    document.getElementById("pmvideoElement2").style.opacity = 1;
     document.querySelector(".pmvideo_enlarge").classList.remove("fa-expand-wide");
     document.querySelector(".pmvideo_enlarge").classList.add("fa-compress-wide");
+    document.querySelector(".video_wrapper1").setAttribute("style","width: 50%;height: 70%;");
+    document.querySelector(".video_wrapper2").setAttribute("style","width: 50%;height: 70%;");
 };
 
 function backtosize(){
     document.querySelector(".pmvideo_enlarge").setAttribute("onclick","enlarge()");
-    document.querySelector(".pm_video_div").setAttribute("style","height:80%;display:block");
-    document.getElementById("pmvideoElement1").setAttribute("style","width:50%;height:100%");
-    document.getElementById("pmvideoElement2").setAttribute("style","width:50%;height:100%");
-    document.getElementById("pmvideoElement2").style.opacity = 1;
+    document.querySelector(".pm_video_div").setAttribute("style","height:55%;display:block");
     document.querySelector(".pmvideo_enlarge").classList.remove("fa-compress-wide");
     document.querySelector(".pmvideo_enlarge").classList.add("fa-expand-wide");
+    document.querySelector(".video_wrapper1").setAttribute("style","width: 50%;height: 100%;");
+    document.querySelector(".video_wrapper2").setAttribute("style","width: 50%;height: 100%;");
 }
 
 
@@ -357,8 +377,17 @@ function cssfilter(opr){
 }
 
 const zoomvideo=(id)=>{
-    ['pmvideoElement1','pmvideoElement2','pmscreenshare1','pmscreenshare2'].forEach((elem)=>{
-        document.getElementById(elem).setAttribute('style',"display:none")
-    });
-    document.getElementById(id).setAttribute("style","display:flex;width:100%;height:100%;marging:0px;border-radius:10px");
+    if(window.innerWidth >= 525){
+        if(Math.floor((document.getElementById(id).clientWidth/document.querySelector('.pmvideo_wrapper').clientWidth)*100) === 50){
+            ['.video_wrapper1','.video_wrapper2'].forEach((elem)=>{
+                document.querySelector(elem).setAttribute('style',"display:none")
+            });
+            document.getElementById(id).parentNode.setAttribute("style","display:flex;width:100%;height:100%");
+            console.log(document.getElementById(id).parentNode)
+        }else{
+            ['.video_wrapper1','.video_wrapper2'].forEach((elem)=>{
+                document.querySelector(elem).setAttribute('style',"display:flex;width:50%;height:100%")
+            })
+        }
+    }
 }

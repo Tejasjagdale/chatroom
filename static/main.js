@@ -17,7 +17,7 @@
     var msg_noti = 0;
     var alert_noti = 0;
     var user_pms = 0;
-    const socket = io('https://temp-app-chatroom.herokuapp.com');
+    const socket = io('http://localhost:3812');
    
     var ca = document.cookie.split(';').map(cookie => cookie.split('=')).reduce((accumulator,[key,value])=>({...accumulator, [key.trim()]:decodeURIComponent(value)}),{});
     
@@ -669,6 +669,7 @@
         }
 
         if(data.status == "declined"){
+            console.log(data)
             document.getElementById("frnd"+data.sender_id).remove();
             frnds_list.forEach((items,index)=> {
                 if(items.receiver == data.sender){
@@ -995,12 +996,13 @@
 
     socket.on("load-frnds",(data)=>{
         frnds_list =  data.frnds
+        console.log(frnds_list)
          
         data.frnds.forEach((item)=>{
             if(item.status == "accepted"){
                 var frnd = document.createElement("DIV");
                 if(item.sender == username){
-                    var frnd_id = item.receiver_id.replace("user"," ").trim();
+                    var frnd_id = item.receiver_id.replace("action","");
                     var name = item.receiver;
                 }else{
                     var frnd_id = item.sender_id;
@@ -1034,7 +1036,12 @@
         var user_div = document.getElementById(event);
         var top = user_div.offsetTop;
 
-        document.querySelector(".addfreind").id = event.replace("user","frnd");
+        if(event.includes('frnd')){
+            document.querySelector(".addfreind").id = event.replace("frnd","afrnd");
+        }else{
+            document.querySelector(".addfreind").id = event.replace("user","afrnd");
+        }
+
         document.querySelector(".admin_action .head").id = user_div.classList[1];
 
         document.querySelector(".user_details").setAttribute("style", `display:block;top:${top+30}px`);
@@ -1056,7 +1063,11 @@
                 }
                 document.querySelector(".user_details .addfreind").setAttribute("style", "display:flex");
                 document.querySelector(".pm_chat").setAttribute("onclick","pmchat(this.id,this.classList,event)")
-                document.querySelector(".pm_chat").id = user_div.id.replace("user","pmuser");
+                if(user_div.id.includes('frnd')){
+                    document.querySelector(".pm_chat").id = user_div.id.replace("frnd","pmuser");
+                }else{
+                    document.querySelector(".pm_chat").id = user_div.id.replace("user","pmuser");
+                }
                 document.querySelector(".pm_chat").classList = "pm_chat";
                 document.querySelector(".pm_chat").classList.add(document.querySelector(`#${event} .username`).innerText);
                 document.querySelector(".pm_chat").classList.add(user_div.classList[1]);
@@ -1080,28 +1091,29 @@
                 "sender":username,
                 "receiver": event.target.id,
                 "sender_id":this_userid,
-                "receiver_id": event.target.parentNode.parentNode.id.replace("alert"," "),
+                "receiver_id": event.target.parentNode.parentNode.id.replace("alert",""),
                 "status":"accepted",
             }
 
             frnds_list.push(frnd_query);
             var frnd = document.createElement("DIV");
-            frnd.id = "frnd" + event.target.parentNode.parentNode.id.replace("alert"," ").trim();
+            frnd.id = "frnd" + event.target.parentNode.parentNode.id.replace("alert","");
             frnd.className = "freind";
 
             document.querySelector(`.freinds`).appendChild(frnd);
-            document.getElementById("frnd" + event.target.parentNode.parentNode.id.replace("alert"," ").trim()).innerHTML = `<span class="uprofile" ></span><p class="username">${event.target.id}</p><div><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
-            document.getElementById("frnd" + event.target.parentNode.parentNode.id.replace("alert"," ").trim()).classList.add('register');
-            document.getElementById("frnd" + event.target.parentNode.parentNode.id.replace("alert"," ").trim()).setAttribute("onclick", "user_profile(this.id)");
+            document.getElementById("frnd" + event.target.parentNode.parentNode.id.replace("alert","")).innerHTML = `<span class="uprofile" ></span><p class="username">${event.target.id}</p><div><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
+            document.getElementById("frnd" + event.target.parentNode.parentNode.id.replace("alert","")).classList.add('register');
+            document.getElementById("frnd" + event.target.parentNode.parentNode.id.replace("alert","")).setAttribute("onclick", "user_profile(this.id)");
             frnds_list.push(frnd_query);
             socket.emit("frnd_query",frnd_query);
             document.getElementById(event.target.parentNode.parentNode.id).remove();
+        
         } if (opretion_type == "decline") {
             var frnd_query = {
                 "sender":username,
                 "receiver": event.target.id,
                 "sender_id":this_userid,
-                "receiver_id": event.target.parentNode.parentNode.id.replace("alert"," "),
+                "receiver_id": event.target.parentNode.parentNode.id.replace("alert",""),
                 "status":"declined",
             }
             socket.emit("frnd_query",frnd_query);
@@ -1122,13 +1134,16 @@
     }
 
     const RemoveFreind=(id)=>{
-        if(id.includes("user")){
-            document.getElementById(id.replace("user","frnd")).remove();
-            var recv_id=  id;
+        if(id.includes("action")){
+            document.getElementById(id.replace("action","frnd")).remove();
+            var recv_id = id;
         }else{
+            console.log(id)
             document.getElementById(id).remove();
-            var recv_id =  id
+            var recv_id = id.replace("frnd","action")
         }
+
+
 
         const receiver = document.querySelector(".admin_action .head span").innerText;
 
@@ -1139,17 +1154,19 @@
                 "receiver_id": recv_id,
                 "status":"declined",
             }
-        console.log(frnd_query)
+
         socket.emit("frnd_query",frnd_query);
         alertclose(event);
 
         frnds_list.forEach((items,index)=> {
+            console.log(items,receiver);
             if(items.receiver == receiver){
                 frnds_list.splice(index,1);
             }
             if(items.sender == receiver){
                 frnds_list.splice(index,1);
             }
+            console.log(frnds_list);
         });
     }
 
@@ -1340,8 +1357,8 @@
             id = "user"+id;
             var receiver = name;
         }
-        if(id.includes("frnd")){
-            id = id.replace("frnd","user");
+        if(id.includes("pmfrnd")){
+            id = id.replace("pmfrnd","user");
         }
             document.querySelector(".persnol_chat_model").innerHTML = `     <div class="pmchathead">
                                                                             <div class="pm_type ${document.querySelector(`.users #${id}`).classList[1]}">

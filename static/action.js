@@ -37,14 +37,19 @@ document.getElementById("search_any").addEventListener("keyup",(event)=>{
 });
 
 const action=(id)=>{
-    document.querySelector(".action-container").setAttribute("id",id.replace("frnd","action"));
+    console.log(id)
+    document.querySelector(".action-container").setAttribute("id",id.replace("afrnd","action"));
     document.querySelector(".admin_action .head span").innerHTML =`<span id="action_dp"></span> ${document.querySelector(".user_details .ud_head p").innerText}`
     document.querySelector(".admin_action").classList.add("activeb2");
     document.querySelector(".alert").setAttribute("style", "display:block");
     document.querySelector(".admin_action").setAttribute("style", "animation: ZoomIn 0.3s ease-out");
 
+    document.querySelector("#actions4").innerHTML = `<i class="fas fa-user-plus"></i> Add Friend`;
+    document.querySelector("#actions4").setAttribute("style","color:#008000");
+    document.querySelector("#actions4").setAttribute("onclick","addfreind('send',this.parentNode.parentNode.id)");
+
     frnds_list.forEach((item)=> {
-        if(item.sender_id.trim() == id.replace("user"," ").trim() || item.receiver_id.replace("user"," ").trim() == id.replace("user"," ").trim() || item.sender_id.trim() == id.replace("frnd"," ").trim() || item.receiver_id.replace("user"," ").trim() == id.replace("frnd"," ").trim()){
+        if(item.sender_id.trim() == id.replace("frnd","") || item.receiver_id.replace("action","") == id.replace("frnd","") || item.sender_id.trim() == id.replace("afrnd","") || item.receiver_id.replace("action","") == id.replace("afrnd","")){
             document.querySelector("#actions4").innerHTML = `<i class="fas fa-user-times"></i> Remove freind`;
             document.querySelector("#actions4").setAttribute("style","color:red");
             document.querySelector("#actions4").setAttribute("onclick","RemoveFreind(this.parentNode.parentNode.id)");
