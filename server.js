@@ -774,7 +774,7 @@ io.on("connection", function (socket) {
       roomdata.forEach((items, index1) => {
         if (items.roomname == data[1]) {
           items.roomroles.forEach((item, index) => {
-            if ((item.userid = data[0].userid)) {
+            if (item.userid == data[0].userid) {
               roomdata[index1].roomroles.splice(index, 1);
             }
           });

@@ -48,6 +48,18 @@ const action=(id)=>{
     document.querySelector("#actions4").setAttribute("style","color:#008000");
     document.querySelector("#actions4").setAttribute("onclick","addfreind('send',this.parentNode.parentNode.id)");
 
+    document.querySelector("#actions1").innerHTML = `<i class="fas fa-comment-slash"></i> Mute`;
+    document.querySelector("#actions1").setAttribute("style","color:black");
+    document.querySelector("#actions1").setAttribute("onclick","mute_user(this.parentNode.parentNode.id)");
+
+    document.querySelector("#actions3").innerHTML = `<i class="fas fa-user-slash"></i> Ban`;
+    document.querySelector("#actions3").setAttribute("style","color:black");
+    document.querySelector("#actions3").setAttribute("onclick","ban_user(this.parentNode.parentNode.id)");
+
+    document.querySelector("#actions2").innerHTML = `<i class="fas fa-ban"></i> Block`;
+    document.querySelector("#actions2").setAttribute("style","color:black");
+    document.querySelector("#actions2").setAttribute("onclick","block_user(this.parentNode.parentNode.id)");
+
     frnds_list.forEach((item)=> {
         if(item.sender_id.trim() == id.replace("frnd","") || item.receiver_id.replace("action","") == id.replace("frnd","") || item.sender_id.trim() == id.replace("afrnd","") || item.receiver_id.replace("action","") == id.replace("afrnd","")){
             document.querySelector("#actions4").innerHTML = `<i class="fas fa-user-times"></i> Remove freind`;
@@ -107,10 +119,6 @@ const action=(id)=>{
             document.querySelector("#actions1").innerHTML = `<i class="fas fa-comment"></i> Unmute`;
             document.querySelector("#actions1").setAttribute("style","color:red");
             document.querySelector("#actions1").setAttribute("onclick","removemute2(this.parentNode.parentNode.id)");
-        }else{
-            document.querySelector("#actions1").innerHTML = `<i class="fas fa-comment-slash"></i> Mute`;
-            document.querySelector("#actions1").setAttribute("style","color:black");
-            document.querySelector("#actions1").setAttribute("onclick","mute_user(this.parentNode.parentNode.id)");
         }
     });
 
@@ -119,10 +127,6 @@ const action=(id)=>{
             document.querySelector("#actions2").innerHTML = `<i class="fas fa-ban"></i> Unblock`;
             document.querySelector("#actions2").setAttribute("style","color:red");
             document.querySelector("#actions2").setAttribute("onclick","removeblock2(this.parentNode.parentNode.id)");
-        }else{
-            document.querySelector("#actions2").innerHTML = `<i class="fas fa-ban"></i> Block`;
-            document.querySelector("#actions2").setAttribute("style","color:black");
-            document.querySelector("#actions2").setAttribute("onclick","block_user(this.parentNode.parentNode.id)");
         }
     })
 
@@ -131,10 +135,6 @@ const action=(id)=>{
             document.querySelector("#actions3").innerHTML = `<i class="fas fa-user"></i> Unban`;
             document.querySelector("#actions3").setAttribute("style","color:red");
             document.querySelector("#actions3").setAttribute("onclick","removeban2(this.parentNode.parentNode.id)");
-        }else{
-            document.querySelector("#actions3").innerHTML = `<i class="fas fa-user-slash"></i> Ban`;
-            document.querySelector("#actions3").setAttribute("style","color:black");
-            document.querySelector("#actions3").setAttribute("onclick","ban_user(this.parentNode.parentNode.id)");
         }
     })
 

@@ -326,9 +326,9 @@
             room_user.id = "user" + data.user.id;
             room_user.className = "user";
 
-            vc_users.filter((elem)=>{
+            // vc_users.filter((elem)=>{
 
-            });
+            // });
 
             document.querySelector(`.users`).appendChild(room_user);
             document.getElementById("user"+ data.user.id).setAttribute("onclick", "user_profile(this.id)");
