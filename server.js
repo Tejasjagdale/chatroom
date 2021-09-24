@@ -205,6 +205,7 @@ var activeusers = [];
 var user_sockets = [];
 var roomsname = [];
 var roomdata = [];
+var block = false;
 
 async function loader() {
   try {
@@ -303,7 +304,6 @@ io.on("connection", function (socket) {
         ];
         roomdata[0].userssockets = [...roomdata[0].userssockets, socket.id];
       }
-
       activeusers.push({
         name: user.name,
         id: user._id,
@@ -312,6 +312,7 @@ io.on("connection", function (socket) {
         blocks: user.blocks,
         current_room: "Main Room",
       });
+
       user_sockets.push(socket.id);
 
       socket.emit("user-joined", {
@@ -422,66 +423,68 @@ io.on("connection", function (socket) {
     }
   });
 
-  socket.on("pmmsg-send", function (data1) {
+  socket.on("pmmsg-send", async (data1)=> {
+    block = false;
+    console.log(activeusers)
     var receiver = data1.receiver_id.replace("user","");
     activeusers.forEach((elem, ind) => {
-      if (elem.id == receiver) {
-        activeusers[ind].blocks.forEach(async function (elemt){
-            console.log(elemt.userid,data1.sender_id);
-          if (elemt.userid.replace("user","") == data1.sender_id) {
-              socket.emit("pmblock","you can't send message currently to this user!")
-          } 
-          else {
-            try {
-              activeusers.forEach(function (items, index) {
-                console.log(items.id,receiver)
-                if (items.id == receiver) {
-                  socket.broadcast.to(user_sockets[index]).emit("pmmsg-send", data1);
-                }
-              });
-
-              if (data1.sender_type == "register") {
-                await Register.updateOne(
-                  { _id: data1.sender_id },
-                  { $push: { pmmsgs: data1 } }
-                );
-
-                if (data1.receiver_type == "register") {
-                  await Register.updateOne(
-                    { _id: data1.receiver_id.replace("user", "") },
-                    { $push: { pmmsgs: data1 } }
-                  );
-                } else {
-                  await Gusers.updateOne(
-                    { _id: data1.receiver_id.replace("user", "") },
-                    { $push: { pmmsgs: data1 } }
-                  );
-                }
-              } else {
-                await Gusers.updateOne(
-                  { _id: data1.sender_id },
-                  { $push: { pmmsgs: data1 } }
-                );
-
-                if (data1.receiver_type == "guest") {
-                  await Gusers.updateOne(
-                    { _id: data1.receiver_id.replace("user", "") },
-                    { $push: { pmmsgs: data1 } }
-                  );
-                } else {
-                  await Register.updateOne(
-                    { _id: data1.receiver_id.replace("user", "") },
-                    { $push: { pmmsgs: data1 } }
-                  );
-                }
-              }
-            } catch (error) {
-              console.log(error);
+        if (elem.id == receiver) {
+          activeusers[ind].blocks.forEach(async function (elemt){
+            if (elemt.userid.replace("user","") == data1.sender_id) {
+                socket.emit("pmblock","you can't send message currently to this user!");
+                block = true;
             }
+          });
+        }
+    });
+    if(!block){
+      try {
+        activeusers.forEach(function (items, index) {
+          console.log(items)
+          if (items.id == receiver) {
+            socket.broadcast.to(user_sockets[index]).emit("pmmsg-send", data1);
           }
         });
+
+        if (data1.sender_type == "register") {
+          await Register.updateOne(
+            { _id: data1.sender_id },
+            { $push: { pmmsgs: data1 } }
+          );
+
+          if (data1.receiver_type == "register") {
+            await Register.updateOne(
+              { _id: data1.receiver_id.replace("user", "") },
+              { $push: { pmmsgs: data1 } }
+            );
+          } else {
+            await Gusers.updateOne(
+              { _id: data1.receiver_id.replace("user", "") },
+              { $push: { pmmsgs: data1 } }
+            );
+          }
+        } else {
+          await Gusers.updateOne(
+            { _id: data1.sender_id },
+            { $push: { pmmsgs: data1 } }
+          );
+
+          if (data1.receiver_type == "guest") {
+            await Gusers.updateOne(
+              { _id: data1.receiver_id.replace("user", "") },
+              { $push: { pmmsgs: data1 } }
+            );
+          } else {
+            await Register.updateOne(
+              { _id: data1.receiver_id.replace("user", "") },
+              { $push: { pmmsgs: data1 } }
+            );
+          }
+        }
+      } catch (error) {
+        console.log(error);
       }
-    });
+    }
   });
 
   socket.on("room-file", (data) => {
@@ -756,19 +759,27 @@ io.on("connection", function (socket) {
   });
 
   socket.on("block_user", async (data) => {
-      console.log(data[0])
+      console.log('762',data[0])
     try {
-      await Register.updateOne(
-        { _id: data[1] },
-        { $push: { blocks: data[0] } }
-      );
+      if(data[0].usertype == 'register'){
+        await Register.updateOne(
+          { _id: data[1] },
+          { $push: { blocks: data[0] } }
+        );
+      }else{
+        await Gusers.updateOne(
+          { _id: data[1] },
+          { $push: { blocks: data[0] } }
+        );
+      }
+      
 
-      activeusers.forEach((element) => {
-        if ((element.id = data.id)) {
-          activeusers.push(data[0]);
+      activeusers.forEach((element,ind) => {
+        if (element.id == data[0].id) {
+          activeusers[ind].blocks.push(data[0]);
         }
       });
-
+      console.log(activeusers)
       socket.emit("blocked_user", data);
     } catch (error) {
       console.log(error);
@@ -845,19 +856,26 @@ io.on("connection", function (socket) {
   });
 
   socket.on("remove_block", async (data) => {
+    console.log(data)
     try {
-        console.log(data[0].userid);
-        await Register.updateOne(
-            { _id : data[1] },
+        if(data[0].usertype == 'register'){
+          await Register.updateOne(
+            { _id: data[1] },
             { $pull: { blocks: { userid: data[0].userid } } }
-        );
+          );
+        }else{
+          await Gusers.updateOne(
+            { _id: data[1] },
+            { $pull: { blocks: { userid: data[0].userid } } }
+          );
+        }
 
         activeusers.forEach((items, index1) => {
-            if (items.id = data[0].id) {
+            if (items.id == data[1]) {
                 items.blocks.forEach((item, index) => {
-                    if (item.userid = data[0].userid) {
+                    if (item.userid == data[0].userid) {
                         activeusers[index1].blocks.splice(index, 1);
-                        console.log(activeusers[index1].blocks)
+                        console.log(activeusers[index1])
                     }
                 });
             }

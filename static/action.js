@@ -220,6 +220,13 @@ document.querySelector("#roomsetting").addEventListener("click", () => {
     document.querySelector(".Room_settings").setAttribute("style", "animation: ZoomIn 0.3s ease-out");
 });
 
+document.querySelector("#blocklist").addEventListener("click", () => {
+    document.querySelector(".alert").setAttribute("style", "display:block");
+    document.querySelector(".blocked").classList.add("activeb2");
+    document.querySelector(".blocked").setAttribute("style", "animation: ZoomIn 0.3s ease-out");
+});
+
+
 document.querySelector(".addroom").addEventListener("click", () => {
     document.querySelector(".alert").setAttribute("style", "display:block");
     document.querySelector(".create_room").classList.add("activeb2");
@@ -246,6 +253,12 @@ document.querySelector(".admin_action").addEventListener("click", (e) => {
 });
 
 document.querySelector(".Room_settings").addEventListener("click", (e) => {
+    if (e.target !== e.currentTarget) {
+        e.stopPropagation();
+    }
+});
+
+document.querySelector(".blocked").addEventListener("click", (e) => {
     if (e.target !== e.currentTarget) {
         e.stopPropagation();
     }
@@ -495,26 +508,33 @@ const ban_user=(userid)=>{
 
 const block_user=(userid)=>{
     var mod ={
-        "usertype":"any",
+        "usertype":user_type,
         "username":document.querySelector(".admin_action .head span").innerText,
         "userid":userid.replace("action","user"),
         "id":this_userid,
     }
+
+    const block_div = document.createElement("DIV");
+
+    block_div.id = "block" + userid.replace("action","");
+    block_div.className = "block-wrapper";
+    document.querySelector(`.blocked-container`).appendChild(block_div);
+    document.getElementById("block" + userid.replace("action","")).innerHTML = `<div class="block ${document.querySelector(".admin_action .head span").innerText} " id="blocked${userid.replace("action","")}" ><span></span> <p>${document.querySelector(".admin_action .head span").innerText}</p> <i class="fas fa-times" onclick="removeblock(event)"></i></div>`;
 
     socket.emit("block_user",[mod,this_userid]);
     alertclose(event);
 }
 
-const removeblock=(userid)=>{
+const removeblock=(event)=>{
+    console.log(event.target.parentNode)
     var mod ={
-        "usertype":"any",
-        "username":document.querySelector(".admin_action .head span").innerText,
-        "userid":userid.replace("action","user"),
+        "usertype":user_type,
+        "username":event.target.parentNode.classList[1],
+        "userid":event.target.parentNode.id.replace("blocked","user"),
         "id":this_userid,
     }
 
     socket.emit("remove_block",[mod,this_userid]);
-    alertclose(event);
 }
 
 const removerole=(userid)=>{
@@ -523,7 +543,7 @@ const removerole=(userid)=>{
         "userid":userid.replace("moderatoruser","user"),
         "username":document.querySelector(`#${userid} div p`).innerText,
     }
-
+``
     socket.emit("remove_mod",[mod,document.querySelector(".room_name").innerText]);
     alertclose(event);
 }
@@ -585,7 +605,7 @@ const removeban2=(userid)=>{
 
 const removeblock2=(userid)=>{
     var mod ={
-        "usertype":"any",
+        "usertype":user_type,
         "username":document.querySelector(".admin_action .head span").innerText,
         "userid":userid.replace("action","user").trim(),
         "id":this_userid,

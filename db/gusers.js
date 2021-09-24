@@ -35,6 +35,17 @@ const guserSchema = new mongoose.Schema({
             type:String,
         }
     }],
+    blocks:[{
+        "usertype":{
+            type:String,
+        },
+        "username":{
+            type:String,
+        },
+        "userid":{
+            type:String,
+        }
+    }],
     tokens:[{
         token:{
             type:String,

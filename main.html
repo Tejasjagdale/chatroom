@@ -110,6 +110,14 @@
             </div>
         </div>
 
+        <div class="blocked" tabindex="0">
+            <div class="head">
+                <span><i class="fas fa-trash-alt"></i> clear</span><i class="fas fa-times" onclick="alertclose(event)"></i>
+            </div>
+            <div class="blocked-container">
+            </div>
+        </div>
+
         <div class="notification" tabindex="0">
             <div class="head"><span><i class="fas fa-trash-alt"></i> clear</span><i class="fas fa-times"
                     onclick="alertclose(event)"></i>
@@ -250,7 +258,7 @@
                 </section>
                 <div><i class="fas fa-user-edit"></i> Edit Name</div>
                 <div><i class="fas fa-question-circle"></i> About me</div>
-                <div><i class="fas fa-ban"></i> Manage Blocks</div>
+                <div id="blocklist"><i class="fas fa-ban"></i> Manage Blocks</div>
                 <div><i class="fas fa-volume-up"></i> Sound setings</div>
                 <div><i class="fas fa-key-skeleton"></i> Change password</div>
                 <div><i class="fas fa-envelope"></i> Change Email</div>
