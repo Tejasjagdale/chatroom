@@ -29,9 +29,9 @@ var ca = document.cookie
     {}
   );
 
-var token = JSON.parse(ca.jwt.substr(2, ca.jwt.length)).token;
-var user_type = JSON.parse(ca.jwt.substr(2, ca.jwt.length)).user_type;
-var username = JSON.parse(ca.jwt.substr(2, ca.jwt.length)).name;
+var token = JSON.parse(ca.chatroomjwt.substr(2, ca.chatroomjwt.length)).token;
+var user_type = JSON.parse(ca.chatroomjwt.substr(2, ca.chatroomjwt.length)).user_type;
+var username = JSON.parse(ca.chatroomjwt.substr(2, ca.chatroomjwt.length)).name;
 var this_userid;
 var country;
 
@@ -912,9 +912,7 @@ socket.on("frnd_query", (data) => {
 socket.on("load_details", (data) => {
   console.log(data);
   document.querySelector(".name").innerText = data.name;
-  document.querySelector(
-    ".type"
-  ).innerHTML = `<i class="fas fa-user"></i> ${data.type}`;
+  document.querySelector(".type").innerHTML = `<i class="fas fa-user"></i> ${data.type}`;
   document.querySelector(".country p").innerHTML = data.country;
 
   document.querySelector(`.friends_display`).innerHTML = ``;

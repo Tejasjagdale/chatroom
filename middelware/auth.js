@@ -4,8 +4,8 @@ const Gusers = require("../db/gusers");
 
 const auth = async (req,res,next)=>{
     try {
-        const token = req.cookies.jwt.token;
-        const user_type = req.cookies.jwt.user_type;
+        const token = req.cookies.chatroomjwt.token;
+        const user_type = req.cookies.chatroomjwt.user_type;
         const verifyUser = jwt.verify(token,process.env.SECRET_KEY);
 
         if(user_type == "register"){

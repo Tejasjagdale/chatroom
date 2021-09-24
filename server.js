@@ -9,9 +9,10 @@ const cookieParser = require("cookie-parser");
 const auth = require("./middelware/auth");
 const jwt = require("jsonwebtoken");
 const ss = require("socket.io-stream");
-const fs = require('fs');
-const ytdl = require('ytdl-core');
+const fs = require("fs");
+const ytdl = require("ytdl-core");
 const path = require("path");
+var requestCountry = require("request-country");
 const nodemailer = require("nodemailer");
 
 const PORT = process.env.PORT || 3812;
@@ -37,9 +38,18 @@ function getRandomInt(min, max) {
 }
 
 var otp;
+var d = new Date();
+
+function getFormattedDate(date) {
+  let year = date.getFullYear();
+  let month = (1 + date.getMonth()).toString().padStart(2, "0");
+  let day = date.getDate().toString().padStart(2, "0");
+
+  return month + "/" + day + "/" + year;
+}
 
 app.get("/", function (req, res) {
-  if (req.cookies.jwt) {
+  if (res.chatroomjwt) {
     res.redirect(`/chatroom`);
   } else {
     res.sendFile(__dirname + "/home.html");
@@ -61,10 +71,10 @@ app.get("/chatroom", auth, function (req, res) {
 
 app.get("/logout", auth, async (req, res) => {
   try {
-    const token = req.cookies.jwt.token;
+    const token = res.chatroomjwt.token;
     const verifyUser = jwt.verify(token, process.env.SECRET_KEY);
-    const user_type = req.cookies.jwt.user_type;
-    res.clearCookie("jwt");
+    const user_type = res.chatroomjwt.user_type;
+    res.clearCookie("chatroomjwt");
 
     if (user_type == "guest") {
       await Gusers.deleteOne({ _id: verifyUser._id });
@@ -89,12 +99,22 @@ app.post("/register", async (req, res) => {
       email: req.body.email,
       password: req.body.password,
       type: "register",
+      joined: getFormattedDate(d),
       country: "india",
+      history: {
+        profile:
+          __dirname +
+          "/images/profile/default_dp" +
+          getRandomInt(1, 8) +
+          ".png",
+        display:
+          __dirname + "/images/wallpaper/dbg" + getRandomInt(1, 20) + ".png",
+      },
     });
 
     const token = await registeruser.generateAuthToken();
 
-    res.cookie("jwt", {
+    res.cookie("chatroomjwt", {
       token: token,
       user_type: "register",
       name: req.body.name,
@@ -140,7 +160,7 @@ app.post("/register", async (req, res) => {
     }
 
     if (!fs.existsSync(dir2)) {
-      fs.mkdirSync(dir3, {
+      fs.mkdirSync(dir2, {
         recursive: true,
       });
     }
@@ -155,6 +175,7 @@ app.post("/register", async (req, res) => {
 
     console.log("1 new user got register successfully");
   } catch (error) {
+    console.log(error);
     res.status(400).send(error);
   }
 });
@@ -179,7 +200,7 @@ app.post("/login", async (req, res) => {
 
     const token = await user.generateAuthToken();
 
-    res.cookie("jwt", {
+    res.cookie("chatroomjwt", {
       token: token,
       user_type: "register",
       name: req.body.name_email,
@@ -200,12 +221,22 @@ app.post("/glogin", async (req, res) => {
     const guestuser = new Gusers({
       name: req.body.name,
       type: "guest",
+      joined: getFormattedDate(d),
       country: "india",
+      history: {
+        profile:
+          __dirname +
+          "/images/profile/default_dp" +
+          getRandomInt(1, 8) +
+          ".png",
+        display:
+          __dirname + "/images/wallpaper/dbg" + getRandomInt(1, 20) + ".png",
+      },
     });
 
     const token = await guestuser.generateAuthToken();
 
-    res.cookie("jwt", {
+    res.cookie("chatroomjwt", {
       token: token,
       user_type: "guest",
       name: req.body.name,
@@ -226,7 +257,7 @@ app.post("/glogin", async (req, res) => {
     }
 
     if (!fs.existsSync(dir2)) {
-      fs.mkdirSync(dir3, {
+      fs.mkdirSync(dir2, {
         recursive: true,
       });
     }
@@ -246,7 +277,13 @@ app.post("/glogin", async (req, res) => {
 });
 
 app.post("/rhythm", async (req, res) => {
-  ytdl(req.body.link,{filter: 'audioonly'}).pipe(fs.createWriteStream(`rhythm/Main Room/${req.body.title}.mp3`).on('close',()=>{res.send(req.body)}));
+  ytdl(req.body.link, { filter: "audioonly" }).pipe(
+    fs
+      .createWriteStream(`rhythm/Main Room/${req.body.title}.mp3`)
+      .on("close", () => {
+        res.send(req.body);
+      })
+  );
 });
 
 var activeusers = [];
@@ -324,11 +361,10 @@ io.on("connection", function (socket) {
         var user = await Gusers.findOne({ _id: verifyUser._id });
       }
 
-      socket.emit("load-users", [roomdata[0].roomusers,roomdata[0].roomroles]);
+      socket.emit("load-users", [roomdata[0].roomusers, roomdata[0].roomroles]);
       socket.emit("load-rooms", roomsname);
 
       if (roomdata[0].roomusers.length == 0) {
-
         roomdata[0].roomusers[0] = {
           name: user.name,
           id: user._id,
@@ -419,24 +455,26 @@ io.on("connection", function (socket) {
 
   socket.on("load_profile", async (data) => {
     try {
-      if(data.usertype == 'guest'){
-        if(data.id.includes("afrnd")){
+      if (data.usertype == "guest") {
+        if (data.id.includes("afrnd")) {
           var user = await Gusers.findOne({
-            _id: data.id.replace("afrnd","")
+            _id: data.id.replace("afrnd", ""),
           });
-        }else{
+        } else {
           var user = await Gusers.findOne({
-            _id: ( data.id.includes("action") ? data.id.replace("action","") :data.id.replace("user",""))
+            _id: data.id.includes("action")
+              ? data.id.replace("action", "")
+              : data.id.replace("user", ""),
           });
         }
-      }else{
-        if(data.id.includes("afrnd")){
+      } else {
+        if (data.id.includes("afrnd")) {
           var user = await Register.findOne({
-            _id: data.id.replace("afrnd","")
+            _id: data.id.replace("afrnd", ""),
           });
-        }else{
+        } else {
           var user = await Register.findOne({
-            _id: data.id.replace("action","")
+            _id: data.id.replace("action", ""),
           });
         }
       }
@@ -472,24 +510,27 @@ io.on("connection", function (socket) {
     }
   });
 
-  socket.on("pmmsg-send", async (data1)=> {
+  socket.on("pmmsg-send", async (data1) => {
     block = false;
-    console.log(activeusers)
-    var receiver = data1.receiver_id.replace("user","");
+    console.log(activeusers);
+    var receiver = data1.receiver_id.replace("user", "");
     activeusers.forEach((elem, ind) => {
-        if (elem.id == receiver) {
-          activeusers[ind].blocks.forEach(async function (elemt){
-            if (elemt.userid.replace("user","") == data1.sender_id) {
-                socket.emit("pmblock","you can't send message currently to this user!");
-                block = true;
-            }
-          });
-        }
+      if (elem.id == receiver) {
+        activeusers[ind].blocks.forEach(async function (elemt) {
+          if (elemt.userid.replace("user", "") == data1.sender_id) {
+            socket.emit(
+              "pmblock",
+              "you can't send message currently to this user!"
+            );
+            block = true;
+          }
+        });
+      }
     });
-    if(!block){
+    if (!block) {
       try {
         activeusers.forEach(function (items, index) {
-          console.log(items)
+          console.log(items);
           if (items.id == receiver) {
             socket.broadcast.to(user_sockets[index]).emit("pmmsg-send", data1);
           }
@@ -622,26 +663,29 @@ io.on("connection", function (socket) {
       }
 
       if (data.status == "declined") {
-          var result1 = await Register.updateOne(
-            { _id: data.sender_id },
-            { $pull: {frnds: { sender_id: data.receiver_id.replace("action","") } } }
-          )
+        var result1 = await Register.updateOne(
+          { _id: data.sender_id },
+          {
+            $pull: {
+              frnds: { sender_id: data.receiver_id.replace("action", "") },
+            },
+          }
+        );
 
-          var result2 = await Register.updateOne(
-            { _id: data.receiver_id.replace("action","")},
-            { $pull: { frnds: { receiver: data.sender } } }
-          );;
+        var result2 = await Register.updateOne(
+          { _id: data.receiver_id.replace("action", "") },
+          { $pull: { frnds: { receiver: data.sender } } }
+        );
 
-          
-          var result3 = await Register.updateOne(
-            { _id: data.sender_id },
-            { $pull: { frnds: { receiver_id: data.receiver_id } } }
-          );
+        var result3 = await Register.updateOne(
+          { _id: data.sender_id },
+          { $pull: { frnds: { receiver_id: data.receiver_id } } }
+        );
 
-          var result4 = await Register.updateOne(
-            { _id: data.receiver_id.replace("action","")},
-            { $pull: { frnds: { sender: data.sender } } }
-          );
+        var result4 = await Register.updateOne(
+          { _id: data.receiver_id.replace("action", "") },
+          { $pull: { frnds: { sender: data.sender } } }
+        );
       }
     } catch (error) {
       console.log(error);
@@ -733,7 +777,6 @@ io.on("connection", function (socket) {
             }
           });
 
-
           roomdata.forEach((items, index) => {
             if (items.roomname == data.nroomname) {
               data.roles = items.roomroles;
@@ -808,27 +851,26 @@ io.on("connection", function (socket) {
   });
 
   socket.on("block_user", async (data) => {
-      console.log('762',data[0])
+    console.log("762", data[0]);
     try {
-      if(data[0].usertype == 'register'){
+      if (data[0].usertype == "register") {
         await Register.updateOne(
           { _id: data[1] },
           { $push: { blocks: data[0] } }
         );
-      }else{
+      } else {
         await Gusers.updateOne(
           { _id: data[1] },
           { $push: { blocks: data[0] } }
         );
       }
-      
 
-      activeusers.forEach((element,ind) => {
+      activeusers.forEach((element, ind) => {
         if (element.id == data[0].id) {
           activeusers[ind].blocks.push(data[0]);
         }
       });
-      console.log(activeusers)
+      console.log(activeusers);
       socket.emit("blocked_user", data);
     } catch (error) {
       console.log(error);
@@ -905,32 +947,32 @@ io.on("connection", function (socket) {
   });
 
   socket.on("remove_block", async (data) => {
-    console.log(data)
+    console.log(data);
     try {
-        if(data[0].usertype == 'register'){
-          await Register.updateOne(
-            { _id: data[1] },
-            { $pull: { blocks: { userid: data[0].userid } } }
-          );
-        }else{
-          await Gusers.updateOne(
-            { _id: data[1] },
-            { $pull: { blocks: { userid: data[0].userid } } }
-          );
-        }
+      if (data[0].usertype == "register") {
+        await Register.updateOne(
+          { _id: data[1] },
+          { $pull: { blocks: { userid: data[0].userid } } }
+        );
+      } else {
+        await Gusers.updateOne(
+          { _id: data[1] },
+          { $pull: { blocks: { userid: data[0].userid } } }
+        );
+      }
 
-        activeusers.forEach((items, index1) => {
-            if (items.id == data[1]) {
-                items.blocks.forEach((item, index) => {
-                    if (item.userid == data[0].userid) {
-                        activeusers[index1].blocks.splice(index, 1);
-                        console.log(activeusers[index1])
-                    }
-                });
+      activeusers.forEach((items, index1) => {
+        if (items.id == data[1]) {
+          items.blocks.forEach((item, index) => {
+            if (item.userid == data[0].userid) {
+              activeusers[index1].blocks.splice(index, 1);
+              console.log(activeusers[index1]);
             }
-        });
+          });
+        }
+      });
 
-        socket.emit("remove_block", data);
+      socket.emit("remove_block", data);
     } catch (error) {
       console.log(error);
     }
@@ -951,30 +993,28 @@ io.on("connection", function (socket) {
     }
   });
 
-  socket.on('join_voice',(data)=>{
-    roomdata.forEach((items,ind) => {
+  socket.on("join_voice", (data) => {
+    roomdata.forEach((items, ind) => {
       if (items.roomname == data.current_room) {
-          delete data.current_room;
-          roomdata[ind].voiceuser.push(data);
+        delete data.current_room;
+        roomdata[ind].voiceuser.push(data);
       }
     });
 
-    socket.emit('new_vuser_join',data);
-    socket.broadcast.emit('new_vuser_join',data)
-  })
+    socket.emit("new_vuser_join", data);
+    socket.broadcast.emit("new_vuser_join", data);
+  });
 
-  socket.on('leave_voice',(data)=>{
-    roomdata.forEach((items,ind) => {
+  socket.on("leave_voice", (data) => {
+    roomdata.forEach((items, ind) => {
       if (items.roomname == data.current_room) {
-          items.voiceuser.forEach(()=>{
-
-          });
+        items.voiceuser.forEach(() => {});
       }
     });
 
-    socket.emit('vuser_left',data);
-    socket.broadcast.emit('vuser_left',data);
-  })
+    socket.emit("vuser_left", data);
+    socket.broadcast.emit("vuser_left", data);
+  });
 
   socket.on("disconnect", function () {
     var i = user_sockets.indexOf(socket.id);
