@@ -2414,7 +2414,7 @@ aside ul li:nth-child(3) ul li{
 
 .profile_div .crbody .bdiv span {
     height: 100%;
-    width: 33.333%;
+    flex-grow: 1;
     display: flex;
     justify-content: center;
     align-items: center;

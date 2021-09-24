@@ -369,14 +369,26 @@ io.on("connection", function (socket) {
 
   socket.on("load_profile", async (data) => {
     try {
-      if(data.id.includes("frnd")){
-        var user = await Register.findOne({
-          _id: data.id.replace("frnd","")
-        });
+      if(data.usertype == 'guest'){
+        if(data.id.includes("afrnd")){
+          var user = await Gusers.findOne({
+            _id: data.id.replace("afrnd","")
+          });
+        }else{
+          var user = await Gusers.findOne({
+            _id: ( data.id.includes("action") ? data.id.replace("action","") :data.id.replace("user",""))
+          });
+        }
       }else{
-        var user = await Register.findOne({
-          _id: data.id.replace("action","")
-        });
+        if(data.id.includes("afrnd")){
+          var user = await Register.findOne({
+            _id: data.id.replace("afrnd","")
+          });
+        }else{
+          var user = await Register.findOne({
+            _id: data.id.replace("action","")
+          });
+        }
       }
       socket.emit("load_details", user);
     } catch (error) {
@@ -411,7 +423,7 @@ io.on("connection", function (socket) {
   });
 
   socket.on("pmmsg-send", function (data1) {
-    var receiver = data1.receiver_id.split("user")[1];
+    var receiver = data1.receiver_id.replace("user","");
     activeusers.forEach((elem, ind) => {
       if (elem.id == receiver) {
         activeusers[ind].blocks.forEach(async function (elemt){
@@ -422,10 +434,9 @@ io.on("connection", function (socket) {
           else {
             try {
               activeusers.forEach(function (items, index) {
+                console.log(items.id,receiver)
                 if (items.id == receiver) {
-                  socket.broadcast
-                    .to(user_sockets[index])
-                    .emit("pmmsg-send", data1);
+                  socket.broadcast.to(user_sockets[index]).emit("pmmsg-send", data1);
                 }
               });
 
@@ -437,12 +448,12 @@ io.on("connection", function (socket) {
 
                 if (data1.receiver_type == "register") {
                   await Register.updateOne(
-                    { _id: data1.receiver_id.replace("user", " ").trim() },
+                    { _id: data1.receiver_id.replace("user", "") },
                     { $push: { pmmsgs: data1 } }
                   );
                 } else {
                   await Gusers.updateOne(
-                    { _id: data1.receiver_id.replace("user", " ").trim() },
+                    { _id: data1.receiver_id.replace("user", "") },
                     { $push: { pmmsgs: data1 } }
                   );
                 }
@@ -454,12 +465,12 @@ io.on("connection", function (socket) {
 
                 if (data1.receiver_type == "guest") {
                   await Gusers.updateOne(
-                    { _id: data1.receiver_id.replace("user", " ").trim() },
+                    { _id: data1.receiver_id.replace("user", "") },
                     { $push: { pmmsgs: data1 } }
                   );
                 } else {
                   await Register.updateOne(
-                    { _id: data1.receiver_id.replace("user", " ").trim() },
+                    { _id: data1.receiver_id.replace("user", "") },
                     { $push: { pmmsgs: data1 } }
                   );
                 }
@@ -846,6 +857,7 @@ io.on("connection", function (socket) {
                 items.blocks.forEach((item, index) => {
                     if (item.userid = data[0].userid) {
                         activeusers[index1].blocks.splice(index, 1);
+                        console.log(activeusers[index1].blocks)
                     }
                 });
             }

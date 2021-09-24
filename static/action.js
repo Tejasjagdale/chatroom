@@ -161,13 +161,14 @@ document.querySelector(".video_div_wrapper").setAttribute("style","transform: tr
 }
 
 const view_profile=(event)=>{
+    console.log(event)
     event.stopPropagation();
 
     document.querySelector(".alert").setAttribute("style", "display:block");
     document.querySelector(".profile_div").classList = "profile_div";
     document.querySelector(".profile_div").classList.add("activeb2");
     document.querySelector(".profile_div").setAttribute("style", "animation: ZoomIn 0.3s ease-out");
-    socket.emit("load_profile",{id:document.querySelector(".pmchathead").id});
+    socket.emit("load_profile",{id:document.querySelector(".pmchathead").id,usertype:document.querySelector(".pm_type").classList[1]});
 };
 
 const view_profilef=(event)=>{
@@ -175,7 +176,7 @@ const view_profilef=(event)=>{
     document.querySelector(".profile_div").classList = "profile_div";
     document.querySelector(".profile_div").classList.add("activeb2");
     document.querySelector(".profile_div").setAttribute("style", "animation: ZoomIn 0.3s ease-out");
-    socket.emit("load_profile",{id:event.replace("frndp",""),usertype:"register"});
+    socket.emit("load_profile",{id:event.replace("frndp",""),usertype:document.getElementById(event).classList[1]});
 };
 
 
@@ -203,13 +204,13 @@ document.getElementById("notification").addEventListener("click", () => {
     document.querySelector(".notification").setAttribute("style", "animation: ZoomIn 0.3s ease-out");
 });
 
-document.querySelector("#profile_div").addEventListener("click", () => {
+document.querySelector("#profile_div").addEventListener("click", (event) => {
     if(event.target.className == "vprofile"){
         document.querySelector(".alert").setAttribute("style", "display:block");
         document.querySelector(".profile_div").classList.add("activeb2");
         document.querySelector(".profile_div").setAttribute("style", "animation: ZoomIn 0.3s ease-out");
         close_user_profile();
-        socket.emit("load_profile",{id:document.querySelector(".addfreind").id,usertype:"register"});
+        socket.emit("load_profile",{id:document.querySelector(".addfreind").id,usertype:document.querySelector(".user-type").innerText});
     }
 });
 

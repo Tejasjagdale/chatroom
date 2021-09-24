@@ -683,36 +683,42 @@
     });
 
     socket.on("load_details",(data)=>{
+        console.log(data)
         document.querySelector(".name").innerText = data.name;
         document.querySelector(".type").innerHTML = `<i class="fas fa-user"></i> ${data.type}`;
         document.querySelector(".country p").innerHTML = data.country;
 
         document.querySelector(`.friends_display`).innerHTML = ``;
-        data.frnds.forEach((item,index)=> {
-            if(item.sender == data.name){
-                if(item.status == "accepted"){
+        if(data.frnds){
+            document.querySelector(".bdiv span:nth-child(2)").setAttribute("style","display:flex")
+            data.frnds.forEach((item,index)=> {
+                if(item.sender == data.name){
+                    if(item.status == "accepted"){
+                        var frndp = document.createElement("DIV");
+                        frndp.id = "frndp" + item.receiver_id.replace("user"," ").trim();
+                        frndp.className = "profile_wrapper";
+
+
+                        document.querySelector(`.friends_display`).appendChild(frndp);
+                        document.getElementById(frndp.id).innerHTML = `<span class="frnds_profile"><p class="frnd_name">${item.receiver}</p></span>`;
+                        document.getElementById(frndp.id).classList.add('register');
+                        document.getElementById(frndp.id).setAttribute("onclick", "view_profilef(this.id)");
+                    }
+                }else{
                     var frndp = document.createElement("DIV");
-                    frndp.id = "frndp" + item.receiver_id.replace("user"," ").trim();
+                    frndp.id = "frndp" + item.sender_id;
                     frndp.className = "profile_wrapper";
 
 
                     document.querySelector(`.friends_display`).appendChild(frndp);
-                    document.getElementById(frndp.id).innerHTML = `<span class="frnds_profile"><p class="frnd_name">${item.receiver}</p></span>`;
+                    document.getElementById(frndp.id).innerHTML = `<span class="frnds_profile"><p class="frnd_name">${item.sender}</p></span>`;
                     document.getElementById(frndp.id).classList.add('register');
                     document.getElementById(frndp.id).setAttribute("onclick", "view_profilef(this.id)");
                 }
-            }else{
-                var frndp = document.createElement("DIV");
-                frndp.id = "frndp" + item.sender_id;
-                frndp.className = "profile_wrapper";
-
-
-                document.querySelector(`.friends_display`).appendChild(frndp);
-                document.getElementById(frndp.id).innerHTML = `<span class="frnds_profile"><p class="frnd_name">${item.sender}</p></span>`;
-                document.getElementById(frndp.id).classList.add('register');
-                document.getElementById(frndp.id).setAttribute("onclick", "view_profilef(this.id)");
-            }
-        });
+            });
+        }else{
+            document.querySelector(".bdiv span:nth-child(2)").setAttribute("style","display:none")
+        }
     });
 
         
@@ -1036,6 +1042,8 @@
         var user_div = document.getElementById(event);
         var top = user_div.offsetTop;
 
+        document.querySelector(".user-type").innerText = document.getElementById(event).classList[1];
+
         if(event.includes('frnd')){
             document.querySelector(".addfreind").id = event.replace("frnd","afrnd");
         }else{
@@ -1323,6 +1331,7 @@
     });
 
     socket.on('remove_blocks',(data)=>{
+        console.log(data)
         block_users_track.forEach((elem,ind)=>{
             if(elem.userid == data[0].userid){
                 block_users_track.splice(ind,1);
@@ -1357,11 +1366,9 @@
             id = "user"+id;
             var receiver = name;
         }
-        if(id.includes("pmfrnd")){
-            id = id.replace("pmfrnd","user");
-        }
+        
             document.querySelector(".persnol_chat_model").innerHTML = `     <div class="pmchathead">
-                                                                            <div class="pm_type ${document.querySelector(`.users #${id}`).classList[1]}">
+                                                                            <div class="pm_type ${(document.querySelector(`.users #${id}`) ? document.querySelector(`.users #${id}`).classList[1] : document.querySelector(`.freinds #${id.replace("user","frnd")}`).classList[1] )}">
                                                                                 <span class="pm_profile" onclick="view_profile(event)"></span> ${receiver}
                                                                             </div>
                                                                             <div class="pm-options">
