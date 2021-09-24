@@ -54,9 +54,13 @@ socket.on("room-users", (data) => {
   });
 });
 
-document.querySelector(
-  ".this_user_identity"
-).innerHTML = `<span></span> ${username}`;
+document.querySelector("#mainroom").setAttribute("style","background:#75CAEB")
+
+const stopload=()=>{
+  document.querySelector(".preloder").setAttribute("style", "display:none");
+}
+
+document.querySelector(".this_user_identity").innerHTML = `<span></span> ${username}`;
 
 function formatAMPM(date) {
   var hours = date.getHours();
@@ -160,9 +164,7 @@ socket.on("load-users", (data) => {
       document.getElementById("user" + item.id).classList.add("register");
     }
 
-    document
-      .getElementById("user" + item.id)
-      .setAttribute("onclick", "user_profile(this.id)");
+    document.getElementById("user" + item.id).setAttribute("onclick", "user_profile(this.id)");
     data[1].forEach((element) => {
       if (element.userid.replace("user", " ").trim() == item.id) {
         if (element.role == "admin") {
@@ -190,13 +192,11 @@ socket.on("load-msgs", (data) => {
           message.className = "chat";
 
           document.querySelector(`.main-chat`).appendChild(message);
-          document.getElementById(
-            "msg" + t
-          ).innerHTML = `<span class="profile"></span>
-                                                                        <p class="chat-msg"> 
-                                                                        <span class="chat-name">${item.sender}</span>
-                                                                        <video src="" id="${item.id}" class="vid_stream_div" onclick="WatchStream(this.id,event)"></video>
-                                                                        <span class="chat-time">${item.time}</span></p>`;
+          document.getElementById("msg" + t).innerHTML = `<span class="profile"></span>
+                         <p class="chat-msg"> 
+                         <span class="chat-name">${item.sender}</span>
+                          <video src="" id="${item.id}" class="vid_stream_div" onclick="WatchStream(this.id,event)"></video>
+                          <span class="chat-time">${item.time}</span></p>`;
           var objDiv = document.querySelector(`.main-chat`);
           objDiv.scrollTop = objDiv.scrollHeight;
         } else {
@@ -205,16 +205,14 @@ socket.on("load-msgs", (data) => {
           message.className = "y-chat";
 
           document.querySelector(`.main-chat`).appendChild(message);
-          document.getElementById(
-            "msg" + t
-          ).innerHTML = `<p class="y-chat-msg"> 
-                                                                        <span class="y-chat-name">you</span>
-                                                                        <video src="" class="vid_stream_div"></video>
-                                                                        <span class="y-chat-time">${time}</span>
-                                                                      </p>
-                                                                      <div class="y-profile-wrapper">
-                                                                      <span class="y-profile"></span>
-                                                                      </div>`;
+          document.getElementById("msg" + t).innerHTML = `<p class="y-chat-msg"> 
+                          <span class="y-chat-name">you</span>
+                          <video src="" class="vid_stream_div"></video>
+                          <span class="y-chat-time">${time}</span>
+                          </p>
+                          <div class="y-profile-wrapper">
+                          <span class="y-profile"></span>
+                          </div>`;
           var objDiv = document.querySelector(`.main-chat`);
           objDiv.scrollTop = objDiv.scrollHeight;
         }
@@ -403,9 +401,7 @@ socket.on("new-room", (data) => {
 socket.on("change-room", (data) => {
   if (data.result == "passed") {
     document.querySelector(".room_name").id = data.data.nroomname;
-    document.querySelector(
-      ".room_name"
-    ).innerHTML = `<span><i class='fas fa-users'></i></span>${data.data.nroomname}`;
+    document.querySelector(".room_name").innerHTML = `<span><i class='fas fa-users'></i></span>${data.data.nroomname}`;
   } else if (data.result == "baned") {
     alert("you are baned from this room");
   } else {
@@ -463,6 +459,15 @@ socket.on("change-room-left", (data) => {
 
 socket.on("change-room-load", (data) => {
   console.log(data);
+  document.querySelectorAll(".room p").forEach((elem,ind)=>{
+    console.log(elem.innerText,data.roomname)
+    if(elem.innerText == data.roomname){
+      elem.parentNode.setAttribute("style","background:#75CAEB")
+    }else{
+      elem.parentNode.setAttribute("style","background:transparent")
+    }
+  });
+
   document.querySelector(".users").innerHTML = ``;
   document.querySelector(".main-chat").innerHTML = `<div class="emojis"></div>`;
   document.querySelector(".persnol_chat_model").classList.remove("activepm");
@@ -474,7 +479,7 @@ socket.on("change-room-load", (data) => {
   vc_users = data.voiceuser;
 
   data.roomroles.every(function (element) {
-    if (element.userid.replace("user", " ").trim() == this_userid) {
+    if (element.userid.replace("user", "") == this_userid) {
       document
         .querySelector("aside ul li:nth-child(7)")
         .setAttribute("style", "display:flex");

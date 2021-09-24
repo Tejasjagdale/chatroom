@@ -207,6 +207,10 @@
     display: none;
   }
 
+  .blocked{
+    width:90%;
+  }
+
   #flag{
     width:18px;
     height:12px;

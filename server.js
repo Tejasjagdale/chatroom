@@ -127,6 +127,30 @@ app.post("/register", async (req, res) => {
 
     const registered = await registeruser.save();
 
+    var fs = require("fs");
+
+    const dir = `./users/${req.body.name}`;
+    const dir2 = `./users/${req.body.name}/rhythm`;
+    const dir3 = `./users/${req.body.name}/files`;
+
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, {
+        recursive: true,
+      });
+    }
+
+    if (!fs.existsSync(dir2)) {
+      fs.mkdirSync(dir3, {
+        recursive: true,
+      });
+    }
+
+    if (!fs.existsSync(dir3)) {
+      fs.mkdirSync(dir3, {
+        recursive: true,
+      });
+    }
+
     res.send("okay");
 
     console.log("1 new user got register successfully");
@@ -189,6 +213,30 @@ app.post("/glogin", async (req, res) => {
 
     const guser = await guestuser.save();
 
+    var fs = require("fs");
+
+    const dir = `./users/${req.body.name}`;
+    const dir2 = `./users/${req.body.name}/rhythm`;
+    const dir3 = `./users/${req.body.name}/files`;
+
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, {
+        recursive: true,
+      });
+    }
+
+    if (!fs.existsSync(dir2)) {
+      fs.mkdirSync(dir3, {
+        recursive: true,
+      });
+    }
+
+    if (!fs.existsSync(dir3)) {
+      fs.mkdirSync(dir3, {
+        recursive: true,
+      });
+    }
+
     res.send("okay");
 
     console.log("1 new guest user joined");
@@ -226,6 +274,7 @@ async function loader() {
       muteusers: new Array(),
       rhythm: new Array(),
       banusers: new Array(),
+      voiceuser: new Array(),
       roomactive: false,
     });
 
