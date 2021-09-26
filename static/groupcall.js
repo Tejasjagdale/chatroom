@@ -1,3 +1,5 @@
+var curuser ;
+
 function muteMic() {
     if(MyStream){
         MyStream.getAudioTracks().forEach(track => track.enabled = !track.enabled);
@@ -62,7 +64,7 @@ async function group_call(){
     });
 
     peer.on("stream",stream =>{     
-        document.getElementById("gvideoElement2").srcObject = stream;
+        document.getElementById(`${curuser}video`).srcObject = stream;
     });
 
     peer.on('dissconnect', (data) => {
@@ -80,12 +82,6 @@ async function group_call(){
     });
 
     socket.on("callstarted",(data) =>{
-        var newuser = document.createElement("DIV");
-        newuser.id = `${data.name}video_wrapper`
-        newuser.className = "gvideo_wrapper2";
-
-        document.querySelector(`.gvideo_wrapper`).appendChild(newuser);
-        document.getElementById(`${data.name}video_wrapper`).innerHTML = `<label>${data.name}</label><span><i class="fas fa-microphone-slash"></i></span><video autoplay="true" id="${data.name}video" onclick="group_zoomvideo(this.id)" ></video>`;
         peer.signal(data.signal);
     });
     // muteCam();
@@ -99,6 +95,16 @@ socket.on("new_vuser_join",async (data)=>{
 
     document.querySelector(`#General_channel_users`).appendChild(voice_user);
     document.getElementById("voice" + data.userid).innerHTML = `<span style="background-image: url(${data.name}/files/profiledp.png);"></span> ${data.name}`;
+
+    if(data.name != username){
+        var newuser = document.createElement("DIV");
+        newuser.id = `${data.name}video_wrapper`
+        newuser.className = "gvideo_wrapper2";
+
+        document.querySelector(`.gvideo_wrapper`).appendChild(newuser);
+        document.getElementById(`${data.name}video_wrapper`).innerHTML = `<label>${data.name}</label><span><i class="fas fa-microphone-slash"></i></span><video autoplay="true" id="${data.name}video" class="gvideoElement2" onclick="group_zoomvideo(this.id)" ></video>`;
+        curuser = data.name;
+    }
 });
 
 const end_groupcall=()=>{
@@ -128,13 +134,6 @@ socket.on("group_call",async (data1)=>{
     });
 
     peer.on("stream",stream =>{
-        var newuser = document.createElement("DIV");
-        newuser.id = `${data1.name}video_wrapper`
-        newuser.className = "gvideo_wrapper2";
-
-        document.querySelector(`.gvideo_wrapper`).appendChild(newuser);
-        document.getElementById(`${data1.name}video_wrapper`).innerHTML = `<label>${data1.name}</label><span><i class="fas fa-microphone-slash"></i></span><video autoplay="true" id="${data1.name}video" onclick="group_zoomvideo(this.id)" ></video>`;
-        console.log(data1)
         document.getElementById(`${data1.name}video`).srcObject = stream;
         // muteCam();
         muteMic();
