@@ -50,7 +50,7 @@ function getFormattedDate(date) {
 }
 
 app.get("/", function (req, res) {
-  if (res.chatroomjwt) {
+  if (res.cookie.chatroomjwt) {
     res.redirect(`/chatroom`);
   } else {
     res.sendFile(__dirname + "/home.html");
