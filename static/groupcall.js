@@ -135,7 +135,7 @@ socket.on("group_call",async (data1)=>{
         document.querySelector(`.gvideo_wrapper`).appendChild(newuser);
         document.getElementById(`${data1.name}video_wrapper`).innerHTML = `<label>${data1.name}</label><span><i class="fas fa-microphone-slash"></i></span><video autoplay="true" id="${data1.name}video" onclick="group_zoomvideo(this.id)" ></video>`;
         console.log(data1)
-        document.getElementById("gvideoElement2").srcObject = stream;
+        document.getElementById(`${data1.name}video`).srcObject = stream;
         // muteCam();
         muteMic();
     });
