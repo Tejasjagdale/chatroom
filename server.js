@@ -268,6 +268,9 @@ app.post("/glogin", async (req, res) => {
       });
     }
 
+    var fs2 = require('fs-extra');
+    fs2.copySync(path.resolve(__dirname,"images/profile/default_dp" +getRandomInt(1, 8) +".png"), `./users/${req.body.name}/files/profiledp.png`);
+
     res.send("okay");
 
     console.log("1 new guest user joined");
@@ -1017,9 +1020,13 @@ io.on("connection", function (socket) {
   });
 
   socket.on("leave_voice", (data) => {
-    roomdata.forEach((items, ind) => {
+    roomdata.forEach((items, ind1) => {
       if (items.roomname == data.current_room) {
-        items.voiceuser.forEach(() => {});
+        items.voiceuser.forEach((elem,ind2) => {
+          if(elem.userid == data.userid){
+            roomdata[ind1].voiceuser.splice(ind2,1)
+          }
+        });
       }
     });
 
@@ -1032,7 +1039,6 @@ io.on("connection", function (socket) {
        if (item.roomname == data.current_room) {
            item.voiceuser.forEach((item1,ind)=>{
              if(ind != (item.voiceuser.length - 1)){
-               console.log(item1)
                activeusers.forEach((item2,index)=>{
                  if(item2.id == item1.userid){
                    socket.broadcast.to(user_sockets[index]).emit("group_call", data);
@@ -1045,10 +1051,8 @@ io.on("connection", function (socket) {
    });
  
    socket.on("callstarted", (data) => {
-     console.log(data.rid)
      activeusers.forEach((item, index) => {
        if (item.id == data.rid) {
-         console.log(data.rid)
          socket.broadcast.to(user_sockets[index]).emit("callstarted", data);
        }
      });
@@ -1061,12 +1065,17 @@ io.on("connection", function (socket) {
       if (i != -1) {
         if (items.roomname == activeusers[i].current_room) {
           var i3 = items.userssockets.indexOf(socket.id);
+          items.voiceuser.forEach((elem,ind2) => {
+              if(elem.userid == items.roomusers[i3]){
+                roomdata[index].voiceuser.splice(ind2,1)
+              }
+          });
+          socket.broadcast.emit("vuser_left", {name:items.roomusers[i3].name});
           items.roomusers.splice(i3, 1);
           items.userssockets.splice(i3, 1);
         }
       }
     });
-
     socket.broadcast.emit("user-left", activeusers[i]);
     socket.broadcast.emit("room-users", roomdata);
 

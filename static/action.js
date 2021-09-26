@@ -222,8 +222,8 @@ document.querySelector("#roomsetting").addEventListener("click", () => {
 
 document.querySelector("#editname").addEventListener("click", () => {
     document.querySelector(".alert").setAttribute("style", "display:block");
-    document.querySelector(".changename").classList.add("activeb2");
-    document.querySelector(".changename").setAttribute("style", "animation: ZoomIn 0.3s ease-out");
+    document.querySelector(".changemyname").classList.add("activeb2");
+    document.querySelector(".changemyname").setAttribute("style", "animation: ZoomIn 0.3s ease-out");
 });
 
 document.querySelector("#blocklist").addEventListener("click", () => {
@@ -264,7 +264,7 @@ document.querySelector(".Room_settings").addEventListener("click", (e) => {
     }
 });
 
-document.querySelector(".changename").addEventListener("click", (e) => {
+document.querySelector(".changemyname").addEventListener("click", (e) => {
     if (e.target !== e.currentTarget) {
         e.stopPropagation();
     }

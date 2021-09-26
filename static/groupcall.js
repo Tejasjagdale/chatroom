@@ -42,7 +42,6 @@ async function getstream(){
 async function group_call(){
     const stream = await getstream();
     MyStream = stream;
-    console.log(MyStream)
     document.querySelector(".group_video_div").setAttribute("style","display:block");
     document.getElementById("gvideoElement1").srcObject = MyStream;
     
@@ -62,8 +61,7 @@ async function group_call(){
         socket.emit("group_call",{"id":this_userid,"name":username,'current_room':document.querySelector(".room_name").id,"signal":data});
     });
 
-    peer.on("stream",stream =>{
-        console.log(stream)
+    peer.on("stream",stream =>{     
         document.getElementById("gvideoElement2").srcObject = stream;
     });
 
@@ -82,7 +80,12 @@ async function group_call(){
     });
 
     socket.on("callstarted",(data) =>{
-        console.log(data)
+        var newuser = document.createElement("DIV");
+        newuser.id = `${data.name}video_wrapper`
+        newuser.className = "gvideo_wrapper2";
+
+        document.querySelector(`.gvideo_wrapper`).appendChild(newuser);
+        document.getElementById(`${data.name}video_wrapper`).innerHTML = `<label>${data.name}</label><span><i class="fas fa-microphone-slash"></i></span><video autoplay="true" id="${data.name}video" onclick="group_zoomvideo(this.id)" ></video>`;
         peer.signal(data.signal);
     });
     // muteCam();
@@ -121,11 +124,17 @@ socket.on("group_call",async (data1)=>{
     });
 
     peer.on("signal",data =>{
-        socket.emit("callstarted",{'signal':data,'rid':data1.id});
+        socket.emit("callstarted",{'signal':data,'rid':data1.id,'name':username});
     });
 
     peer.on("stream",stream =>{
-        console.log(stream)
+        var newuser = document.createElement("DIV");
+        newuser.id = `${data1.name}video_wrapper`
+        newuser.className = "gvideo_wrapper2";
+
+        document.querySelector(`.gvideo_wrapper`).appendChild(newuser);
+        document.getElementById(`${data1.name}video_wrapper`).innerHTML = `<label>${data1.name}</label><span><i class="fas fa-microphone-slash"></i></span><video autoplay="true" id="${data1.name}video" onclick="group_zoomvideo(this.id)" ></video>`;
+        console.log(data1)
         document.getElementById("gvideoElement2").srcObject = stream;
         // muteCam();
         muteMic();
