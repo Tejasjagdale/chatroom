@@ -39,7 +39,7 @@ document.getElementById("search_any").addEventListener("keyup",(event)=>{
 const action=(id)=>{
     console.log(id)
     document.querySelector(".action-container").setAttribute("id",id.replace("afrnd","action"));
-    document.querySelector(".admin_action .head span").innerHTML =`<span id="action_dp"></span> ${document.querySelector(".user_details .ud_head p").innerText}`
+    document.querySelector(".admin_action .head span").innerHTML =`<span id="action_dp" style="background-image: url(${document.querySelector(".user_details .ud_head p").innerText}/files/profiledp.png);"></span> ${document.querySelector(".user_details .ud_head p").innerText}`
     document.querySelector(".admin_action").classList.add("activeb2");
     document.querySelector(".alert").setAttribute("style", "display:block");
     document.querySelector(".admin_action").setAttribute("style", "animation: ZoomIn 0.3s ease-out");
@@ -220,6 +220,12 @@ document.querySelector("#roomsetting").addEventListener("click", () => {
     document.querySelector(".Room_settings").setAttribute("style", "animation: ZoomIn 0.3s ease-out");
 });
 
+document.querySelector("#editname").addEventListener("click", () => {
+    document.querySelector(".alert").setAttribute("style", "display:block");
+    document.querySelector(".changename").classList.add("activeb2");
+    document.querySelector(".changename").setAttribute("style", "animation: ZoomIn 0.3s ease-out");
+});
+
 document.querySelector("#blocklist").addEventListener("click", () => {
     document.querySelector(".alert").setAttribute("style", "display:block");
     document.querySelector(".blocked").classList.add("activeb2");
@@ -253,6 +259,12 @@ document.querySelector(".admin_action").addEventListener("click", (e) => {
 });
 
 document.querySelector(".Room_settings").addEventListener("click", (e) => {
+    if (e.target !== e.currentTarget) {
+        e.stopPropagation();
+    }
+});
+
+document.querySelector(".changename").addEventListener("click", (e) => {
     if (e.target !== e.currentTarget) {
         e.stopPropagation();
     }

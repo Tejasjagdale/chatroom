@@ -195,6 +195,14 @@
     z-index: 50;
   }
 
+  .dp_pic{
+    width:50%;
+  }
+
+  .name_type{
+    width:50%;
+  }
+
   .admin_action {
     width: 90%;
   }

@@ -30,10 +30,15 @@ var ca = document.cookie
   );
 
 var token = JSON.parse(ca.chatroomjwt.substr(2, ca.chatroomjwt.length)).token;
-var user_type = JSON.parse(ca.chatroomjwt.substr(2, ca.chatroomjwt.length)).user_type;
+var user_type = JSON.parse(
+  ca.chatroomjwt.substr(2, ca.chatroomjwt.length)
+).user_type;
 var username = JSON.parse(ca.chatroomjwt.substr(2, ca.chatroomjwt.length)).name;
 var this_userid;
 var country;
+
+document.getElementById("selfdp_view").setAttribute("src",`${username}/files/profiledp.png`)
+document.getElementById("myuname").innerText = username;
 
 socket.emit("new-user-joined", { token: token, user_type: user_type });
 
@@ -54,13 +59,15 @@ socket.on("room-users", (data) => {
   });
 });
 
-document.querySelector("#mainroom").setAttribute("style","background:#75CAEB")
+document.querySelector("#mainroom").setAttribute("style", "background:#75CAEB");
 
-const stopload=()=>{
+const stopload = () => {
   document.querySelector(".preloder").setAttribute("style", "display:none");
-}
+};
 
-document.querySelector(".this_user_identity").innerHTML = `<span></span> ${username}`;
+document.querySelector(
+  ".this_user_identity"
+).innerHTML = `<span></span> ${username}`;
 
 function formatAMPM(date) {
   var hours = date.getHours();
@@ -94,7 +101,7 @@ socket.on("user-joined", (data) => {
 
     document.getElementById(
       "user" + data.id
-    ).innerHTML = `<span class="uprofile"></span><p class="username">${data.name}</p><div><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
+    ).innerHTML = `<span class="uprofile" style="background-image: url(${data.name}/files/profiledp.png);"></span><p class="username">${data.name}</p><div><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
 
     if (data.type == "guest") {
       document.getElementById("user" + data.id).classList.add("guest");
@@ -107,22 +114,22 @@ socket.on("user-joined", (data) => {
         if (elem.role == "admin") {
           document.getElementById(
             "user" + this_userid
-          ).innerHTML = `<span class="uprofile"></span><p class="username">${elem.username}</p><div><i class="fas fa-crown"></i><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
+          ).innerHTML = `<span class="uprofile" style="background-image: url(${elem.username}/files/profiledp.png);"></span><p class="username">${elem.username}</p><div><i class="fas fa-crown"></i><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
         } else {
           document.getElementById(
             "user" + this_userid
-          ).innerHTML = `<span class="uprofile"></span><p class="username">${elem.username}</p><div><i class="fas fa-user-shield"></i><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
+          ).innerHTML = `<span class="uprofile" style="background-image: url(${elem.username}/files/profiledp.png);"></span><p class="username">${elem.username}</p><div><i class="fas fa-user-shield"></i><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
         }
       }
       if (elem.userid.replace("user", " ").trim() == data.id) {
         if (elem.role == "admin") {
           document.getElementById(
             "user" + data.id
-          ).innerHTML = `<span class="uprofile"></span><p class="username">${elem.username}</p><div><i class="fas fa-crown"></i><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
+          ).innerHTML = `<span class="uprofile" style="background-image: url(${elem.username}/files/profiledp.png);"></span><p class="username">${elem.username}</p><div><i class="fas fa-crown"></i><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
         } else {
           document.getElementById(
             "user" + data.id
-          ).innerHTML = `<span class="uprofile"></span><p class="username">${elem.username}</p><div><i class="fas fa-user-shield"></i><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
+          ).innerHTML = `<span class="uprofile" style="background-image: url(${elem.username}/files/profiledp.png);"></span><p class="username">${elem.username}</p><div><i class="fas fa-user-shield"></i><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
         }
       }
     });
@@ -131,16 +138,26 @@ socket.on("user-joined", (data) => {
       block_users_track = data.blocks;
       room_roles_track = data.roomdata.roomroles;
 
-      block_users_track.forEach((elem)=>{
-        console.log(elem)
+      block_users_track.forEach((elem) => {
+        console.log(elem);
         const block_div = document.createElement("DIV");
-  
-        block_div.id = "block" + elem.userid.replace("user","");
+
+        block_div.id = "block" + elem.userid.replace("user", "");
         block_div.className = "block-wrapper";
         document.querySelector(`.blocked-container`).appendChild(block_div);
-        document.getElementById("block" + elem.userid.replace("user","")).innerHTML = `<div class="block ${elem.username} " id="blocked${elem.userid.replace("user","")}" ><span></span> <p>${elem.username}</p> <i class="fas fa-times" onclick="removeblock(event)"></i></div>`;
-  
-      })
+        document.getElementById(
+          "block" + elem.userid.replace("user", "")
+        ).innerHTML = `<div class="block ${
+          elem.username
+        } " id="blocked${elem.userid.replace(
+          "user",
+          ""
+        )}" ><span style="background-image: url(${
+          elem.username
+        }/files/profiledp.png);"></span> <p>${
+          elem.username
+        }</p> <i class="fas fa-times" onclick="removeblock(event)"></i></div>`;
+      });
     }
   }
 });
@@ -156,7 +173,7 @@ socket.on("load-users", (data) => {
 
     document.getElementById(
       "user" + item.id
-    ).innerHTML = `<span class="uprofile"></span><p class="username">${item.name}</p><div><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
+    ).innerHTML = `<span class="uprofile" style="background-image: url(${item.name}/files/profiledp.png);"></span><p class="username">${item.name}</p><div><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
 
     if (item.type == "guest") {
       document.getElementById("user" + item.id).classList.add("guest");
@@ -164,17 +181,19 @@ socket.on("load-users", (data) => {
       document.getElementById("user" + item.id).classList.add("register");
     }
 
-    document.getElementById("user" + item.id).setAttribute("onclick", "user_profile(this.id)");
+    document
+      .getElementById("user" + item.id)
+      .setAttribute("onclick", "user_profile(this.id)");
     data[1].forEach((element) => {
       if (element.userid.replace("user", " ").trim() == item.id) {
         if (element.role == "admin") {
           document.getElementById(
             "user" + item.id
-          ).innerHTML = `<span class="uprofile"></span><p class="username">${element.username}</p><div><i class="fas fa-crown"></i><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
+          ).innerHTML = `<span class="uprofile" style="background-image: url(${element.username}/files/profiledp.png);"></span><p class="username">${element.username}</p><div><i class="fas fa-crown"></i><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
         } else {
           document.getElementById(
             "user" + item.id
-          ).innerHTML = `<span class="uprofile"></span><p class="username">${element.username}</p><div><i class="fas fa-user-shield"></i><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
+          ).innerHTML = `<span class="uprofile" style="background-image: url(${element.username}/files/profiledp.png);"></span><p class="username">${element.username}</p><div><i class="fas fa-user-shield"></i><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
         }
       }
     });
@@ -192,7 +211,9 @@ socket.on("load-msgs", (data) => {
           message.className = "chat";
 
           document.querySelector(`.main-chat`).appendChild(message);
-          document.getElementById("msg" + t).innerHTML = `<span class="profile"></span>
+          document.getElementById(
+            "msg" + t
+          ).innerHTML = `<span class="profile" style="background-image: url(${item.name}/files/profiledp.png);"></span>
                          <p class="chat-msg"> 
                          <span class="chat-name">${item.sender}</span>
                           <video src="" id="${item.id}" class="vid_stream_div" onclick="WatchStream(this.id,event)"></video>
@@ -205,7 +226,9 @@ socket.on("load-msgs", (data) => {
           message.className = "y-chat";
 
           document.querySelector(`.main-chat`).appendChild(message);
-          document.getElementById("msg" + t).innerHTML = `<p class="y-chat-msg"> 
+          document.getElementById(
+            "msg" + t
+          ).innerHTML = `<p class="y-chat-msg"> 
                           <span class="y-chat-name">you</span>
                           <video src="" class="vid_stream_div"></video>
                           <span class="y-chat-time">${time}</span>
@@ -228,15 +251,15 @@ socket.on("load-msgs", (data) => {
           if (item.filetype.includes("image")) {
             document.getElementById(
               "msg" + t
-            ).innerHTML = `<span class="profile"></span><p class="chat-msg"> <span class="chat-name">${item.sender}</span><img id=file${t} class="msg-img"><span class="chat-time">${item.time}</span></p>`;
+            ).innerHTML = `<span class="profile" style="background-image: url(${item.name}/files/profiledp.png);"></span><p class="chat-msg"> <span class="chat-name">${item.sender}</span><img id=file${t} class="msg-img"><span class="chat-time">${item.time}</span></p>`;
           } else if (item.filetype.includes("video")) {
             document.getElementById(
               "msg" + t
-            ).innerHTML = `<span class="profile"></span><p class="chat-msg"> <span class="chat-name">${item.sender}</span><video id=file${t} class="msg-video"></video><span class="chat-time">${item.time}</span></p>`;
+            ).innerHTML = `<span class="profile" style="background-image: url(${item.name}/files/profiledp.png);"></span><p class="chat-msg"> <span class="chat-name">${item.sender}</span><video id=file${t} class="msg-video"></video><span class="chat-time">${item.time}</span></p>`;
           } else if (item.filetype.includes("audio")) {
             document.getElementById(
               "msg" + t
-            ).innerHTML = `<span class="profile"></span><p class="chat-msg"> <span class="chat-name">${item.sender}</span><audio id=file${t} class="msg-audio"></audio><span class="chat-time">${item.time}</span></p>`;
+            ).innerHTML = `<span class="profile" style="background-image: url(${item.name}/files/profiledp.png);"></span><p class="chat-msg"> <span class="chat-name">${item.sender}</span><audio id=file${t} class="msg-audio"></audio><span class="chat-time">${item.time}</span></p>`;
           } else {
             alert("this file is not in support yet");
           }
@@ -315,7 +338,7 @@ socket.on("load-msgs", (data) => {
       document.querySelector(`.main-chat`).appendChild(message);
       document.getElementById(
         "msg" + t
-      ).innerHTML = `<span class="profile"></span><p class="chat-msg"> <span class="chat-name">${item.sender}</span>${item.message}<span class="chat-time">${item.time}</span></p>`;
+      ).innerHTML = `<span class="profile" style="background-image: url(${item.sender}/files/profiledp.png);"></span><p class="chat-msg"> <span class="chat-name">${item.sender}</span>${item.message}<span class="chat-time">${item.time}</span></p>`;
       var objDiv = document.querySelector(`.main-chat`);
       objDiv.scrollTop = objDiv.scrollHeight;
     }
@@ -344,7 +367,7 @@ socket.on("msg-send", (data) => {
     document.querySelector(`.main-chat`).appendChild(message);
     document.getElementById(
       "msg" + t
-    ).innerHTML = `<span class="profile"></span><p class="chat-msg"> <span class="chat-name">${data.sender}</span>${data.message}<span class="chat-time">${data.time}</span></p>`;
+    ).innerHTML = `<span class="profile" style="background-image: url(${data.sender}/files/profiledp.png);"></span><p class="chat-msg"> <span class="chat-name">${data.sender}</span>${data.message}<span class="chat-time">${data.time}</span></p>`;
     var objDiv = document.querySelector(`.main-chat`);
     objDiv.scrollTop = objDiv.scrollHeight;
     msg1.play();
@@ -401,7 +424,9 @@ socket.on("new-room", (data) => {
 socket.on("change-room", (data) => {
   if (data.result == "passed") {
     document.querySelector(".room_name").id = data.data.nroomname;
-    document.querySelector(".room_name").innerHTML = `<span><i class='fas fa-users'></i></span>${data.data.nroomname}`;
+    document.querySelector(
+      ".room_name"
+    ).innerHTML = `<span><i class='fas fa-users'></i></span>${data.data.nroomname}`;
   } else if (data.result == "baned") {
     alert("you are baned from this room");
   } else {
@@ -430,18 +455,18 @@ socket.on("change-room-left", (data) => {
         if (element.role == "admin") {
           document.getElementById(
             "user" + data.user.id
-          ).innerHTML = `<span class="uprofile"></span><p class="username">${data.user.name}</p><div><i class="fas fa-crown"></i><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
+          ).innerHTML = `<span class="uprofile" style="background-image: url(${data.user.name}/files/profiledp.png);"></span><p class="username">${data.user.name}</p><div><i class="fas fa-crown"></i><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
           return false;
         } else {
           document.getElementById(
             "user" + data.user.id
-          ).innerHTML = `<span class="uprofile"></span><p class="username">${data.user.name}</p><div><i class="fas fa-user-shield"></i><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
+          ).innerHTML = `<span class="uprofile" style="background-image: url(${data.user.name}/files/profiledp.png);"></span><p class="username">${data.user.name}</p><div><i class="fas fa-user-shield"></i><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
           return false;
         }
       } else {
         document.getElementById(
           "user" + data.user.id
-        ).innerHTML = `<span class="uprofile"></span><p class="username">${data.user.name}</p><div><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
+        ).innerHTML = `<span class="uprofile" style="background-image: url(${data.user.name}/files/profiledp.png);"></span><p class="username">${data.user.name}</p><div><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
         return true;
       }
     });
@@ -459,12 +484,12 @@ socket.on("change-room-left", (data) => {
 
 socket.on("change-room-load", (data) => {
   console.log(data);
-  document.querySelectorAll(".room p").forEach((elem,ind)=>{
-    console.log(elem.innerText,data.roomname)
-    if(elem.innerText == data.roomname){
-      elem.parentNode.setAttribute("style","background:#75CAEB")
-    }else{
-      elem.parentNode.setAttribute("style","background:transparent")
+  document.querySelectorAll(".room p").forEach((elem, ind) => {
+    console.log(elem.innerText, data.roomname);
+    if (elem.innerText == data.roomname) {
+      elem.parentNode.setAttribute("style", "background:#75CAEB");
+    } else {
+      elem.parentNode.setAttribute("style", "background:transparent");
     }
   });
 
@@ -540,7 +565,7 @@ socket.on("change-room-load", (data) => {
             document.querySelector(`.admin_cont`).appendChild(room_user);
             document.getElementById(
               "admin" + element.userid
-            ).innerHTML = `<div class="roomroles" ><span></span> <p>${element.username}</p> <i class="fas fa-times"></i></div>`;
+            ).innerHTML = `<div class="roomroles" ><span style="background-image: url(${element.username}/files/profiledp.png);"></span> <p>${element.username}</p> <i class="fas fa-times"></i></div>`;
           } else {
             var room_user = document.createElement("DIV");
             room_user.id = "moderator" + element.userid;
@@ -549,7 +574,7 @@ socket.on("change-room-load", (data) => {
             document.querySelector(`.moderator_cont`).appendChild(room_user);
             document.getElementById(
               "moderator" + element.userid
-            ).innerHTML = `<div class="roomroles" ><span></span> <p>${element.username}</p> <i class="fas fa-times" onclick="removerole(this.parentNode.parentNode.id)"></i></div>`;
+            ).innerHTML = `<div class="roomroles" ><span style="background-image: url(${element.username}/files/profiledp.png);"></span> <p>${element.username}</p> <i class="fas fa-times" onclick="removerole(this.parentNode.parentNode.id)"></i></div>`;
           }
         });
 
@@ -561,7 +586,7 @@ socket.on("change-room-load", (data) => {
           document.querySelector(`#muted_list`).appendChild(room_user);
           document.getElementById(
             "mute" + element.userid
-          ).innerHTML = `<div class="muted" onclick=""><span></span> <p>${element.username}</p> <i class="fas fa-times" onclick="removemute(this.parentNode.parentNode.id)"></i></div>`;
+          ).innerHTML = `<div class="muted" onclick=""><span style="background-image: url(${element.username}/files/profiledp.png);"></span> <p>${element.username}</p> <i class="fas fa-times" onclick="removemute(this.parentNode.parentNode.id)"></i></div>`;
         });
 
         data.banusers.forEach((element) => {
@@ -572,7 +597,7 @@ socket.on("change-room-load", (data) => {
           document.querySelector(`#baned_list`).appendChild(room_user);
           document.getElementById(
             "baned" + element.userid
-          ).innerHTML = `<div class="baned" onclick=""><span></span> <p>${element.username}</p> <i class="fas fa-times" onclick="removeban(this.parentNode.parentNode.id)"></i></div>`;
+          ).innerHTML = `<div class="baned" onclick=""><span style="background-image: url(${element.username}/files/profiledp.png);"></span> <p>${element.username}</p> <i class="fas fa-times" onclick="removeban(this.parentNode.parentNode.id)"></i></div>`;
         });
       }
     }
@@ -594,18 +619,18 @@ socket.on("change-room-load", (data) => {
         if (element.role == "admin") {
           document.getElementById(
             "user" + item.id
-          ).innerHTML = `<span class="uprofile"></span><p class="username">${item.name}</p><div><i class="fas fa-crown"></i><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
+          ).innerHTML = `<span class="uprofile" style="background-image: url(${item.name}/files/profiledp.png);"></span><p class="username">${item.name}</p><div><i class="fas fa-crown"></i><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
           return false;
         } else {
           document.getElementById(
             "user" + item.id
-          ).innerHTML = `<span class="uprofile"></span><p class="username">${item.name}</p><div><i class="fas fa-user-shield"></i><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
+          ).innerHTML = `<span class="uprofile" style="background-image: url(${item.name}/files/profiledp.png);"></span><p class="username">${item.name}</p><div><i class="fas fa-user-shield"></i><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
           return false;
         }
       } else {
         document.getElementById(
           "user" + item.id
-        ).innerHTML = `<span class="uprofile"></span><p class="username">${item.name}</p><div><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
+        ).innerHTML = `<span class="uprofile" style="background-image: url(${item.name}/files/profiledp.png);"></span><p class="username">${item.name}</p><div><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
         return true;
       }
     });
@@ -631,15 +656,15 @@ socket.on("change-room-load", (data) => {
         if (item.filetype.includes("image")) {
           document.getElementById(
             "msg" + t
-          ).innerHTML = `<span class="profile"></span><p class="chat-msg"> <span class="chat-name">${item.sender}</span><img id=file${t} class="msg-img"><span class="chat-time">${item.time}</span></p>`;
+          ).innerHTML = `<span class="profile" style="background-image: url(${item.sender}/files/profiledp.png);"></span><p class="chat-msg"> <span class="chat-name">${item.sender}</span><img id=file${t} class="msg-img"><span class="chat-time">${item.time}</span></p>`;
         } else if (item.filetype.includes("video")) {
           document.getElementById(
             "msg" + t
-          ).innerHTML = `<span class="profile"></span><p class="chat-msg"> <span class="chat-name">${item.sender}</span><video id=file${t} class="msg-video"></video><span class="chat-time">${item.time}</span></p>`;
+          ).innerHTML = `<span class="profile" style="background-image: url(${item.sender}/files/profiledp.png);"></span><p class="chat-msg"> <span class="chat-name">${item.sender}</span><video id=file${t} class="msg-video"></video><span class="chat-time">${item.time}</span></p>`;
         } else if (item.filetype.includes("audio")) {
           document.getElementById(
             "msg" + t
-          ).innerHTML = `<span class="profile"></span><p class="chat-msg"> <span class="chat-name">${item.sender}</span><audio id=file${t} class="msg-audio"></audio><span class="chat-time">${item.time}</span></p>`;
+          ).innerHTML = `<span class="profile" style="background-image: url(${item.sender}/files/profiledp.png);"></span><p class="chat-msg"> <span class="chat-name">${item.sender}</span><audio id=file${t} class="msg-audio"></audio><span class="chat-time">${item.time}</span></p>`;
         } else {
           alert("this file is not in support yet");
         }
@@ -716,7 +741,7 @@ socket.on("change-room-load", (data) => {
       document.querySelector(`.main-chat`).appendChild(message);
       document.getElementById(
         "msg" + t
-      ).innerHTML = `<span class="profile"></span><p class="chat-msg"> <span class="chat-name">${item.sender}</span>${item.message}<span class="chat-time">${item.time}</span></p>`;
+      ).innerHTML = `<span class="profile" style="background-image: url(${item.sender}/files/profiledp.png);"></span><p class="chat-msg"> <span class="chat-name">${item.sender}</span>${item.message}<span class="chat-time">${item.time}</span></p>`;
       var objDiv = document.querySelector(`.main-chat`);
       objDiv.scrollTop = objDiv.scrollHeight;
     }
@@ -727,20 +752,30 @@ socket.on("pmmsg-send", (data) => {
   var num_of_msgs = 1;
   if (username == data.receiver) {
     if (document.getElementById("msg" + data.sender_id)) {
-      document.querySelector(`#msg${data.sender_id} .msg .num_of_msgs`).setAttribute("style", "display:flex");
-      num_of_msgs = document.querySelector(`#msg${data.sender_id} .msg .num_of_msgs`).innerText;
+      document
+        .querySelector(`#msg${data.sender_id} .msg .num_of_msgs`)
+        .setAttribute("style", "display:flex");
+      num_of_msgs = document.querySelector(
+        `#msg${data.sender_id} .msg .num_of_msgs`
+      ).innerText;
       num_of_msgs++;
-      document.querySelector(`#msg${data.sender_id} .msg .num_of_msgs`).innerText = num_of_msgs;
+      document.querySelector(
+        `#msg${data.sender_id} .msg .num_of_msgs`
+      ).innerText = num_of_msgs;
     } else {
       msg_noti++;
       document.querySelector(".num_of_noti1").innerText = msg_noti;
-      document.querySelector(".num_of_noti1").setAttribute("style", "display:flex");
+      document
+        .querySelector(".num_of_noti1")
+        .setAttribute("style", "display:flex");
       const pm_div = document.createElement("DIV");
 
       pm_div.id = "msg" + data.sender_id;
       pm_div.className = "msg-wrapper";
       document.querySelector(`.msg-container`).appendChild(pm_div);
-      document.getElementById("msg" + data.sender_id).innerHTML = `<div class="msg ${data.sender} " id="user${data.sender_id}" onclick="pmchat(this.id,this.classList,event)"><span></span> <p>${data.sender}</p> <label class="num_of_msgs">${num_of_msgs}</label> <i class="fas fa-times" onclick="deletepm(event)"></i></div>`;
+      document.getElementById(
+        "msg" + data.sender_id
+      ).innerHTML = `<div class="msg ${data.sender} " id="user${data.sender_id}" onclick="pmchat(this.id,this.classList,event)"><span></span> <p>${data.sender}</p> <label class="num_of_msgs">${num_of_msgs}</label> <i class="fas fa-times" onclick="deletepm(event)"></i></div>`;
     }
     if (document.querySelector(".activepm")) {
       document
@@ -772,7 +807,7 @@ socket.on("pmmsg-send", (data) => {
     document.querySelector(`.pmchat_msg`).appendChild(message);
     document.getElementById(
       "msg" + t
-    ).innerHTML = `<span class="profile"></span><p class="chat-msg"> <span class="chat-name">${data.sender}</span>${data.message}<span class="chat-time">${data.time}</span></p>`;
+    ).innerHTML = `<span class="profile" style="background-image: url(${data.sender}/files/profiledp.png);"></span><p class="chat-msg"> <span class="chat-name">${data.sender}</span>${data.message}<span class="chat-time">${data.time}</span></p>`;
     var objDiv = document.querySelector(`.pmchat_msg`);
     objDiv.scrollTop = objDiv.scrollHeight;
     msg1.play();
@@ -824,7 +859,7 @@ socket.on("load-pmmsgs", (data) => {
       document.querySelector(`.pmchat_msg`).appendChild(message);
       document.getElementById(
         "msg" + t
-      ).innerHTML = `<span class="profile"></span><p class="chat-msg"> <span class="chat-name">${data.sender}</span>${data.message}<span class="chat-time">${data.time}</span></p>`;
+      ).innerHTML = `<span class="profile" style="background-image: url(${data.sender}/files/profiledp.png);"></span><p class="chat-msg"> <span class="chat-name">${data.sender}</span>${data.message}<span class="chat-time">${data.time}</span></p>`;
       var objDiv = document.querySelector(`.pmchat_msg`);
       objDiv.scrollTop = objDiv.scrollHeight;
     }
@@ -845,7 +880,7 @@ socket.on("frnd_query", (data) => {
       document.querySelector(`.freinds`).appendChild(frnd);
       document.getElementById(
         "frnd" + frnd_id
-      ).innerHTML = `<span class="uprofile"></span><p class="username">${name}</p><div><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
+      ).innerHTML = `<span class="uprofile" style="background-image: url(${name}/files/profiledp.png);"></span><p class="username">${name}</p><div><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
       document.getElementById("frnd" + frnd_id).classList.add("register");
       document
         .getElementById("frnd" + frnd_id)
@@ -859,7 +894,7 @@ socket.on("frnd_query", (data) => {
       document.querySelector(`.freinds`).appendChild(frnd);
       document.getElementById(
         "frnd" + data.sender_id
-      ).innerHTML = `<span class="uprofile"></span><p class="username">${name}</p><div><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
+      ).innerHTML = `<span class="uprofile" style="background-image: url(${name}/files/profiledp.png);"></span><p class="username">${name}</p><div><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
       document
         .getElementById("frnd" + data.sender_id)
         .classList.add("register");
@@ -890,7 +925,7 @@ socket.on("frnd_query", (data) => {
         document.querySelector(`.notification_body`).appendChild(noti_div);
         document.getElementById(
           "alert" + data.sender_id
-        ).innerHTML = `<div class="alert-warpper" ><span></span><p>${data.sender} sent you freind request</p><span class="accept" id="${data.sender}" onclick="addfreind(this.className,event)"><i class="fas fa-check"></i></span><span class="decline" onclick="addfreind(this.className,event)"><i class="fas fa-times"></i></span></div>`;
+        ).innerHTML = `<div class="alert-warpper" ><span style="background-image: url(${data.sender}/files/profiledp.png);"></span><p>${data.sender} sent you freind request</p><span class="accept" id="${data.sender}" onclick="addfreind(this.className,event)"><i class="fas fa-check"></i></span><span class="decline" onclick="addfreind(this.className,event)"><i class="fas fa-times"></i></span></div>`;
       }
     }
   }
@@ -912,8 +947,17 @@ socket.on("frnd_query", (data) => {
 socket.on("load_details", (data) => {
   console.log(data);
   document.querySelector(".name").innerText = data.name;
-  document.querySelector(".type").innerHTML = `<i class="fas fa-user"></i> ${data.type}`;
-  document.querySelector(".country p").innerHTML = data.country;
+  document.querySelector(
+    ".type"
+  ).innerHTML = `<i class="fas fa-user"></i> ${data.type}`;
+  document.querySelector(".country p").innerText = data.country;
+  document.querySelector(".joinat p").innerText = data.joined;
+  document
+    .querySelector(".dp_pic span")
+    .setAttribute(
+      "style",
+      `background-image: url(${data.name}/files/profiledp.png)`
+    );
 
   document.querySelector(`.friends_display`).innerHTML = ``;
   if (data.frnds) {
@@ -930,7 +974,7 @@ socket.on("load_details", (data) => {
           document.querySelector(`.friends_display`).appendChild(frndp);
           document.getElementById(
             frndp.id
-          ).innerHTML = `<span class="frnds_profile"><p class="frnd_name">${item.receiver}</p></span>`;
+          ).innerHTML = `<span class="frnds_profile" style="background-image: url(${item.receiver}/files/profiledp.png);"><p class="frnd_name">${item.receiver}</p></span>`;
           document.getElementById(frndp.id).classList.add("register");
           document
             .getElementById(frndp.id)
@@ -944,7 +988,7 @@ socket.on("load_details", (data) => {
         document.querySelector(`.friends_display`).appendChild(frndp);
         document.getElementById(
           frndp.id
-        ).innerHTML = `<span class="frnds_profile"><p class="frnd_name">${item.sender}</p></span>`;
+        ).innerHTML = `<span class="frnds_profile" style="background-image: url(${item.sender}/files/profiledp.png);"><p class="frnd_name">${item.sender}</p></span>`;
         document.getElementById(frndp.id).classList.add("register");
         document
           .getElementById(frndp.id)
@@ -970,11 +1014,11 @@ socket.on("room-file", async (data) => {
       document.querySelector(`.main-chat`).appendChild(message);
       document.getElementById(
         "msg" + t
-      ).innerHTML = `<span class="profile"></span>
-                                                                <p class="chat-msg"> 
-                                                                <span class="chat-name">${data.sender}</span>
-                                                                <video src="" id="${data.id}" class="vid_stream_div" onclick="WatchStream(this.id,event)"></video>
-                                                                <span class="chat-time">${data.time}</span></p>`;
+      ).innerHTML = `<span class="profile" style="background-image: url(${data.sender}/files/profiledp.png);"></span>
+                      <p class="chat-msg"> 
+                      <span class="chat-name">${data.sender}</span>
+                      <video src="" id="${data.id}" class="vid_stream_div" onclick="WatchStream(this.id,event)"></video>
+                      <span class="chat-time">${data.time}</span></p>`;
       var objDiv = document.querySelector(`.main-chat`);
       objDiv.scrollTop = objDiv.scrollHeight;
     }
@@ -990,15 +1034,15 @@ socket.on("room-file", async (data) => {
       if (data.filetype.includes("image")) {
         document.getElementById(
           "msg" + t
-        ).innerHTML = `<span class="profile"></span><p class="chat-msg"> <span class="chat-name">${data.sender}</span><img id=file${t} class="msg-img"><span class="chat-time">${data.time}</span></p>`;
+        ).innerHTML = `<span class="profile" style="background-image: url(${data.sender}/files/profiledp.png);"></span><p class="chat-msg"> <span class="chat-name">${data.sender}</span><img id=file${t} class="msg-img"><span class="chat-time">${data.time}</span></p>`;
       } else if (data.filetype.includes("video")) {
         document.getElementById(
           "msg" + t
-        ).innerHTML = `<span class="profile"></span><p class="chat-msg"> <span class="chat-name">${data.sender}</span><video id=file${t} class="msg-video"></video><span class="chat-time">${data.time}</span></p>`;
+        ).innerHTML = `<span class="profile" style="background-image: url(${data.sender}/files/profiledp.png);"></span><p class="chat-msg"> <span class="chat-name">${data.sender}</span><video id=file${t} class="msg-video"></video><span class="chat-time">${data.time}</span></p>`;
       } else if (data.filetype.includes("audio")) {
         document.getElementById(
           "msg" + t
-        ).innerHTML = `<span class="profile"></span><p class="chat-msg"> <span class="chat-name">${data.sender}</span><audio id=file${t} class="msg-audio"></audio><span class="chat-time">${data.time}</span></p>`;
+        ).innerHTML = `<span class="profile" style="background-image: url(${data.sender}/files/profiledp.png);"></span><p class="chat-msg"> <span class="chat-name">${data.sender}</span><audio id=file${t} class="msg-audio"></audio><span class="chat-time">${data.time}</span></p>`;
       } else {
         alert("this file is not in support yet");
       }
@@ -1321,7 +1365,7 @@ socket.on("load-frnds", (data) => {
       document.querySelector(`.freinds`).appendChild(frnd);
       document.getElementById(
         "frnd" + frnd_id
-      ).innerHTML = `<span class="uprofile"></span><p class="username">${name}</p><div><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
+      ).innerHTML = `<span class="uprofile" style="background-image: url(${name}/files/profiledp.png);"></span><p class="username">${name}</p><div><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
       document.getElementById("frnd" + frnd_id).classList.add("register");
       document
         .getElementById("frnd" + frnd_id)
@@ -1337,7 +1381,7 @@ socket.on("load-frnds", (data) => {
         document.querySelector(`.notification_body`).appendChild(noti_div);
         document.getElementById(
           "alert" + item.sender_id
-        ).innerHTML = `<div class="alert-warpper" ><span></span><p>${item.sender} sent you freind request</p><span class="accept" id="${item.sender}" onclick="addfreind(this.className,event)"><i class="fas fa-check"></i></span><span class="decline" onclick="addfreind(this.className,event)"><i class="fas fa-times"></i></span></div>`;
+        ).innerHTML = `<div class="alert-warpper" ><span style="background-image: url(${item.sender}/files/profiledp.png);"></span><p>${item.sender} sent you freind request</p><span class="accept" id="${item.sender}" onclick="addfreind(this.className,event)"><i class="fas fa-check"></i></span><span class="decline" onclick="addfreind(this.className,event)"><i class="fas fa-times"></i></span></div>`;
       }
     }
   });
@@ -1357,10 +1401,18 @@ function user_profile(event) {
   }
 
   document.querySelector(".admin_action .head").id = user_div.classList[1];
-
   document
     .querySelector(".user_details")
     .setAttribute("style", `display:block;top:${top + 30}px`);
+
+  document
+    .querySelector(".user_details .ud_head span")
+    .setAttribute(
+      "style",
+      `background-image: url(${
+        document.querySelector(`#${event} .username`).innerText
+      }/files/profiledp.png)`
+    );
 
   if (
     document.querySelector(".user_details .ud_head p").innerText ==
@@ -1445,7 +1497,7 @@ function addfreind(opretion_type, recv_id) {
     document.querySelector(`.freinds`).appendChild(frnd);
     document.getElementById(
       "frnd" + event.target.parentNode.parentNode.id.replace("alert", "")
-    ).innerHTML = `<span class="uprofile" ></span><p class="username">${event.target.id}</p><div><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
+    ).innerHTML = `<span class="uprofile" style="background-image: url(${event.target.id}/files/profiledp.png);"></span><p class="username">${event.target.id}</p><div><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
     document
       .getElementById(
         "frnd" + event.target.parentNode.parentNode.id.replace("alert", "")
@@ -1589,7 +1641,7 @@ socket.on("made_mod", (data) => {
   document.querySelector(`.moderator_cont`).appendChild(room_user);
   document.getElementById(
     "moderator" + data[0].userid
-  ).innerHTML = `<div class="roomroles" ><span></span> <p>${data[0].username}</p> <i class="fas fa-times" onclick="removerole(this.parentNode.parentNode.id)"></i></div>`;
+  ).innerHTML = `<div class="roomroles" ><span style="background-image: url(${data[0].username}/files/profiledp.png);"></span> <p>${data[0].username}</p> <i class="fas fa-times" onclick="removerole(this.parentNode.parentNode.id)"></i></div>`;
 
   if (data[1] == document.querySelector(".room_name").id) {
     room_roles_track.push(data[0]);
@@ -1598,7 +1650,7 @@ socket.on("made_mod", (data) => {
       if (document.getElementById(data[0].userid)) {
         document.getElementById(
           data[0].userid
-        ).innerHTML = `<span class="uprofile"></span><p class="username">${data[0].username}</p><div><i class="fas fa-user-shield"></i><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
+        ).innerHTML = `<span class="uprofile" style="background-image: url(${data[0].username}/files/profiledp.png);"></span><p class="username">${data[0].username}</p><div><i class="fas fa-user-shield"></i><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
       }
       document
         .querySelector("aside ul li:nth-child(7)")
@@ -1614,7 +1666,7 @@ socket.on("made_mod", (data) => {
         console.log(data[0].userid);
         document.getElementById(
           data[0].userid
-        ).innerHTML = `<span class="uprofile"></span><p class="username">${data[0].username}</p><div><i class="fas fa-user-shield"></i><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
+        ).innerHTML = `<span class="uprofile" style="background-image: url(${data[0].username}/files/profiledp.png);"></span><p class="username">${data[0].username}</p><div><i class="fas fa-user-shield"></i><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
       }
     }
   }
@@ -1630,7 +1682,7 @@ socket.on("mod_removed", (data) => {
 
     document.getElementById(
       data[0].userid
-    ).innerHTML = `<span class="uprofile"></span><p class="username">${data[0].username}</p><div><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
+    ).innerHTML = `<span class="uprofile" style="background-image: url(${data[0].username}/files/profiledp.png);"></span><p class="username">${data[0].username}</p><div><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
     if (document.getElementById("moderator" + data[0].userid)) {
       document.getElementById("moderator" + data[0].userid).remove();
     }
@@ -1662,7 +1714,7 @@ socket.on("user_muted", (data) => {
   document.querySelector(`#muted_list`).appendChild(room_user);
   document.getElementById(
     "mute" + data[0].userid
-  ).innerHTML = `<div class="muted" onclick=""><span></span> <p>${data[0].username}</p> <i class="fas fa-times" onclick="removemute(this.parentNode.parentNode.id)"></i></div>`;
+  ).innerHTML = `<div class="muted" onclick=""><span style="background-image: url(${data[0].username}/files/profiledp.png);"></span> <p>${data[0].username}</p> <i class="fas fa-times" onclick="removemute(this.parentNode.parentNode.id)"></i></div>`;
 });
 
 socket.on("mute_removed", (data) => {
@@ -1700,7 +1752,7 @@ socket.on("baned_user", (data) => {
     document.querySelector(`#baned_list`).appendChild(room_user);
     document.getElementById(
       "baned" + data[0].userid
-    ).innerHTML = `<div class="baned" onclick=""><span></span> <p>${data[0].username}</p> <i class="fas fa-times" onclick="removeban(this.parentNode.parentNode.id)"></i></div>`;
+    ).innerHTML = `<div class="baned" onclick=""><span style="background-image: url(${data[0].username}/files/profiledp.png);"></span> <p>${data[0].username}</p> <i class="fas fa-times" onclick="removeban(this.parentNode.parentNode.id)"></i></div>`;
   }
 });
 
@@ -1725,8 +1777,20 @@ socket.on("remove_block", (data) => {
     }
   });
 
-  console.log(data[0].userid)
-  document.getElementById("block"+data[0].userid.replace("user","")).remove();
+  document
+    .getElementById("block" + data[0].userid.replace("user", ""))
+    .remove();
+
+  document.querySelector(".notify").classList.add("active");
+  document
+    .querySelector(".notify")
+    .setAttribute("style", "background:rgb(0, 77, 0,0.7);");
+  document.getElementById("notifyType").innerText = "Action completed!";
+
+  setTimeout(function () {
+    $(".notify").removeClass("active");
+    $("#notifyType").innerText = "";
+  }, 2000);
 });
 
 socket.on("all-msg-cleard", (data) => {
@@ -1736,11 +1800,40 @@ socket.on("all-msg-cleard", (data) => {
 });
 
 socket.on("blocked_user", (data) => {
+  document.querySelector(".notify").classList.add("active");
+  document
+    .querySelector(".notify")
+    .setAttribute("style", "background:rgb(0, 77, 0,0.7);");
+  document.getElementById("notifyType").innerText = "Action completed!";
+
+  setTimeout(function () {
+    $(".notify").removeClass("active");
+    $("#notifyType").innerText = "";
+  }, 2000);
+
   block_users_track.push(data[0]);
 });
 
 socket.on("pmblock", (data) => {
-  alert(data);
+  // document.querySelector(".notify").classList.add("active");
+  // document.querySelector(".notify").setAttribute("style","background:rgb(0, 77, 0,0.7);")
+  // document.getElementById("notifyType").innerText = data;
+
+  // setTimeout(function(){
+  //   $(".notify").removeClass("active");
+  //   $("#notifyType").innerText = "";
+  // },2000);
+
+  document.querySelector(".notify").classList.add("active");
+  document
+    .querySelector(".notify")
+    .setAttribute("style", "background:rgb(135, 0, 0,0.7);");
+  document.getElementById("notifyType").innerText = data;
+
+  setTimeout(function () {
+    $(".notify").removeClass("active");
+    $("#notifyType").innerText = "";
+  }, 2000);
 });
 
 function pmchat(id, name, event) {
@@ -1757,23 +1850,10 @@ function pmchat(id, name, event) {
   document.querySelector(
     ".persnol_chat_model"
   ).innerHTML = `     <div class="pmchathead">
-                                                                            <div class="pm_type ${
-                                                                              document.querySelector(
-                                                                                `.users #${id}`
-                                                                              )
-                                                                                ? document.querySelector(
-                                                                                    `.users #${id}`
-                                                                                  )
-                                                                                    .classList[1]
-                                                                                : document.querySelector(
-                                                                                    `.freinds #${id.replace(
-                                                                                      "user",
-                                                                                      "frnd"
-                                                                                    )}`
-                                                                                  )
-                                                                                    .classList[1]
-                                                                            }">
-                                                                                <span class="pm_profile" onclick="view_profile(event)"></span> ${receiver}
+                      <div class="pm_type ${
+                      document.querySelector(`.users #${id}`)
+                      ? document.querySelector(`.users #${id}`).classList[1] : document.querySelector(`.freinds #${id.replace("user","frnd")}`).classList[1]}">
+                                                                                <span class="pm_profile" onclick="view_profile(event)" style="background-image: url(${receiver}/files/profiledp.png);"></span> ${receiver}
                                                                             </div>
                                                                             <div class="pm-options">
                                                                                 <i class="fas fa-video" id="startvideocall" onclick="pmvideostart()"></i>

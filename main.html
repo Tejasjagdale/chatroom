@@ -23,6 +23,11 @@
           <h1>Loading...</h1>
         </div>
     </div>
+
+    <div class="notify">
+        <span id="notifyType" class=""></span>
+    </div>
+
     <div class="alert">
         <img src="" id="enlarge_img">
 
@@ -108,6 +113,14 @@
             </div> 
         </div>
 
+        <div class="changename">
+            <div class="head">
+                <i class="fas fa-times" onclick="alertclose(event)"></i>
+            </div>
+            <div class="cn-container">
+            </div>
+        </div>
+
         <div class="inbox" tabindex="0">
             <div class="head">
                 <span><i class="fas fa-trash-alt"></i> clear</span><i class="fas fa-times" onclick="alertclose(event)"></i>
@@ -167,7 +180,7 @@
         <div class="profile_div">
             <div class="head">
                 <div class="dp_pic">
-                    <span><i class="fas fa-user"></i></span>
+                    <span></span>
                 </div>
                 <div class="name_type">
                     <p class="type"><i class="fas fa-user"></i> guestuser</p>
@@ -256,13 +269,14 @@
                 <section>
                     <div>
                         <label><i class="fas fa-camera-retro"></i></label>
-                        <img src="profile/default_dp2.png">
+                        <input type="file" id="changedp" accept="image/*"/>
+                        <img id="selfdp_view">
                     </div>
                     <div>
-                        <p> tejas jagdale</p>
+                        <p id="myuname"> tejas jagdale</p>
                     </div>
                 </section>
-                <div><i class="fas fa-user-edit"></i> Edit Name</div>
+                <div id="editname"><i class="fas fa-user-edit"></i> Edit Name</div>
                 <div><i class="fas fa-question-circle"></i> About me</div>
                 <div id="blocklist"><i class="fas fa-ban"></i> Manage Blocks</div>
                 <div><i class="fas fa-volume-up"></i> Sound setings</div>
@@ -301,7 +315,7 @@
 
                 <div class="user_details">
                     <div class="ud_head">
-                        <span><i class="fas fa-user"></i></span>
+                        <span></span>
                         <p>name</p>
                     </div>
                     <div class="ud_body">
@@ -354,18 +368,9 @@
                     <div class="voice_channel" onclick="group_call()">
                         <div class="voice_head"><span class="voice_icon"><i class="fas fa-volume"></i></span><p>Voice_channel</p></div>
                         <div class="channel_users" id="General_channel_users">
-                            <!-- <div><span></span> tejas jagdale</div> -->
+                            <!-- <div><span></span><p>tejas jagdale</p> <p><i class="fas fa-microphone"></i></p><i class="fas fa-headphones"></i><p></p><div>live</div></div> -->
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <div class="player">
-                <div class="thumb">
-                    <img width="100%" height="100%" src="thumb1.jpg" >
-                </div>
-                <div class="player_controls">
-                    <audio class="controls" src="sounds/Ringtone1.mp3" controls></audio>
                 </div>
             </div>
         </div>
@@ -426,6 +431,33 @@
                 </div>
                 <i class="fas fa-cog pmvideo_setting" onclick="toggel_filter()"></i>
                 <i class="fas fa-expand-wide pmvideo_enlarge" onclick="enlarge()"></i>
+                </div>
+            </div>
+
+            <div class="group_video_div">
+                <div class="gvideo_wrapper">
+                    <div class="gvideo_wrapper1">
+                        <label>user</label>
+                        <video autoplay="true"  id="gvideoElement1" onclick="group_zoomvideo(this.id)" muted></video>
+                    </div>
+                    <div class="gvideo_wrapper2">
+                        <label>user</label>
+                        <span><i class="fas fa-microphone-slash"></i></span>
+                        <video autoplay="true" id="gvideoElement2" onclick="group_zoomvideo(this.id)" ></video>
+                    </div>
+                    <div class="css_filters">
+                    <span onclick="cssfilter('sub')"><i class="fas fa-caret-left"></i></span><p id="cur_filter">normal</p><span onclick="cssfilter('add')"><i class="fas fa-caret-right"></i></span>
+                    </div>
+                </div>
+                <div class="gvideo_control_wrapper">
+                    <div class="gvideo_control">
+                    <button class="gvideo_btn" onclick="muteCam()"><i class="fas fa-video-slash"></i></button>
+                    <button class="gshare_btn" onclick="startCapture()"></button>
+                    <button class="gmic_btn" onclick="muteMic()"><i class="fas fa-microphone"></i></button>
+                    <button class="gcall_btn" onclick="call_disc()"><i class="fas fa-phone-slash"></i></button>
+                    </div>
+                    <i class="fas fa-cog pmvideo_setting" onclick="toggel_filter()"></i>
+                    <i class="fas fa-expand-wide pmvideo_enlarge" onclick="enlarge()"></i>
                 </div>
             </div>
 

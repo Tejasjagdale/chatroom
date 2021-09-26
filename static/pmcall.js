@@ -13,8 +13,7 @@ async function getstream(){
         return MyStream;
     } catch (error) {
         console.log(error);
-    }
-    
+    } 
 }
 
 
@@ -199,7 +198,6 @@ socket.on("pmcall",(data)=>{
 
 socket.on("inothercall",(data)=>{
     console.log(data);
-
     numbusy.play();
 });
 

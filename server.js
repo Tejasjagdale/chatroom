@@ -21,6 +21,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/static"));
 app.use(express.static(__dirname + "/rhythm"));
 app.use(express.static(__dirname + "/images"));
+app.use(express.static(__dirname + "/users"));
 app.use(express.static(__dirname + "/node_modules"));
 app.use(bodyParser.json());
 app.use(cookieParser());
@@ -94,31 +95,54 @@ app.get("/emailverification", function (req, res) {
 
 app.post("/register", async (req, res) => {
   try {
-    const registeruser = new Register({
-      name: req.body.name,
-      email: req.body.email,
-      password: req.body.password,
-      type: "register",
-      joined: getFormattedDate(d),
-      country: "india",
-      history: {
-        profile:
-          __dirname +
-          "/images/profile/default_dp" +
-          getRandomInt(1, 8) +
-          ".png",
-        display:
-          __dirname + "/images/wallpaper/dbg" + getRandomInt(1, 20) + ".png",
-      },
-    });
+      var fs = require("fs");
 
-    const token = await registeruser.generateAuthToken();
+      const dir = `./users/${req.body.name}`;
+      const dir2 = `./users/${req.body.name}/rhythm`;
+      const dir3 = `./users/${req.body.name}/files`;
 
-    res.cookie("chatroomjwt", {
-      token: token,
-      user_type: "register",
-      name: req.body.name,
-    });
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, {
+          recursive: true,
+        });
+      }
+
+      if (!fs.existsSync(dir2)) {
+        fs.mkdirSync(dir2, {
+          recursive: true,
+        });
+      }
+
+      if (!fs.existsSync(dir3)) {
+        fs.mkdirSync(dir3, {
+          recursive: true,
+        });
+      }
+
+      var fs = require('fs-extra');
+
+      fs.copySync(path.resolve(__dirname,"images/profile/default_dp" +getRandomInt(1, 8) +".png"), `./users/${req.body.name}/files/profiledp.png`);
+
+      const registeruser = new Register({
+        name: req.body.name,
+        email: req.body.email,
+        password: req.body.password,
+        type: "register",
+        joined: getFormattedDate(d),
+        country: "india",
+        history: {
+          profile: __dirname +`/users/${req.body.name}/files/profiledp.png`,
+          display:__dirname + "/images/wallpaper/dbg" + getRandomInt(1, 20) + ".png",
+        },
+      });
+      
+      const token = await registeruser.generateAuthToken();
+
+      res.cookie("chatroomjwt", {
+        token: token,
+        user_type: "register",
+        name: req.body.name,
+      });
 
     // var transporter = nodemailer.createTransport({
     //     service: 'gmail',
@@ -146,30 +170,6 @@ app.post("/register", async (req, res) => {
     //   });
 
     const registered = await registeruser.save();
-
-    var fs = require("fs");
-
-    const dir = `./users/${req.body.name}`;
-    const dir2 = `./users/${req.body.name}/rhythm`;
-    const dir3 = `./users/${req.body.name}/files`;
-
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, {
-        recursive: true,
-      });
-    }
-
-    if (!fs.existsSync(dir2)) {
-      fs.mkdirSync(dir2, {
-        recursive: true,
-      });
-    }
-
-    if (!fs.existsSync(dir3)) {
-      fs.mkdirSync(dir3, {
-        recursive: true,
-      });
-    }
 
     res.send("okay");
 
@@ -407,17 +407,21 @@ io.on("connection", function (socket) {
         type: user.type,
         blocks: user.blocks,
         current_room: "Main Room",
+        history: user.history,
         roomdata: roomdata[0],
       });
+
       socket.broadcast.emit("user-joined", {
         name: user.name,
         id: user._id,
         country: user.country,
         type: user.type,
         blocks: user.blocks,
+        history: user.history,
         current_room: "Main Room",
         roomdata: roomdata[0],
       });
+
       socket.emit("load-msgs", roomdata[0].roommsgs);
       socket.emit("room-users", roomdata);
       socket.broadcast.emit("room-users", roomdata);
@@ -512,7 +516,6 @@ io.on("connection", function (socket) {
 
   socket.on("pmmsg-send", async (data1) => {
     block = false;
-    console.log(activeusers);
     var receiver = data1.receiver_id.replace("user", "");
     activeusers.forEach((elem, ind) => {
       if (elem.id == receiver) {
@@ -530,7 +533,6 @@ io.on("connection", function (socket) {
     if (!block) {
       try {
         activeusers.forEach(function (items, index) {
-          console.log(items);
           if (items.id == receiver) {
             socket.broadcast.to(user_sockets[index]).emit("pmmsg-send", data1);
           }
@@ -598,7 +600,7 @@ io.on("connection", function (socket) {
 
   socket.on("pmcall", (data) => {
     activeusers.forEach((item, index) => {
-      if (item.id == data.rcallid.replace("user", " ").trim()) {
+      if (item.id == data.rcallid.replace("user", "")) {
         socket.broadcast.to(user_sockets[index]).emit("pmcall", data);
       }
     });
@@ -606,7 +608,7 @@ io.on("connection", function (socket) {
 
   socket.on("inothercall", (data) => {
     activeusers.forEach((item, index) => {
-      if (item.id == data.id.replace("user", " ").trim()) {
+      if (item.id == data.id.replace("user", "")) {
         socket.broadcast.to(user_sockets[index]).emit("inothercall", data);
       }
     });
@@ -614,7 +616,7 @@ io.on("connection", function (socket) {
 
   socket.on("callAccepted", (data) => {
     activeusers.forEach((item, index) => {
-      if (item.id == data.id.replace("user", " ").trim()) {
+      if (item.id == data.id.replace("user", "")) {
         socket.broadcast.to(user_sockets[index]).emit("callAccepted", data);
       }
     });
@@ -622,7 +624,7 @@ io.on("connection", function (socket) {
 
   socket.on("callDeclined", (data) => {
     activeusers.forEach((item, index) => {
-      if (item.id == data.id.replace("user", " ").trim()) {
+      if (item.id == data.id.replace("user", "")) {
         socket.broadcast.to(user_sockets[index]).emit("callDeclined", data);
       }
     });
@@ -994,10 +996,19 @@ io.on("connection", function (socket) {
   });
 
   socket.on("join_voice", (data) => {
+    var exisit = true;
     roomdata.forEach((items, ind) => {
       if (items.roomname == data.current_room) {
         delete data.current_room;
-        roomdata[ind].voiceuser.push(data);
+        roomdata[ind].voiceuser.forEach((elem)=>{
+          if(elem.userid == data.userid){
+            exisit = false;
+          }
+        })
+
+        if(exisit){
+          roomdata[ind].voiceuser.push(data);
+        }
       }
     });
 
@@ -1015,6 +1026,33 @@ io.on("connection", function (socket) {
     socket.emit("vuser_left", data);
     socket.broadcast.emit("vuser_left", data);
   });
+
+  socket.on("group_call", (data) => {
+    roomdata.forEach((item) => {
+       if (item.roomname == data.current_room) {
+           item.voiceuser.forEach((item1,ind)=>{
+             if(ind != (item.voiceuser.length - 1)){
+               console.log(item1)
+               activeusers.forEach((item2,index)=>{
+                 if(item2.id == item1.userid){
+                   socket.broadcast.to(user_sockets[index]).emit("group_call", data);
+                 }
+               })
+             }
+           })
+       }
+     });
+   });
+ 
+   socket.on("callstarted", (data) => {
+     console.log(data.rid)
+     activeusers.forEach((item, index) => {
+       if (item.id == data.rid) {
+         console.log(data.rid)
+         socket.broadcast.to(user_sockets[index]).emit("callstarted", data);
+       }
+     });
+   });
 
   socket.on("disconnect", function () {
     var i = user_sockets.indexOf(socket.id);
