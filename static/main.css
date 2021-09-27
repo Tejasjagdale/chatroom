@@ -14,7 +14,7 @@ body {
   justify-content: center;
   align-items: center;
   font-size: 50px;
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
 }
