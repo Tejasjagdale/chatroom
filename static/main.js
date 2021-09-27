@@ -284,7 +284,16 @@ socket.on("load-msgs", (data) => {
               "msg" + t
             ).innerHTML = `<span class="profile" style="background-image: url(${item.name}/files/profiledp.png);"></span><p class="chat-msg"> <span class="chat-name">${item.sender}</span><audio id=file${t} class="msg-audio"></audio><span class="chat-time">${item.time}</span></p>`;
           } else {
-            alert("this file is not in support yet");
+            document.querySelector(".notify").classList.add("active");
+            document
+              .querySelector(".notify")
+              .setAttribute("style", "background:rgb(0, 77, 0,0.7);");
+            document.getElementById("notifyType").innerText = "this file is not supported yet!";
+
+            setTimeout(function () {
+              $(".notify").removeClass("active");
+              $("#notifyType").innerText = "";
+            }, 2000);
           }
           var objDiv = document.querySelector(`.main-chat`);
           objDiv.scrollTop = objDiv.scrollHeight;
