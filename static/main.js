@@ -11,6 +11,7 @@ var baned_users_track = [];
 var mute_users_track = [];
 var block_users_track = [];
 var vc_users = [];
+var curuser;
 
 var t = 0;
 var msg_noti = 0;
@@ -39,6 +40,7 @@ var country;
 
 document.getElementById("selfdp_view").setAttribute("src",`${username}/files/profiledp.png`)
 document.getElementById("myuname").innerText = username;
+document.querySelector('.gvideo_wrapper1 label').innerText = username;
 
 socket.emit("new-user-joined", { token: token, user_type: user_type });
 
@@ -158,6 +160,27 @@ socket.on("user-joined", (data) => {
           elem.username
         }</p> <i class="fas fa-times" onclick="removeblock(event)"></i></div>`;
       });
+
+      data.roomdata.voiceuser.forEach((elem)=>{
+        var voice_user = document.createElement("DIV");
+        voice_user.id = "voice" + elem.userid;
+        voice_user.className = "voice";
+
+        document.querySelector(`#General_channel_users`).appendChild(voice_user);
+        document.getElementById("voice" + elem.userid).innerHTML = `<span style="background-image: url(${elem.name}/files/profiledp.png);"></span> ${elem.name}`;
+
+        if (elem.name != username) {
+          var newuser = document.createElement("DIV");
+          newuser.id = `${elem.name}video_wrapper`;
+          newuser.className = "gvideo_wrapper2";
+      
+          document.querySelector(`.gvideo_wrapper`).appendChild(newuser);
+          document.getElementById(
+            `${elem.name}video_wrapper`
+          ).innerHTML = `<label>${elem.name}</label><span><i class="fas fa-microphone-slash"></i></span><video autoplay="true" id="${elem.name}video" class="gvideoElement2" onclick="group_zoomvideo(this.id)" ></video>`;
+          curuser = elem.name;
+        }
+      })
     }
   }
 });
@@ -483,7 +506,6 @@ socket.on("change-room-left", (data) => {
 });
 
 socket.on("change-room-load", (data) => {
-  console.log(data);
   document.querySelectorAll(".room p").forEach((elem, ind) => {
     console.log(elem.innerText, data.roomname);
     if (elem.innerText == data.roomname) {
@@ -542,6 +564,27 @@ socket.on("change-room-load", (data) => {
       return true;
     }
   });
+
+  data.voiceuser.forEach((elem)=>{
+        var voice_user = document.createElement("DIV");
+        voice_user.id = "voice" + elem.userid;
+        voice_user.className = "voice";
+
+        document.querySelector(`#General_channel_users`).appendChild(voice_user);
+        document.getElementById("voice" + elem.userid).innerHTML = `<span style="background-image: url(${elem.name}/files/profiledp.png);"></span> ${elem.name}`;
+
+        if (elem.name != username) {
+          var newuser = document.createElement("DIV");
+          newuser.id = `${elem.name}video_wrapper`;
+          newuser.className = "gvideo_wrapper2";
+      
+          document.querySelector(`.gvideo_wrapper`).appendChild(newuser);
+          document.getElementById(
+            `${elem.name}video_wrapper`
+          ).innerHTML = `<label>${elem.name}</label><span><i class="fas fa-microphone-slash"></i></span><video autoplay="true" id="${elem.name}video" class="gvideoElement2" onclick="group_zoomvideo(this.id)" ></video>`;
+          curuser = elem.name;
+        }
+  })
 
   data.muteusers.every(function (elem) {
     if (elem.userid.replace("user", " ").trim() == this_userid) {

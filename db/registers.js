@@ -77,6 +77,9 @@ const userSchema = new mongoose.Schema({
       profile: {
         type: String,
       },
+      theme:{
+        type: String,
+      },
       display: {
         type: String,
       },

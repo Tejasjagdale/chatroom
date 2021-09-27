@@ -339,7 +339,7 @@
                 <div class="vc-options">
                     <div class="vco-head">
                         <p><i class="fas fa-signal"></i> Voice Connected</p>
-                        <p><i class="fas fa-phone-slash"></i></p>
+                        <p><i class="fas fa-phone-slash" onclick="end_groupcall()"></i></p>
                     </div>
                     <div class="vco-mid"><button class="channel-video" onclick="startvideo()"><i class="fas fa-video"></i> Video</button><button class="screen-share"><i class="far fa-share-square"></i> Screen</button></div>
                     <div class="vco-bottom">
@@ -367,7 +367,7 @@
                 </div>
 
                 <div class="voice_channels">
-                    <div class="Text_channel">
+                    <div class="Text_channel" onclick="showtextchannel();">
                         <span class="text_icon"><i class="fas fa-hashtag"></i></span><p>Text_channel</p>
                     </div>
 
@@ -452,10 +452,10 @@
                 </div>
                 <div class="gvideo_control_wrapper">
                     <div class="gvideo_control">
-                    <button class="gvideo_btn" onclick="muteCam()"><i class="fas fa-video-slash"></i></button>
+                    <button class="gvideo_btn" onclick="mutegCam()"><i class="fas fa-video"></i></button>
                     <button class="gshare_btn" onclick="startCapture()"></button>
-                    <button class="gmic_btn" onclick="muteMic()"><i class="fas fa-microphone"></i></button>
-                    <button class="gcall_btn" onclick="call_disc()"><i class="fas fa-phone-slash"></i></button>
+                    <button class="gmic_btn" onclick="mutegMic()"><i class="fas fa-microphone"></i></button>
+                    <button class="gcall_btn" onclick="gcall_disc()"><i class="fas fa-phone-slash"></i></button>
                     </div>
                     <i class="fas fa-cog pmvideo_setting" onclick="toggel_filter()"></i>
                     <i class="fas fa-expand-wide pmvideo_enlarge" onclick="enlarge()"></i>

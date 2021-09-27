@@ -31,6 +31,7 @@ const Register = require("./db/registers");
 const Rooms = require("./db/rooms");
 const Gusers = require("./db/gusers");
 const { load } = require("dotenv");
+const themes = [1,2,3,4,5,6,7,8];
 
 function getRandomInt(min, max) {
   min = Math.ceil(min);
@@ -50,7 +51,7 @@ function getFormattedDate(date) {
 }
 
 app.get("/", function (req, res) {
-  if (res.cookie.chatroomjwt) {
+  if (req.cookies.chatroomjwt) {
     res.redirect(`/chatroom`);
   } else {
     res.sendFile(__dirname + "/home.html");
@@ -72,9 +73,9 @@ app.get("/chatroom", auth, function (req, res) {
 
 app.get("/logout", auth, async (req, res) => {
   try {
-    const token = res.chatroomjwt.token;
+    const token = req.cookies.chatroomjwt.token;
     const verifyUser = jwt.verify(token, process.env.SECRET_KEY);
-    const user_type = res.chatroomjwt.user_type;
+    const user_type = req.cookies.chatroomjwt.user_type;
     res.clearCookie("chatroomjwt");
 
     if (user_type == "guest") {
@@ -122,7 +123,9 @@ app.post("/register", async (req, res) => {
       var fs = require('fs-extra');
 
       fs.copySync(path.resolve(__dirname,"images/profile/default_dp" +getRandomInt(1, 8) +".png"), `./users/${req.body.name}/files/profiledp.png`);
+      fs.copySync(path.resolve(__dirname,"images/profile/video_default" +getRandomInt(1, 8) +".png"), `./users/${req.body.name}/files/videodp.png`);
 
+      
       const registeruser = new Register({
         name: req.body.name,
         email: req.body.email,
@@ -270,6 +273,7 @@ app.post("/glogin", async (req, res) => {
 
     var fs2 = require('fs-extra');
     fs2.copySync(path.resolve(__dirname,"images/profile/default_dp" +getRandomInt(1, 8) +".png"), `./users/${req.body.name}/files/profiledp.png`);
+    fs.copySync(path.resolve(__dirname,"images/profile/video_default" +getRandomInt(1, 8) +".png"), `./users/${req.body.name}/files/videodp.png`);
 
     res.send("okay");
 
@@ -1066,7 +1070,7 @@ io.on("connection", function (socket) {
         if (items.roomname == activeusers[i].current_room) {
           var i3 = items.userssockets.indexOf(socket.id);
           items.voiceuser.forEach((elem,ind2) => {
-              if(elem.userid == items.roomusers[i3]){
+              if(elem.userid == items.roomusers[i3].id){
                 roomdata[index].voiceuser.splice(ind2,1)
               }
           });
@@ -1081,6 +1085,7 @@ io.on("connection", function (socket) {
 
     activeusers.splice(i, 1);
     user_sockets.splice(i, 1);
+    console.log(roomdata[0])
   });
 });
 

@@ -325,7 +325,7 @@ function call_disc() {
 
     document.getElementById("pmvideoElement1").srcObject = null;
     document.querySelector(".pm_video_div").setAttribute("style","display:none");
-    peer.close();
+    peer.destroy();
     userinpmcall = false;
 }
 
