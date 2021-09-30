@@ -64,7 +64,7 @@ const action=(id)=>{
         if(item.sender_id.trim() == id.replace("frnd","") || item.receiver_id.replace("action","") == id.replace("frnd","") || item.sender_id.trim() == id.replace("afrnd","") || item.receiver_id.replace("action","") == id.replace("afrnd","")){
             document.querySelector("#actions4").innerHTML = `<i class="fas fa-user-times"></i> Remove freind`;
             document.querySelector("#actions4").setAttribute("style","color:red");
-            document.querySelector("#actions4").setAttribute("onclick","RemoveFreind(this.parentNode.parentNode.id)");
+            documeneditt.querySelector("#actions4").setAttribute("onclick","RemoveFreind(this.parentNode.parentNode.id)");
         }
     });
 
@@ -220,10 +220,16 @@ document.querySelector("#roomsetting").addEventListener("click", () => {
     document.querySelector(".Room_settings").setAttribute("style", "animation: ZoomIn 0.3s ease-out");
 });
 
+document.querySelector("#changepass").addEventListener("click", () => {
+    document.querySelector(".alert").setAttribute("style", "display:block");
+    document.querySelector(".ChangePass").classList.add("activeb2");
+    document.querySelector(".ChangePass").setAttribute("style", "animation: ZoomIn 0.3s ease-out");
+});
+
 document.querySelector("#editname").addEventListener("click", () => {
     document.querySelector(".alert").setAttribute("style", "display:block");
-    document.querySelector(".changemyname").classList.add("activeb2");
     document.querySelector(".changemyname").setAttribute("style", "animation: ZoomIn 0.3s ease-out");
+    document.querySelector(".changemyname").classList.add("activeb2");
 });
 
 document.querySelector("#blocklist").addEventListener("click", () => {
@@ -269,6 +275,12 @@ document.querySelector(".changemyname").addEventListener("click", (e) => {
         e.stopPropagation();
     }
 });
+
+// document.querySelector(".ChnagePass").addEventListener("click", (e) => {
+//     if (e.target !== e.currentTarget) {
+//         e.stopPropagation();
+//     }
+// });
 
 document.querySelector(".blocked").addEventListener("click", (e) => {
     if (e.target !== e.currentTarget) {

@@ -428,9 +428,18 @@ body {
   border: 1px solid black;
 }
 
+.user_details .ud_head div{
+  width: 100%;
+  height: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
 .user_details .ud_head span {
-  width: 65px;
-  height: 65px;
+  width: 60px;
+  height: 60px;
   background-size: 100% 100%;
   background-position: center;
   border-radius: 50%;
@@ -3407,17 +3416,13 @@ aside ul li:nth-child(3) ul li {
   padding: 0px 30px;
 }
 
-.changemyname .head i {
-  cursor: pointer;
-}
-
-.changemyname .chbody {
+.changemyname .body {
   width: 100%;
   height: 100px;
   display: block;
 }
 
-.changemyname .chbody div {
+.changemyname .body div {
   display: flex;
   justify-content: center;
   flex-direction: column;
@@ -3427,12 +3432,12 @@ aside ul li:nth-child(3) ul li {
   padding-left: 50px;
 }
 
-.chbody div label {
+.body div label {
   color: #4d426d;
   font-weight: 600;
 }
 
-.chbody div input {
+.body div input {
   width: 80%;
   height: 30px;
   font-size: 20px;

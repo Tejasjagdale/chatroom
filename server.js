@@ -14,6 +14,7 @@ const ytdl = require("ytdl-core");
 const path = require("path");
 var requestCountry = require("request-country");
 const nodemailer = require("nodemailer");
+const multer  = require('multer')
 
 const PORT = process.env.PORT || 3812;
 
@@ -94,6 +95,21 @@ app.get("/emailverification", function (req, res) {
   res.sendFile(__dirname + "/email_verification.html");
 });
 
+const upload = multer({
+  storage: multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, `./users/${req.body.name}/files`);
+    },
+    filename: (req, file, cb) => {
+      cb(null, `profiledp.png`);
+    },
+  }),
+});
+
+app.post('/avatar', upload.single('avatar'), (req, res) => {
+  res.redirect('/')
+});
+
 app.post("/register", async (req, res) => {
   try {
       var fs = require("fs");
@@ -122,8 +138,10 @@ app.post("/register", async (req, res) => {
 
       var fs = require('fs-extra');
 
-      fs.copySync(path.resolve(__dirname,"images/profile/default_dp" +getRandomInt(1, 8) +".png"), `./users/${req.body.name}/files/profiledp.png`);
-      fs.copySync(path.resolve(__dirname,"images/profile/video_default" +getRandomInt(1, 8) +".png"), `./users/${req.body.name}/files/videodp.png`);
+      const rannum =getRandomInt(1, 8);
+
+      fs.copySync(path.resolve(__dirname,"images/profile/default_dp" + rannum +".png"), `./users/${req.body.name}/files/profiledp.png`);
+      fs.copySync(path.resolve(__dirname,"images/profile/video_default" + rannum +".png"), `./users/${req.body.name}/files/videodp.png`);
 
       
       const registeruser = new Register({
@@ -219,6 +237,34 @@ app.post("/login", async (req, res) => {
   }
 });
 
+app.post("/checkname", async (req, res) => {
+  try {
+    var user;
+
+    if(req.body.type == 'register'){
+      user = await Register.findOne({ name: req.body.name });
+    }else{
+      user = await Gusers.findOne({ name: req.body.name });
+    }
+
+    res.send(user)
+  } catch (error) {
+    res.status(400).send("some error occured");
+  }
+});
+
+app.post("/checkemail", async (req, res) => {
+  try {
+    var user;
+
+    user = await Register.findOne({ email: req.body.email });
+
+    res.send(user)
+  } catch (error) {
+    res.status(400).send("some error occured");
+  }
+});
+
 app.post("/glogin", async (req, res) => {
   try {
     const guestuser = new Gusers({
@@ -272,8 +318,10 @@ app.post("/glogin", async (req, res) => {
     }
 
     var fs2 = require('fs-extra');
-    fs2.copySync(path.resolve(__dirname,"images/profile/default_dp" +getRandomInt(1, 8) +".png"), `./users/${req.body.name}/files/profiledp.png`);
-    fs.copySync(path.resolve(__dirname,"images/profile/video_default" +getRandomInt(1, 8) +".png"), `./users/${req.body.name}/files/videodp.png`);
+    const rannum = getRandomInt(1, 8);
+
+    fs2.copySync(path.resolve(__dirname,"images/profile/default_dp" +rannum +".png"), `./users/${req.body.name}/files/profiledp.png`);
+    fs.copySync(path.resolve(__dirname,"images/profile/video_default" +rannum +".png"), `./users/${req.body.name}/files/videodp.png`);
 
     res.send("okay");
 
@@ -284,12 +332,9 @@ app.post("/glogin", async (req, res) => {
 });
 
 app.post("/rhythm", async (req, res) => {
+  console.log(req.body)
   ytdl(req.body.link, { filter: "audioonly" }).pipe(
-    fs
-      .createWriteStream(`rhythm/Main Room/${req.body.title}.mp3`)
-      .on("close", () => {
-        res.send(req.body);
-      })
+    fs.createWriteStream(`rhythm/Main Room/${req.body.title}.mp3`).on("close", () => {res.send(req.body);})
   );
 });
 
@@ -298,6 +343,7 @@ var user_sockets = [];
 var roomsname = [];
 var roomdata = [];
 var block = false;
+var avoid_clone = false;
 
 async function loader() {
   try {
@@ -353,10 +399,12 @@ io.on("connection", function (socket) {
 
       activeusers.forEach((element, index) => {
         if (verifyUser._id == element.id) {
+          socket.broadcast.to(user_sockets[index]).emit("logout", "nothing");
           user_sockets[index] = socket;
-          roomdata[0].userssockets.forEach((elem, ind) => {
+          roomdata[0].roomusers.forEach((elem, ind) => {
             if (elem.id == verifyUser._id) {
               roomdata[0].userssockets[ind] = socket.id;
+              avoid_clone = true;
             }
           });
         }
@@ -383,29 +431,35 @@ io.on("connection", function (socket) {
         roomdata[0].userssockets[0] = socket.id;
         roomdata[0].roomactive = true;
       } else {
-        roomdata[0].roomusers = [
-          ...roomdata[0].roomusers,
-          {
-            name: user.name,
-            id: user._id,
-            country: user.country,
-            type: user.type,
-            blocks: user.blocks,
-            current_room: "Main Room",
-          },
-        ];
-        roomdata[0].userssockets = [...roomdata[0].userssockets, socket.id];
+        if(!avoid_clone){
+          roomdata[0].roomusers = [
+            ...roomdata[0].roomusers,
+            {
+              name: user.name,
+              id: user._id,
+              country: user.country,
+              type: user.type,
+              blocks: user.blocks,
+              current_room: "Main Room",
+            },
+          ];
+          roomdata[0].userssockets = [...roomdata[0].userssockets, socket.id];
+        }
       }
-      activeusers.push({
-        name: user.name,
-        id: user._id,
-        country: user.country,
-        type: user.type,
-        blocks: user.blocks,
-        current_room: "Main Room",
-      });
 
-      user_sockets.push(socket.id);
+      if(!avoid_clone){
+        activeusers.push({
+          name: user.name,
+          id: user._id,
+          country: user.country,
+          type: user.type,
+          blocks: user.blocks,
+          current_room: "Main Room",
+        });
+
+        user_sockets.push(socket.id);
+      }
+
 
       socket.emit("user-joined", {
         name: user.name,

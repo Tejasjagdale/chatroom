@@ -189,11 +189,35 @@ main p {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  position: relative;
+}
+
+.guest_login div label{
+  position: absolute;
+  right:calc(50% - 150px);
+  top:50%;
+  transform: translateY(-50%);
+  font-size: 20px;
+}
+
+.guest_login div .uicon{
+  position: absolute;
+  right:calc(50% + 150px);
+  top:50%;
+  transform: translateY(-50%);
+  font-size: 25px;
+  height: 50px;
+  width: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color:white;
+  background-color: #F51714;
 }
 
 .guest_login div input {
   border: 2px solid grey;
-  padding-left: 10px;
+  padding-left: 55px;
   font-size: 45%;
   outline: none;
   width: 400px;
@@ -377,11 +401,27 @@ main p {
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
+}
+
+.login div .uicon{
+  position: absolute;
+  right:calc(50% + 100px);
+  top:50%;
+  transform: translateY(-50%);
+  font-size: 25px;
+  height: 50px;
+  width: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color:white;
+  background-color: #37BBF9;
 }
 
 .login div input {
   border: 2px solid grey;
-  padding-left: 10px;
+  padding-left: 55px;
   font-size: 40%;
   outline: none;
   width: 300px;
@@ -471,11 +511,36 @@ main p {
   justify-content: center;
   align-items: center;
   margin-top: 10px;
+  position: relative;
+}
+
+
+.register div label{
+  position: absolute;
+  right:calc(50% - 140px);
+  top:50%;
+  transform: translateY(-50%);
+  font-size: 20px;
+}
+
+.register div .uicon{
+  position: absolute;
+  right:calc(50% + 100px);
+  top:50%;
+  transform: translateY(-50%);
+  font-size: 25px;
+  height: 50px;
+  width: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color:white;
+  background-color: #F85D6F;
 }
 
 .register div input {
   border: 2px solid grey;
-  padding-left: 10px;
+  padding-left: 55px;
   font-size: 40%;
   outline: none;
   width: 300px;
@@ -506,4 +571,48 @@ main p {
 
 .footer p{
   text-align: center;
+}
+
+.notify {
+  position: fixed;
+  top: 0px;
+  width: 100%;
+  height: 0;
+  box-sizing: border-box;
+  color: white;
+  text-align: center;
+  background: rgb(135, 0, 0, 0.7);
+  overflow: hidden;
+  box-sizing: border-box;
+  transition: height 0.2s;
+  z-index: 60;
+  font-size: 18px;
+}
+
+#notifyType {
+  display: block;
+  margin-top: 15px;
+  z-index: 61;
+}
+
+.active {
+  height: 50px;
+}
+
+.success:before {
+  content: "Aww Yeaaaaa! Success!";
+}
+
+.failure:before {
+  content: "Oh no! Something didn't go as planned :(";
+}
+
+.navailabel,.eavailabel,.gnavailabel{
+  display:none;
+  color:green;
+}
+
+.nunavailabel,.eunavailabel,.gnunavailabel{
+  display:none;
+  color:red;
 }

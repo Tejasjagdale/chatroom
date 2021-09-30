@@ -20,6 +20,7 @@ async function getstream(){
 function muteMic() {
     if(MyStream){
         MyStream.getAudioTracks().forEach(track => track.enabled = !track.enabled);
+        console.log(MyStream)
         if(MyStream.getAudioTracks()[0].enabled){
             document.querySelector(".pmmic_btn").innerHTML = `<i class="fas fa-microphone"></i>`;
             document.querySelector(".mainmic").innerHTML = `<i class="fas fa-microphone"></i>`;
@@ -39,6 +40,7 @@ function muteMic() {
 function muteCam() {
     if(MyStream){
             MyStream.getVideoTracks().forEach(track => track.enabled = !track.enabled);
+        console.log(MyStream)
         if(MyStream.getVideoTracks()[0].enabled){
             document.querySelector(".pmvideo_btn").innerHTML = `<i class="fas fa-video"></i>`;
         }else{
@@ -209,9 +211,8 @@ async function acceptcall(event){
     document.querySelector(".video_wrapper1 label").innerText = username;
     document.querySelector(".video_wrapper2 label").innerText = document.querySelector(".scall_name").innerText;
 
-    pmchat(document.querySelector(".incoming_pmcall").id,document.querySelector(".scall_name").innerText,event);
-    const stream = await getstream();
-    MyStream = stream;
+    pmchat(document.querySelector(".incoming_pmcall").id,document.querySelector(".scall_name").innerText,event); 
+    MyStream = await getstream();
 
     peer = new SimplePeer({
         initiator: false,

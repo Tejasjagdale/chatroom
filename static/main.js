@@ -17,7 +17,7 @@ var t = 0;
 var msg_noti = 0;
 var alert_noti = 0;
 var user_pms = 0;
-const socket = io("https://temp-app-chatroom.herokuapp.com/");
+const socket = io("http://localhost:3812/");
 
 var ca = document.cookie
   .split(";")
@@ -44,6 +44,33 @@ document.querySelector('.gvideo_wrapper1 label').innerText = username;
 
 socket.emit("new-user-joined", { token: token, user_type: user_type });
 
+socket.on("logout",(data)=>{
+  logout()
+});
+
+
+const avatarchange=(e)=>{
+  var formData = new FormData();
+  formData.append('name', username);
+  formData.append('avatar', e.target.files[0]);
+
+  document.getElementById("selfdp_view").setAttribute("src",e.target.files[0])
+
+  $.ajax({ 
+    url: '/avatar',
+    contentType: false,
+    processData: false, 
+    type: 'POST',
+    data: formData,
+    success: function(data){
+      console.log(data)
+    }
+    , error: function(data){
+        alert("something went wrong!");
+    }
+ });
+}
+
 socket.on("room-users", (data) => {
   data.forEach((items, index) => {
     if (items.roomname == "Main Room") {
@@ -67,9 +94,7 @@ const stopload = () => {
   document.querySelector(".preloder").setAttribute("style", "display:none");
 };
 
-document.querySelector(
-  ".this_user_identity"
-).innerHTML = `<span></span> ${username}`;
+document.querySelector(".this_user_identity").innerHTML = `<span></span> ${username}`;
 
 function formatAMPM(date) {
   var hours = date.getHours();
@@ -84,7 +109,9 @@ function formatAMPM(date) {
 
 var time = formatAMPM(new Date());
 socket.on("refresh", (data) => {
-  location.reload();
+  if(data.current_room == document.querySelector(".room_name").id == 'Main Room'){
+    window.location.reload();
+  }
 });
 
 socket.on("user-joined", (data) => {
@@ -97,9 +124,7 @@ socket.on("user-joined", (data) => {
     room_user.className = "user";
 
     document.querySelector(`.users`).appendChild(room_user);
-    document
-      .getElementById("user" + data.id)
-      .setAttribute("onclick", "user_profile(this.id)");
+    document.getElementById("user" + data.id).setAttribute("onclick", "user_profile(this.id)");
 
     document.getElementById(
       "user" + data.id
@@ -427,9 +452,10 @@ document.querySelector(".type_msg").addEventListener("keyup", (e) => {
 });
 
 socket.on("user-left", (data) => {
-  console.log(data);
-  if (data.current_room == document.querySelector(".room_name").id) {
-    document.querySelector(`.users #user${data.id}`).remove();
+  if(data){
+    if (data.current_room == document.querySelector(".room_name").id) {
+      document.querySelector(`.users #user${data.id}`).remove();
+    }
   }
 });
 

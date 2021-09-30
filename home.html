@@ -9,6 +9,8 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+        integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
   <link rel="stylesheet" href="home.css">
   <link rel="stylesheet" href="homeres.css">
 </head>
@@ -94,15 +96,17 @@
                             <h1>LOGIN HERE</h1>
 
                             <div>
-                              <input type="text" name="log_username" id="log_username_email" placeholder="username/email:"/>
+                              <label class="uicon"><i class="fas fa-user"></i></label>
+                              <input type="text" name="log_username" id="log_username_email" placeholder="username/email:" required/>
                             </div>
 
                             <div>
-                              <input type="password" name="log_password" id="log_password" placeholder="password:"/>
+                              <label class="uicon"><i class="fas fa-key"></i></label>
+                              <input type="password" name="log_password" id="log_password" placeholder="password:" required/>
                             </div>
 
                             <div>
-                              <span><input type="checkbox"  name="rememberme" id="rememberme" class="img3"/></span><p class="if3">Remember me</p>
+                              <span><input type="checkbox"  name="rememberme" id="rememberme" class="img3" /></span><p class="if3">Remember me</p>
                             </div>
 
                             <div>
@@ -121,14 +125,21 @@
                         <div class="register">
                             <h1>GET REGISTER HERE</h1>
                             <div>
-                              <input type="text" name="reg_username" id="reg_username" placeholder="username:" required/>
+                              <label class="uicon"><i class="fas fa-user"></i></label>
+                              <label class="navailabel"><i class="fas fa-check"></i></label>
+                              <label class="nunavailabel"><i class="fas fa-times"></i></label>
+                              <input maxlength="16" type="text" name="reg_username" id="reg_username" placeholder="username:" required/>
                             </div>
                         
                             <div>
+                              <label class="uicon"><i class="fas fa-envelope"></i></label>
+                              <label class="eavailabel"><i class="fas fa-check"></i></label>
+                              <label class="eunavailabel"><i class="fas fa-times"></i></label>
                               <input type="email" name="reg_email" id="reg_email" placeholder="email:" required/>
                             </div>
                         
                             <div>
+                              <label class="uicon"><i class="fas fa-key"></i></label>
                               <input type="password" name="reg_password" id="reg_password" placeholder="password:" required/>
                             </div>
                         
@@ -148,7 +159,10 @@
   <div class="guest_login">
     <h1>GUEST LOGIN HERE</h1>
     <div>
-      <input type="text" name="glog_username"  placeholder="username:" id="glog_username" />
+      <label class="uicon"><i class="fas fa-user"></i></label>
+      <label class="gnavailabel"><i class="fas fa-check"></i></label>
+      <label class="gnunavailabel"><i class="fas fa-times"></i></label>
+      <input type="text" name="glog_username" maxlength="16"  placeholder="username:" id="glog_username" />
     </div>
 
     <div>
@@ -157,6 +171,10 @@
   </div>
 
   </div>
+
+  <div class="notify">
+    <span id="notifyType" class=""></span>
+</div>
 
   <div class="footer">
     <p>
@@ -198,10 +216,19 @@ All trademarks and registered trademarks appearing on this site are the property
 </script>
 
 <script>
+  var userid,pass;
+  document.cookie.split(";").map((elem)=>{
+    if(elem.includes('remembermename')){
+      userid = elem.split("=")[1];
+    }
+    if(elem.includes('remembermepass')){
+      pass = elem.split("=")[1];
+    }
+  })
   if(document.cookie){
     document.getElementById("rememberme").checked = true;
-    document.getElementById("log_username_email").value = document.cookie.split(";")[0].split("=")[1];
-    document.getElementById("log_password").value = document.cookie.split(";")[1].split("=")[1];
+    document.getElementById("log_username_email").value = userid;
+    document.getElementById("log_password").value = pass;
   }else{
     document.getElementById("rememberme").checked = false;
   }
@@ -243,7 +270,8 @@ All trademarks and registered trademarks appearing on this site are the property
     }
 
 
-    addRecord=()=>{
+  const  addRecord=()=>{
+    if(document.querySelector('.nunavailabel').style.display == 'none' && document.querySelector('.eunavailabel').style.display == 'none'){
       $.ajax({ 
            url: '/register',
            type: 'POST',
@@ -262,13 +290,161 @@ All trademarks and registered trademarks appearing on this site are the property
                alert("you entered wrong details");
            }
         });
-
         clearinputs();
+      }else{
+        if(document.querySelector('.eunavailabel').style.display == 'none'){
+          document.querySelector(".notify").classList.add("active");
+            document.querySelector(".notify").setAttribute("style", "background:rgb(135, 0, 0,0.7);");
+            document.getElementById("notifyType").innerText = "There is already a user register on this email!";
+
+            setTimeout(function () {
+              $(".notify").removeClass("active");
+              $("#notifyType").innerText = "";
+            }, 2000);
+        }else{
+          document.querySelector(".notify").classList.add("active");
+            document.querySelector(".notify").setAttribute("style", "background:rgb(135, 0, 0,0.7);");
+            document.getElementById("notifyType").innerText = "This Username is already taken!";
+
+            setTimeout(function () {
+              $(".notify").removeClass("active");
+              $("#notifyType").innerText = "";
+            }, 2000);
+        }
+      }
     }
+
+    document.getElementById("glog_username").addEventListener('keyup',(e)=>{
+      $.ajax({ 
+           url: '/checkname',
+           type: 'POST',
+           data:{
+             name:document.getElementById("glog_username").value,
+             type:'guest'
+           },
+
+           
+           success: function(data){
+              if(data){
+                document.querySelector('.gnavailabel').setAttribute("style","display:none")
+                document.querySelector('.gnunavailabel').setAttribute("style","display:flex")
+              }else{
+                document.querySelector('.gnavailabel').setAttribute("style","display:flex")
+                document.querySelector('.gnunavailabel').setAttribute("style","display:none")
+              }
+           }
+           , error: function(jqXHR, textStatus, err){
+               document.querySelector(".notify").classList.add("active");
+            document.querySelector(".notify").setAttribute("style", "background:rgb(135, 0, 0,0.7);");
+            document.getElementById("notifyType").innerText = "Something went wrong!";
+
+            setTimeout(function () {
+              $(".notify").removeClass("active");
+              $("#notifyType").innerText = "";
+            }, 2000);
+           }
+          });
+    })
+
+    document.getElementById("reg_username").addEventListener('keyup',(e)=>{
+      $.ajax({ 
+           url: '/checkname',
+           type: 'POST',
+           data:{
+             name:document.getElementById("reg_username").value,
+             type:'register'
+           },
+
+           
+           success: function(data){
+              if(data){
+                document.querySelector('.navailabel').setAttribute("style","display:none")
+                document.querySelector('.nunavailabel').setAttribute("style","display:flex")
+              }else{
+                document.querySelector('.navailabel').setAttribute("style","display:flex")
+                document.querySelector('.nunavailabel').setAttribute("style","display:none")
+              }
+           }
+           , error: function(jqXHR, textStatus, err){
+               document.querySelector(".notify").classList.add("active");
+            document.querySelector(".notify").setAttribute("style", "background:rgb(135, 0, 0,0.7);");
+            document.getElementById("notifyType").innerText = "Something went wrong!";
+
+            setTimeout(function () {
+              $(".notify").removeClass("active");
+              $("#notifyType").innerText = "";
+            }, 2000);
+           }
+          });
+    })
+
+    document.getElementById("reg_email").addEventListener('keyup',(e)=>{
+      $.ajax({ 
+           url: '/checkemail',
+           type: 'POST',
+           data:{
+             email:document.getElementById("reg_email").value,
+           },
+
+           
+           success: function(data){
+              if(data){
+                document.querySelector('.eavailabel').setAttribute("style","display:none")
+                document.querySelector('.eunavailabel').setAttribute("style","display:flex")
+              }else{
+                document.querySelector('.eavailabel').setAttribute("style","display:flex")
+                document.querySelector('.eunavailabel').setAttribute("style","display:none")
+              }
+           }
+           , error: function(jqXHR, textStatus, err){
+               document.querySelector(".notify").classList.add("active");
+            document.querySelector(".notify").setAttribute("style", "background:rgb(135, 0, 0,0.7);");
+            document.getElementById("notifyType").innerText = "Something went wrong!";
+
+            setTimeout(function () {
+              $(".notify").removeClass("active");
+              $("#notifyType").innerText = "";
+            }, 2000);
+           }
+          });
+    })
+
+
+    document.getElementById("glog_username").addEventListener('keyup',(e)=>{
+      $.ajax({ 
+           url: '/checkname',
+           type: 'POST',
+           data:{
+             name:document.getElementById("glog_username").value,
+             type:'guest'
+           },
+
+           
+           success: function(data){
+              if(data){
+                document.querySelector('.gnavailabel').setAttribute("style","display:none")
+                document.querySelector('.gnunavailabel').setAttribute("style","display:flex")
+              }else{
+                document.querySelector('.gnavailabel').setAttribute("style","display:flex")
+                document.querySelector('.gnunavailabel').setAttribute("style","display:none")
+              }
+           }
+           , error: function(jqXHR, textStatus, err){
+               document.querySelector(".notify").classList.add("active");
+            document.querySelector(".notify").setAttribute("style", "background:rgb(135, 0, 0,0.7);");
+            document.getElementById("notifyType").innerText = "Something went wrong!";
+
+            setTimeout(function () {
+              $(".notify").removeClass("active");
+              $("#notifyType").innerText = "";
+            }, 2000);
+           }
+          });
+    })
 
 
     login2=()=>{
-      $.ajax({ 
+        $.ajax({ 
            url: '/login',
            type: 'POST',
            data:{
@@ -297,7 +473,8 @@ All trademarks and registered trademarks appearing on this site are the property
     }
 
     glogin=()=>{
-      $.ajax({ 
+      if(document.querySelector('.gnunavailabel').style.display == 'none'){
+        $.ajax({ 
            url: '/glogin',
            type: 'POST',
            data:{"name":document.getElementById("glog_username").value},
@@ -312,7 +489,17 @@ All trademarks and registered trademarks appearing on this site are the property
            }
         });
 
-        clearinputs();
+        clearinputs();  
+      }else{
+        document.querySelector(".notify").classList.add("active");
+            document.querySelector(".notify").setAttribute("style", "background:rgb(135, 0, 0,0.7);");
+            document.getElementById("notifyType").innerText = "This Username is already taken!";
+
+            setTimeout(function () {
+              $(".notify").removeClass("active");
+              $("#notifyType").innerText = "";
+            }, 2000);
+      }
     }
 </script>
 

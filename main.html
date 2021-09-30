@@ -114,18 +114,37 @@
         </div>
 
         <div class="changemyname">
-            <div class="head"><span>Enter Room password</span> <i class="fas fa-times" onclick="alertclose(event)"></i>
+            <div class="head">
+                <span>Enter Username</span> 
+                <i class="fas fa-times" onclick="alertclose(event)"></i>
             </div>
-            <div class="chbody">
+            <div class="body">
                 <div>
-                    <label>Enter Password:</label>
+                    <label>Username:</label>
                     <input type="text" id="myname" />
                 </div>
-                <div class="chbtn">
-                    <button class="chabtn" onclick="roompass()">Enter <i class="fas fa-sign-in-alt"></i></button>
+                <div class="dbtn">
+                    <button class="btn" >Save <i class="fas fa-sign-in-alt"></i></button>
                 </div>
             </div>
         </div>
+
+        <!-- <div class="ChangePass"  tabindex="0">
+            <div class="head"><span>Change Password</span> <i class="fas fa-times" onclick="alertclose(event)"></i></div>
+            <div class="cpbody">
+                <div>
+                    <label>RoomName:</label>
+                    <input type="text" name="newpass" id="newpass" />
+                </div>
+                <div>
+                    <label>Password:</label>
+                    <input type="password" name="cnewpass" id="cnewpass" />
+                </div>
+                <div class="cpdbtn">
+                    <button class="cpbtn" >Change Password<i class="fas fa-sign-in-alt"></i></button>
+                </div>
+            </div>
+        </div> -->
 
         <div class="inbox" tabindex="0">
             <div class="head">
@@ -275,7 +294,7 @@
                 <section>
                     <div>
                         <label><i class="fas fa-camera-retro"></i></label>
-                        <input type="file" id="changedp" accept="image/*"/>
+                        <input type="file" id="changedp" name="avatar" accept="image/*" onchange="avatarchange(event)"/>
                         <img id="selfdp_view">
                     </div>
                     <div>
@@ -285,8 +304,8 @@
                 <div id="editname"><i class="fas fa-user-edit"></i> Edit Name</div>
                 <div><i class="fas fa-question-circle"></i> About me</div>
                 <div id="blocklist"><i class="fas fa-ban"></i> Manage Blocks</div>
-                <div><i class="fas fa-volume-up"></i> Sound setings</div>
-                <div><i class="fas fa-key-skeleton"></i> Change password</div>
+                <div ><i class="fas fa-volume-up"></i> Sound setings</div>
+                <div id="changepass"><i class="fas fa-key-skeleton"></i> Change password</div>
                 <div><i class="fas fa-envelope"></i> Change Email</div>
                 <div><i class="fas fa-trash-alt"></i> Delete Account</div>
             </div>
@@ -321,8 +340,8 @@
 
                 <div class="user_details">
                     <div class="ud_head">
-                        <span></span>
-                        <p>name</p>
+                        <div><span></span></div>
+                        <div><p>name</p></div>
                     </div>
                     <div class="ud_body">
                         <div class="user-type" style="display:none"></div>
@@ -558,7 +577,7 @@
         </div>
     </div>
 </body>
-<script src ="https://temp-app-chatroom.herokuapp.com/socket.io/socket.io.js"></script>
+<script src ="http://localhost:3812/socket.io/socket.io.js"></script>
 <script src="/socket.io-stream/socket.io-stream.js"></script>
 <script src="https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js"></script>
 <script src="/simple-peer/simplepeer.min.js"></script>
