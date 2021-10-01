@@ -400,97 +400,91 @@ io.on("connection", function (socket) {
       activeusers.forEach((element, index) => {
         if (verifyUser._id == element.id) {
           socket.broadcast.to(user_sockets[index]).emit("logout", "nothing");
-          user_sockets[index] = socket;
-          roomdata[0].roomusers.forEach((elem, ind) => {
-            if (elem.id == verifyUser._id) {
-              roomdata[0].userssockets[ind] = socket.id;
-              avoid_clone = true;
-            }
+          avoid_clone = true;
+        }
+      });
+
+      setTimeout(async () => {
+        if (user_type == "register") {
+          var user = await Register.findOne({ _id: verifyUser._id });
+        } else {
+          var user = await Gusers.findOne({ _id: verifyUser._id });
+        }
+  
+        socket.emit("load-users", [roomdata[0].roomusers, roomdata[0].roomroles]);
+        socket.emit("load-rooms", roomsname);
+  
+        if (roomdata[0].roomusers.length == 0) {
+          roomdata[0].roomusers[0] = {
+            name: user.name,
+            id: user._id,
+            country: user.country,
+            type: user.type,
+            blocks: user.blocks,
+            current_room: "Main Room",
+          };
+          roomdata[0].userssockets[0] = socket.id;
+          roomdata[0].roomactive = true;
+        } else {
+
+            roomdata[0].roomusers = [
+              ...roomdata[0].roomusers,
+              {
+                name: user.name,
+                id: user._id,
+                country: user.country,
+                type: user.type,
+                blocks: user.blocks,
+                current_room: "Main Room",
+              },
+            ];
+            roomdata[0].userssockets = [...roomdata[0].userssockets, socket.id];
+          }
+  
+          activeusers.push({
+            name: user.name,
+            id: user._id,
+            country: user.country,
+            type: user.type,
+            blocks: user.blocks,
+            current_room: "Main Room",
           });
-        }
-      });
-
-      if (user_type == "register") {
-        var user = await Register.findOne({ _id: verifyUser._id });
-      } else {
-        var user = await Gusers.findOne({ _id: verifyUser._id });
-      }
-
-      socket.emit("load-users", [roomdata[0].roomusers, roomdata[0].roomroles]);
-      socket.emit("load-rooms", roomsname);
-
-      if (roomdata[0].roomusers.length == 0) {
-        roomdata[0].roomusers[0] = {
+  
+          user_sockets.push(socket.id);
+  
+  
+        socket.emit("user-joined", {
           name: user.name,
           id: user._id,
           country: user.country,
           type: user.type,
           blocks: user.blocks,
           current_room: "Main Room",
-        };
-        roomdata[0].userssockets[0] = socket.id;
-        roomdata[0].roomactive = true;
-      } else {
-        if(!avoid_clone){
-          roomdata[0].roomusers = [
-            ...roomdata[0].roomusers,
-            {
-              name: user.name,
-              id: user._id,
-              country: user.country,
-              type: user.type,
-              blocks: user.blocks,
-              current_room: "Main Room",
-            },
-          ];
-          roomdata[0].userssockets = [...roomdata[0].userssockets, socket.id];
-        }
-      }
-
-      if(!avoid_clone){
-        activeusers.push({
-          name: user.name,
-          id: user._id,
-          country: user.country,
-          type: user.type,
-          blocks: user.blocks,
-          current_room: "Main Room",
+          history: user.history,
+          roomdata: roomdata[0],
         });
-
-        user_sockets.push(socket.id);
-      }
-
-
-      socket.emit("user-joined", {
-        name: user.name,
-        id: user._id,
-        country: user.country,
-        type: user.type,
-        blocks: user.blocks,
-        current_room: "Main Room",
-        history: user.history,
-        roomdata: roomdata[0],
-      });
-
-      socket.broadcast.emit("user-joined", {
-        name: user.name,
-        id: user._id,
-        country: user.country,
-        type: user.type,
-        blocks: user.blocks,
-        history: user.history,
-        current_room: "Main Room",
-        roomdata: roomdata[0],
-      });
-
-      socket.emit("load-msgs", roomdata[0].roommsgs);
-      socket.emit("room-users", roomdata);
-      socket.broadcast.emit("room-users", roomdata);
-
-      if (user.type == "register") {
-        const frnds = await Register.findOne({ _id: user._id });
-        socket.emit("load-frnds", frnds);
-      }
+  
+        socket.broadcast.emit("user-joined", {
+          name: user.name,
+          id: user._id,
+          country: user.country,
+          type: user.type,
+          blocks: user.blocks,
+          history: user.history,
+          current_room: "Main Room",
+          roomdata: roomdata[0],
+        });
+  
+        socket.emit("load-msgs", roomdata[0].roommsgs);
+        socket.emit("room-users", roomdata);
+        socket.broadcast.emit("room-users", roomdata);
+  
+        if (user.type == "register") {
+          const frnds = await Register.findOne({ _id: user._id });
+          socket.emit("load-frnds", frnds);
+        }
+      }, ( avoid_clone ? 500 : 100 ));
+      
     } catch (error) {
       console.log(error);
     }
@@ -1125,21 +1119,22 @@ io.on("connection", function (socket) {
           var i3 = items.userssockets.indexOf(socket.id);
           items.voiceuser.forEach((elem,ind2) => {
               if(elem.userid == items.roomusers[i3].id){
-                roomdata[index].voiceuser.splice(ind2,1)
+                roomdata[index].voiceuser.splice(ind2,1);
+                socket.broadcast.emit("vuser_left", {name:items.roomusers[i3].name});
               }
           });
-          socket.broadcast.emit("vuser_left", {name:items.roomusers[i3].name});
           items.roomusers.splice(i3, 1);
           items.userssockets.splice(i3, 1);
         }
       }
     });
+    
+    console.log(activeusers[i])
     socket.broadcast.emit("user-left", activeusers[i]);
     socket.broadcast.emit("room-users", roomdata);
 
     activeusers.splice(i, 1);
     user_sockets.splice(i, 1);
-    console.log(roomdata[0])
   });
 });
 

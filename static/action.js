@@ -222,8 +222,14 @@ document.querySelector("#roomsetting").addEventListener("click", () => {
 
 document.querySelector("#changepass").addEventListener("click", () => {
     document.querySelector(".alert").setAttribute("style", "display:block");
-    document.querySelector(".ChangePass").classList.add("activeb2");
-    document.querySelector(".ChangePass").setAttribute("style", "animation: ZoomIn 0.3s ease-out");
+    document.querySelector(".changepass").classList.add("activeb2");
+    document.querySelector(".changepass").setAttribute("style", "animation: ZoomIn 0.3s ease-out");
+});
+
+document.querySelector("#changeemail").addEventListener("click", () => {
+    document.querySelector(".alert").setAttribute("style", "display:block");
+    document.querySelector(".changeemail").classList.add("activeb2");
+    document.querySelector(".changeemail").setAttribute("style", "animation: ZoomIn 0.3s ease-out");
 });
 
 document.querySelector("#editname").addEventListener("click", () => {
@@ -270,17 +276,6 @@ document.querySelector(".Room_settings").addEventListener("click", (e) => {
     }
 });
 
-document.querySelector(".changemyname").addEventListener("click", (e) => {
-    if (e.target !== e.currentTarget) {
-        e.stopPropagation();
-    }
-});
-
-// document.querySelector(".ChnagePass").addEventListener("click", (e) => {
-//     if (e.target !== e.currentTarget) {
-//         e.stopPropagation();
-//     }
-// });
 
 document.querySelector(".blocked").addEventListener("click", (e) => {
     if (e.target !== e.currentTarget) {
@@ -307,6 +302,24 @@ document.querySelector(".profile_div").addEventListener("click", (e) => {
 });
 
 document.querySelector(".enter_roompass").addEventListener("click", (e) => {
+    if (e.target !== e.currentTarget) {
+        e.stopPropagation();
+    }
+});
+
+document.querySelector(".changepass").addEventListener("click", (e) => {
+    if (e.target !== e.currentTarget) {
+        e.stopPropagation();
+    }
+});
+
+document.querySelector(".changeemail").addEventListener("click", (e) => {
+    if (e.target !== e.currentTarget) {
+        e.stopPropagation();
+    }
+});
+
+document.querySelector(".changemyname").addEventListener("click", (e) => {
     if (e.target !== e.currentTarget) {
         e.stopPropagation();
     }

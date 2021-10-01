@@ -6,7 +6,6 @@ const roomSchema = new mongoose.Schema({
     roomname:{
         type:String,
         required:true,
-        unique:true
     },
     roompass:{
         type:String,

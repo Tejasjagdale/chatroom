@@ -114,37 +114,54 @@
         </div>
 
         <div class="changemyname">
-            <div class="head">
-                <span>Enter Username</span> 
-                <i class="fas fa-times" onclick="alertclose(event)"></i>
+            <div class="head"><span>Change name</span> <i class="fas fa-times" onclick="alertclose(event)"></i>
             </div>
-            <div class="body">
+            <div class="crbody">
                 <div>
-                    <label>Username:</label>
-                    <input type="text" id="myname" />
+                    <label>Enter Username:</label>
+                    <input type="text"  />
                 </div>
-                <div class="dbtn">
-                    <button class="btn" >Save <i class="fas fa-sign-in-alt"></i></button>
+                <div class="crbtn">
+                    <button class="crabtn" >Enter <i class="fas fa-sign-in-alt"></i></button>
                 </div>
             </div>
         </div>
 
-        <!-- <div class="ChangePass"  tabindex="0">
-            <div class="head"><span>Change Password</span> <i class="fas fa-times" onclick="alertclose(event)"></i></div>
-            <div class="cpbody">
+        <div class="changepass">
+            <div class="head"><span>Enter Room password</span> <i class="fas fa-times" onclick="alertclose(event)"></i>
+            </div>
+            <div class="crbody">
                 <div>
-                    <label>RoomName:</label>
-                    <input type="text" name="newpass" id="newpass" />
+                    <label>New Password:</label>
+                    <input type="password" id="Newpassword" />
                 </div>
                 <div>
-                    <label>Password:</label>
-                    <input type="password" name="cnewpass" id="cnewpass" />
+                    <label>Re-enter Password:</label>
+                    <input type="password" id="reenterpassword" />
                 </div>
-                <div class="cpdbtn">
-                    <button class="cpbtn" >Change Password<i class="fas fa-sign-in-alt"></i></button>
+                <div class="crbtn">
+                    <button class="crabtn" onclick="roompass()">Enter <i class="fas fa-sign-in-alt"></i></button>
                 </div>
             </div>
-        </div> -->
+        </div>
+
+        <div class="changeemail">
+            <div class="head"><span>Enter Room password</span> <i class="fas fa-times" onclick="alertclose(event)"></i>
+            </div>
+            <div class="crbody">
+                <div>
+                    <label>previous Email:</label>
+                    <input type="email"  />
+                </div>
+                <div>
+                    <label>Change Email:</label>
+                    <input type="email"  />
+                </div>
+                <div class="crbtn">
+                    <button class="crabtn" onclick="roompass()">Enter <i class="fas fa-sign-in-alt"></i></button>
+                </div>
+            </div>
+        </div>
 
         <div class="inbox" tabindex="0">
             <div class="head">
@@ -302,12 +319,12 @@
                     </div>
                 </section>
                 <div id="editname"><i class="fas fa-user-edit"></i> Edit Name</div>
-                <div><i class="fas fa-question-circle"></i> About me</div>
+                <div id="aboutme"><i class="fas fa-question-circle"></i> About me</div>
                 <div id="blocklist"><i class="fas fa-ban"></i> Manage Blocks</div>
-                <div ><i class="fas fa-volume-up"></i> Sound setings</div>
+                <div id="soundsetting"><i class="fas fa-volume-up"></i> Sound setings</div>
                 <div id="changepass"><i class="fas fa-key-skeleton"></i> Change password</div>
-                <div><i class="fas fa-envelope"></i> Change Email</div>
-                <div><i class="fas fa-trash-alt"></i> Delete Account</div>
+                <div id="changeemail"><i class="fas fa-envelope"></i> Change Email</div>
+                <div id="deleteac"><i class="fas fa-trash-alt"></i> Delete Account</div>
             </div>
 
             <header class="header1">

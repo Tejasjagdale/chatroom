@@ -192,6 +192,7 @@ socket.on("pmcall",(data)=>{
         document.querySelector(".incoming_pmcall").setAttribute("style","display:block");
         document.querySelector(".incoming_pmcall").id = data.id;
         document.querySelector(".scall_name").innerText = data.name;
+        document.querySelector(".incom_dp").setAttribute("style",`background-image:url(${data.name}/files/profiledp.png)`)
         document.querySelector(".incoming_pmcall").setAttribute("call",data.call);
         callerSignal = data.signal;
         ringtone.play();

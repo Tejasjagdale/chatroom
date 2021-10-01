@@ -452,7 +452,8 @@ document.querySelector(".type_msg").addEventListener("keyup", (e) => {
 });
 
 socket.on("user-left", (data) => {
-  if(data){
+  console.log(data)
+  if(data && data.name != username){
     if (data.current_room == document.querySelector(".room_name").id) {
       document.querySelector(`.users #user${data.id}`).remove();
     }
