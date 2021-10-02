@@ -38,38 +38,48 @@ var username = JSON.parse(ca.chatroomjwt.substr(2, ca.chatroomjwt.length)).name;
 var this_userid;
 var country;
 
-document.getElementById("selfdp_view").setAttribute("src",`${username}/files/profiledp.png`)
+document
+  .getElementById("selfdp_view")
+  .setAttribute("src", `${username}/files/profiledp.png`);
 document.getElementById("myuname").innerText = username;
-document.querySelector('.gvideo_wrapper1 label').innerText = username;
+document.querySelector(".gvideo_wrapper1 label").innerText = username;
 
 socket.emit("new-user-joined", { token: token, user_type: user_type });
 
-socket.on("logout",(data)=>{
-  logout()
+socket.on("logout", (data) => {
+  logout();
 });
 
-
-const avatarchange=(e)=>{
+const avatarchange = (e) => {
   var formData = new FormData();
-  formData.append('name', username);
-  formData.append('avatar', e.target.files[0]);
+  formData.append("name", username);
+  formData.append("avatar", e.target.files[0]);
 
-  document.getElementById("selfdp_view").setAttribute("src",e.target.files[0])
+  document.getElementById("selfdp_view").setAttribute("src", e.target.files[0]);
 
-  $.ajax({ 
-    url: '/avatar',
+  $.ajax({
+    url: "/avatar",
     contentType: false,
-    processData: false, 
-    type: 'POST',
+    processData: false,
+    type: "POST",
     data: formData,
-    success: function(data){
-      console.log(data)
-    }
-    , error: function(data){
-        alert("something went wrong!");
-    }
- });
-}
+    success: function (data) {
+      console.log(data);
+    },
+    error: function (data) {
+      document.querySelector(".notify").classList.add("active");
+      document
+        .querySelector(".notify")
+        .setAttribute("style", "background:rgb(135, 0, 0,0.7);");
+      document.getElementById("notifyType").innerText = "something went wrong!";
+
+      setTimeout(function () {
+        $(".notify").removeClass("active");
+        $("#notifyType").innerText = "";
+      }, 2000);
+    },
+  });
+};
 
 socket.on("room-users", (data) => {
   data.forEach((items, index) => {
@@ -94,7 +104,9 @@ const stopload = () => {
   document.querySelector(".preloder").setAttribute("style", "display:none");
 };
 
-document.querySelector(".this_user_identity").innerHTML = `<span></span> ${username}`;
+document.querySelector(
+  ".this_user_identity"
+).innerHTML = `<span></span> ${username}`;
 
 function formatAMPM(date) {
   var hours = date.getHours();
@@ -109,7 +121,10 @@ function formatAMPM(date) {
 
 var time = formatAMPM(new Date());
 socket.on("refresh", (data) => {
-  if(data.current_room == document.querySelector(".room_name").id == 'Main Room'){
+  if (
+    (data.current_room == document.querySelector(".room_name").id) ==
+    "Main Room"
+  ) {
     window.location.reload();
   }
 });
@@ -124,7 +139,9 @@ socket.on("user-joined", (data) => {
     room_user.className = "user";
 
     document.querySelector(`.users`).appendChild(room_user);
-    document.getElementById("user" + data.id).setAttribute("onclick", "user_profile(this.id)");
+    document
+      .getElementById("user" + data.id)
+      .setAttribute("onclick", "user_profile(this.id)");
 
     document.getElementById(
       "user" + data.id
@@ -186,26 +203,30 @@ socket.on("user-joined", (data) => {
         }</p> <i class="fas fa-times" onclick="removeblock(event)"></i></div>`;
       });
 
-      data.roomdata.voiceuser.forEach((elem)=>{
+      data.roomdata.voiceuser.forEach((elem) => {
         var voice_user = document.createElement("DIV");
         voice_user.id = "voice" + elem.userid;
         voice_user.className = "voice";
 
-        document.querySelector(`#General_channel_users`).appendChild(voice_user);
-        document.getElementById("voice" + elem.userid).innerHTML = `<span style="background-image: url(${elem.name}/files/profiledp.png);"></span> ${elem.name}`;
+        document
+          .querySelector(`#General_channel_users`)
+          .appendChild(voice_user);
+        document.getElementById(
+          "voice" + elem.userid
+        ).innerHTML = `<span style="background-image: url(${elem.name}/files/profiledp.png);"></span> ${elem.name}`;
 
         if (elem.name != username) {
           var newuser = document.createElement("DIV");
           newuser.id = `${elem.name}video_wrapper`;
           newuser.className = "gvideo_wrapper2";
-      
+
           document.querySelector(`.gvideo_wrapper`).appendChild(newuser);
           document.getElementById(
             `${elem.name}video_wrapper`
           ).innerHTML = `<label>${elem.name}</label><span><i class="fas fa-microphone-slash"></i></span><video autoplay="true" id="${elem.name}video" class="gvideoElement2" onclick="group_zoomvideo(this.id)" ></video>`;
           curuser = elem.name;
         }
-      })
+      });
     }
   }
 });
@@ -313,7 +334,8 @@ socket.on("load-msgs", (data) => {
             document
               .querySelector(".notify")
               .setAttribute("style", "background:rgb(0, 77, 0,0.7);");
-            document.getElementById("notifyType").innerText = "this file is not supported yet!";
+            document.getElementById("notifyType").innerText =
+              "this file is not supported yet!";
 
             setTimeout(function () {
               $(".notify").removeClass("active");
@@ -452,8 +474,8 @@ document.querySelector(".type_msg").addEventListener("keyup", (e) => {
 });
 
 socket.on("user-left", (data) => {
-  console.log(data)
-  if(data && data.name != username){
+  console.log(data);
+  if (data && data.name != username) {
     if (data.current_room == document.querySelector(".room_name").id) {
       document.querySelector(`.users #user${data.id}`).remove();
     }
@@ -487,9 +509,29 @@ socket.on("change-room", (data) => {
       ".room_name"
     ).innerHTML = `<span><i class='fas fa-users'></i></span>${data.data.nroomname}`;
   } else if (data.result == "baned") {
-    alert("you are baned from this room");
+    document.querySelector(".notify").classList.add("active");
+    document
+      .querySelector(".notify")
+      .setAttribute("style", "background:rgb(135, 0, 0,0.7);");
+    document.getElementById("notifyType").innerText =
+      "you are baned from this room!";
+
+    setTimeout(function () {
+      $(".notify").removeClass("active");
+      $("#notifyType").innerText = "";
+    }, 2000);
   } else {
-    alert("you entered wrong password!");
+    document.querySelector(".notify").classList.add("active");
+    document
+      .querySelector(".notify")
+      .setAttribute("style", "background:rgb(135, 0, 0,0.7);");
+    document.getElementById("notifyType").innerText =
+      "you entered wrong password!";
+
+    setTimeout(function () {
+      $(".notify").removeClass("active");
+      $("#notifyType").innerText = "";
+    }, 2000);
   }
 });
 
@@ -601,26 +643,28 @@ socket.on("change-room-load", (data) => {
     }
   });
 
-  data.voiceuser.forEach((elem)=>{
-        var voice_user = document.createElement("DIV");
-        voice_user.id = "voice" + elem.userid;
-        voice_user.className = "voice";
+  data.voiceuser.forEach((elem) => {
+    var voice_user = document.createElement("DIV");
+    voice_user.id = "voice" + elem.userid;
+    voice_user.className = "voice";
 
-        document.querySelector(`#General_channel_users`).appendChild(voice_user);
-        document.getElementById("voice" + elem.userid).innerHTML = `<span style="background-image: url(${elem.name}/files/profiledp.png);"></span> ${elem.name}`;
+    document.querySelector(`#General_channel_users`).appendChild(voice_user);
+    document.getElementById(
+      "voice" + elem.userid
+    ).innerHTML = `<span style="background-image: url(${elem.name}/files/profiledp.png);"></span> ${elem.name}`;
 
-        if (elem.name != username) {
-          var newuser = document.createElement("DIV");
-          newuser.id = `${elem.name}video_wrapper`;
-          newuser.className = "gvideo_wrapper2";
-      
-          document.querySelector(`.gvideo_wrapper`).appendChild(newuser);
-          document.getElementById(
-            `${elem.name}video_wrapper`
-          ).innerHTML = `<label>${elem.name}</label><span><i class="fas fa-microphone-slash"></i></span><video autoplay="true" id="${elem.name}video" class="gvideoElement2" onclick="group_zoomvideo(this.id)" ></video>`;
-          curuser = elem.name;
-        }
-  })
+    if (elem.name != username) {
+      var newuser = document.createElement("DIV");
+      newuser.id = `${elem.name}video_wrapper`;
+      newuser.className = "gvideo_wrapper2";
+
+      document.querySelector(`.gvideo_wrapper`).appendChild(newuser);
+      document.getElementById(
+        `${elem.name}video_wrapper`
+      ).innerHTML = `<label>${elem.name}</label><span><i class="fas fa-microphone-slash"></i></span><video autoplay="true" id="${elem.name}video" class="gvideoElement2" onclick="group_zoomvideo(this.id)" ></video>`;
+      curuser = elem.name;
+    }
+  });
 
   data.muteusers.every(function (elem) {
     if (elem.userid.replace("user", " ").trim() == this_userid) {
@@ -1185,7 +1229,17 @@ function sendresp() {
         document.querySelector(".type_msg").value = "";
       }
     } else {
-      alert("you have blocked this user!");
+      document.querySelector(".notify").classList.add("active");
+      document
+        .querySelector(".notify")
+        .setAttribute("style", "background:rgb(135, 0, 0,0.7);");
+      document.getElementById("notifyType").innerText =
+        "you have blocked this user!";
+
+      setTimeout(function () {
+        $(".notify").removeClass("active");
+        $("#notifyType").innerText = "";
+      }, 2000);
     }
   } else {
     var user_chat = {
@@ -1242,7 +1296,16 @@ const createroom = () => {
 
   document.getElementById("Croomname").value = "";
   document.getElementById("Croompassword").value = "";
-  alert("your room is created!");
+  document.querySelector(".notify").classList.add("active");
+  document
+    .querySelector(".notify")
+    .setAttribute("style", "background:rgb(0, 77, 0,0.7);");
+  document.getElementById("notifyType").innerText = "your room is created!";
+
+  setTimeout(function () {
+    $(".notify").removeClass("active");
+    $("#notifyType").innerText = "";
+  }, 2000);
   alertclose(event);
 };
 
@@ -1930,8 +1993,12 @@ function pmchat(id, name, event) {
     ".persnol_chat_model"
   ).innerHTML = `     <div class="pmchathead">
                       <div class="pm_type ${
-                      document.querySelector(`.users #${id}`)
-                      ? document.querySelector(`.users #${id}`).classList[1] : document.querySelector(`.freinds #${id.replace("user","frnd")}`).classList[1]}">
+                        document.querySelector(`.users #${id}`)
+                          ? document.querySelector(`.users #${id}`).classList[1]
+                          : document.querySelector(
+                              `.freinds #${id.replace("user", "frnd")}`
+                            ).classList[1]
+                      }">
                                                                                 <span class="pm_profile" onclick="view_profile(event)" style="background-image: url(${receiver}/files/profiledp.png);"></span> ${receiver}
                                                                             </div>
                                                                             <div class="pm-options">

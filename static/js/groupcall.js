@@ -1,13 +1,15 @@
 var gcallstream;
 var gpeer;
 
-const showtextchannel=()=>{
-    document.querySelector(".group_video_div").style.display = 'none';
-}
+const showtextchannel = () => {
+  document.querySelector(".group_video_div").style.display = "none";
+};
 
 function mutegMic() {
   if (gcallstream) {
-    gcallstream.getAudioTracks().forEach((track) => (track.enabled = !track.enabled));
+    gcallstream
+      .getAudioTracks()
+      .forEach((track) => (track.enabled = !track.enabled));
     if (gcallstream.getAudioTracks()[0].enabled) {
       document.querySelector(
         ".gmic_btn"
@@ -41,7 +43,9 @@ function mutegMic() {
 
 function mutegCam() {
   if (gcallstream) {
-    gcallstream.getVideoTracks().forEach((track) => (track.enabled = !track.enabled));
+    gcallstream
+      .getVideoTracks()
+      .forEach((track) => (track.enabled = !track.enabled));
     document.getElementById("gvideoElement1").srcObject = gcallstream;
     if (gcallstream.getVideoTracks()[0].enabled) {
       document.querySelector(
@@ -69,7 +73,10 @@ async function getstream() {
 }
 
 async function group_call() {
-  if (document.querySelector(".group_video_div").style.display != "block" && document.getElementById("gvideoElement1").srcObject == null) {
+  if (
+    document.querySelector(".group_video_div").style.display != "block" &&
+    document.getElementById("gvideoElement1").srcObject == null
+  ) {
     const stream = await getstream();
     gcallstream = stream;
     document
@@ -147,7 +154,9 @@ socket.on("new_vuser_join", async (data) => {
   voice_user.className = "voice";
 
   document.querySelector(`#General_channel_users`).appendChild(voice_user);
-  document.getElementById("voice" + data.userid).innerHTML = `<span style="background-image: url(${data.name}/files/profiledp.png);"></span> ${data.name}`;
+  document.getElementById(
+    "voice" + data.userid
+  ).innerHTML = `<span style="background-image: url(${data.name}/files/profiledp.png);"></span> ${data.name}`;
 
   if (data.name != username) {
     var newuser = document.createElement("DIV");
@@ -172,8 +181,12 @@ const end_groupcall = () => {
   }
 
   document.getElementById("gvideoElement1").srcObject = null;
-  document.getElementById("gvideoElement1").setAttribute('poster',"url(profile/default_dp1.png)");
-  document.querySelector(".group_video_div").setAttribute("style","display:none")
+  document
+    .getElementById("gvideoElement1")
+    .setAttribute("poster", "url(profile/default_dp1.png)");
+  document
+    .querySelector(".group_video_div")
+    .setAttribute("style", "display:none");
   socket.emit("leave_voice", {
     userid: this_userid,
     name: username,

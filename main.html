@@ -13,8 +13,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="main.css">
-    <link rel="stylesheet" href="mainres.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/mainres.css">
 </head>
 <body onload="stopload()">
     <div class="preloder">
@@ -119,10 +119,10 @@
             <div class="crbody">
                 <div>
                     <label>Enter Username:</label>
-                    <input type="text"  />
+                    <input type="text"  id="changenameid"/>
                 </div>
                 <div class="crbtn">
-                    <button class="crabtn" >Enter <i class="fas fa-sign-in-alt"></i></button>
+                    <button class="crabtn" onclick="chnagename()">Enter <i class="fas fa-sign-in-alt"></i></button>
                 </div>
             </div>
         </div>
@@ -140,7 +140,7 @@
                     <input type="password" id="reenterpassword" />
                 </div>
                 <div class="crbtn">
-                    <button class="crabtn" onclick="roompass()">Enter <i class="fas fa-sign-in-alt"></i></button>
+                    <button class="crabtn" onclick="changepass()">Enter <i class="fas fa-sign-in-alt"></i></button>
                 </div>
             </div>
         </div>
@@ -151,17 +151,19 @@
             <div class="crbody">
                 <div>
                     <label>previous Email:</label>
-                    <input type="email"  />
+                    <input type="email"  id='oldemail'/>
                 </div>
                 <div>
                     <label>Change Email:</label>
-                    <input type="email"  />
+                    <input type="email"  id="newemail"/>
                 </div>
                 <div class="crbtn">
-                    <button class="crabtn" onclick="roompass()">Enter <i class="fas fa-sign-in-alt"></i></button>
+                    <button class="crabtn" onclick="emailchange()">Enter <i class="fas fa-sign-in-alt"></i></button>
                 </div>
             </div>
         </div>
+
+        
 
         <div class="inbox" tabindex="0">
             <div class="head">
@@ -278,7 +280,7 @@
                 <div class="display-wrapper">
                     <div class="check-option">
                         <div><input type="checkbox" id="doodel"> Add Chat Doodels</div>
-                        <div><input type="file" id="wp_select" onchange="set_wallpaper()"> <i class="far fa-image"></i> Select image</div>
+                        <div><input type="file" id="wp_select" onchange="set_wallpaper(event)"> <i class="far fa-image"></i> Select image</div>
                     </div>
                     <div class="select-color">
                         <div><div class="color" id="color1"></div></div>
@@ -598,13 +600,13 @@
 <script src="/socket.io-stream/socket.io-stream.js"></script>
 <script src="https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js"></script>
 <script src="/simple-peer/simplepeer.min.js"></script>
-<script src="main.js"></script>
-<script src="pmcall.js"></script>
-<script src="emojis.js"></script>
-<script src="video_bot.js"></script>
-<script src="music_bot.js"></script>
-<script src="mobile.js"></script>
-<script src="action.js"></script>
-<script src="groupcall.js"></script>
+<script src="js/main.js"></script>
+<script src="js/pmcall.js"></script>
+<script src="js/emojis.js"></script>
+<script src="js/video_bot.js"></script>
+<script src="js/music_bot.js"></script>
+<script src="js/mobile.js"></script>
+<script src="js/action.js"></script>
+<script src="js/groupcall.js"></script>
 </html>
 

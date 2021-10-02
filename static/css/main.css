@@ -1010,6 +1010,7 @@ body {
   overflow-y: scroll;
   background-color: #aed8c7;
   background-size: auto 100%;
+  background-image: url(transparent);
 }
 
 .sticky-uploader {
@@ -2112,7 +2113,6 @@ aside ul li:nth-child(3) ul li {
   margin-top: 3%;
   padding-left: 50px;
 }
-
 
 
 .changepass {

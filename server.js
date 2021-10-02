@@ -98,6 +98,7 @@ app.get("/emailverification", function (req, res) {
 const upload = multer({
   storage: multer.diskStorage({
     destination: (req, file, cb) => {
+      fs.copySync(path.resolve(__dirname,`users/${req.body.name}/files/profiledp.png`), `./users/${req.body.name}/files/oprofiledp.png`);
       cb(null, `./users/${req.body.name}/files`);
     },
     filename: (req, file, cb) => {
@@ -106,9 +107,28 @@ const upload = multer({
   }),
 });
 
-app.post('/avatar', upload.single('avatar'), (req, res) => {
-  res.redirect('/')
+const upload_display = multer({
+  storage: multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, `./users/${req.body.name}/files`);
+    },
+    filename: (req, file, cb) => {
+    },
+  }),
 });
+
+app.post('/avatar', upload.single('avatar'), (req, res) => {
+  // fs.copySync(path.resolve(__dirname,`users/${req.body.name}/files/profiledp.png`), `./users/${req.body.name}/files/oprofiledp.png`);
+});
+
+
+app.post('/display', upload_display.single('display'), (req, res) => {
+  
+});
+
+app.post('/changepass',async (req,res)=>{
+
+})
 
 app.post("/register", async (req, res) => {
   try {
@@ -142,6 +162,7 @@ app.post("/register", async (req, res) => {
 
       fs.copySync(path.resolve(__dirname,"images/profile/default_dp" + rannum +".png"), `./users/${req.body.name}/files/profiledp.png`);
       fs.copySync(path.resolve(__dirname,"images/profile/video_default" + rannum +".png"), `./users/${req.body.name}/files/videodp.png`);
+      fs.copySync(path.resolve(__dirname,"images/transparent.png"), `./users/${req.body.name}/files/display.png`);
 
       
       const registeruser = new Register({
