@@ -870,6 +870,17 @@ const ban_user = (userid) => {
     mod,
     document.querySelector(".room_name").innerText,
   ]);
+
+  document.querySelector(".notify").classList.add("active");
+  document
+    .querySelector(".notify")
+    .setAttribute("style", "background:rgb(0,77, 0,0.7);");
+  document.getElementById("notifyType").innerText = "Action Completed!";
+
+  setTimeout(function () {
+    $(".notify").removeClass("active");
+    $("#notifyType").innerText = "";
+  }, 2000);
   alertclose(event);
 };
 
@@ -1012,29 +1023,69 @@ const clear_allmsg = () => {
   });
 };
 
+document.getElementById("newemail").addEventListener("keyup", (e) => {
+  $.ajax({
+    url: "/checkemail",
+    type: "POST",
+    data: {
+      email: document.getElementById("newemail").value,
+    },
+
+    success: function (data) {
+      if (data) {
+        document
+          .querySelector(".eavailabel")
+          .setAttribute("style", "display:none");
+        document
+          .querySelector(".eunavailabel")
+          .setAttribute("style", "display:flex");
+      } else {
+        document
+          .querySelector(".eavailabel")
+          .setAttribute("style", "display:flex");
+        document
+          .querySelector(".eunavailabel")
+          .setAttribute("style", "display:none");
+      }
+    },
+    error: function (jqXHR, textStatus, err) {
+      document.querySelector(".notify").classList.add("active");
+      document
+        .querySelector(".notify")
+        .setAttribute("style", "background:rgb(135, 0, 0,0.7);");
+      document.getElementById("notifyType").innerText = "Something went wrong!";
+
+      setTimeout(function () {
+        $(".notify").removeClass("active");
+        $("#notifyType").innerText = "";
+      }, 2000);
+    },
+  });
+});
+
 document.getElementById("changenameid").addEventListener("keyup", (e) => {
   $.ajax({
     url: "/checkname",
     type: "POST",
     data: {
       name: document.getElementById("changenameid").value,
-      type: user_type,
+      type: "register",
     },
 
     success: function (data) {
       if (data) {
         document
-          .querySelector(".gnavailabel")
+          .querySelector(".changemyname .body div .navailabel")
           .setAttribute("style", "display:none");
         document
-          .querySelector(".gnunavailabel")
+          .querySelector(".changemyname .body div .nunavailabel")
           .setAttribute("style", "display:flex");
       } else {
         document
-          .querySelector(".gnavailabel")
+          .querySelector(".changemyname .body div .navailabel")
           .setAttribute("style", "display:flex");
         document
-          .querySelector(".gnunavailabel")
+          .querySelector(".changemyname .body div .nunavailabel")
           .setAttribute("style", "display:none");
       }
     },
@@ -1053,28 +1104,29 @@ document.getElementById("changenameid").addEventListener("keyup", (e) => {
   });
 });
 
-document.getElementById("newemail").addEventListener("keyup", (e) => {
+document.getElementById("changenameid").addEventListener("keyup", (e) => {
   $.ajax({
-    url: "/checkemail",
+    url: "/checkname",
     type: "POST",
     data: {
-      email: document.getElementById("reg_email").value,
+      name: document.getElementById("changenameid").value,
+      type: "guest",
     },
 
     success: function (data) {
       if (data) {
         document
-          .querySelector(".eavailabel")
+          .querySelector(".changemyname .body div .navailabel")
           .setAttribute("style", "display:none");
         document
-          .querySelector(".eunavailabel")
+          .querySelector(".changemyname .body div .nunavailabel")
           .setAttribute("style", "display:flex");
       } else {
         document
-          .querySelector(".eavailabel")
+          .querySelector(".changemyname .body div .navailabel")
           .setAttribute("style", "display:flex");
         document
-          .querySelector(".eunavailabel")
+          .querySelector(".changemyname .body div .nunavailabel")
           .setAttribute("style", "display:none");
       }
     },
@@ -1092,3 +1144,25 @@ document.getElementById("newemail").addEventListener("keyup", (e) => {
     },
   });
 });
+
+const changename = () => {
+  if (document.querySelector(".nunavailabel").style.display == "flex") {
+    document.querySelector(".notify").classList.add("active");
+    document
+      .querySelector(".notify")
+      .setAttribute("style", "background:rgb(135, 0, 0,0.7);");
+    document.getElementById("notifyType").innerText =
+      "This Username is already taken!";
+
+    setTimeout(function () {
+      $(".notify").removeClass("active");
+      $("#notifyType").innerText = "";
+    }, 2000);
+  } else {
+    
+  }
+};
+
+const changepass = () => {};
+
+const emailchange = () => {};

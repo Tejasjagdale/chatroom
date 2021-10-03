@@ -1010,7 +1010,7 @@ body {
   overflow-y: scroll;
   background-color: #aed8c7;
   background-size: auto 100%;
-  background-image: url(transparent);
+  background-image: url('../../images/transparent.png');
 }
 
 .sticky-uploader {
@@ -2114,11 +2114,40 @@ aside ul li:nth-child(3) ul li {
   padding-left: 50px;
 }
 
+.changemyname .body div label {
+  color: #4d426d;
+  font-weight: 600;
+  font-size: 40%;
+}
+
+.changemyname .body div input {
+  width: 80%;
+  height: 30px;
+  margin-top: 5px;
+  font-size: 20px;
+  padding-left: 5px;
+}
+
+.changemyname .body div .navailabel{
+  display:none;
+  position: absolute;
+  right:21%;
+  top:44%;
+  color:green;
+}
+
+.changemyname .body div .nunavailabel{
+  display:none;
+  position: absolute;
+  right:21%;
+  top:44%;
+  color:red;
+}
 
 .changepass {
   display: none;
   width: 500px;
-  height: 250px;
+  height: 325px;
   background-color: #dbd7e7;
   z-index: 55;
   position: fixed;
@@ -2144,10 +2173,35 @@ aside ul li:nth-child(3) ul li {
   cursor: pointer;
 }
 
+.changepass .body div {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  width: 100%;
+  height: 30%;
+  margin-top: 3%;
+  padding-left: 50px;
+  position: relative;
+}
+
+.changepass .body div label {
+  color: #4d426d;
+  font-weight: 600;
+  font-size: 40%;
+}
+
+.changepass .body div input {
+  width: 80%;
+  height: 30px;
+  margin-top: 5px;
+  font-size: 20px;
+  padding-left: 5px;
+}
+
 .changeemail {
   display: none;
   width: 500px;
-  height: 250px;
+  height: 325px;
   background-color: #dbd7e7;
   z-index: 55;
   position: fixed;
@@ -2171,6 +2225,48 @@ aside ul li:nth-child(3) ul li {
 
 .changeemail .head i {
   cursor: pointer;
+}
+
+
+.changeemail .body div {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  width: 100%;
+  height: 30%;
+  margin-top: 3%;
+  padding-left: 50px;
+  position: relative;
+}
+
+.changeemail .body div label {
+  color: #4d426d;
+  font-weight: 600;
+  font-size: 40%;
+}
+
+.changeemail .body div input {
+  width: 80%;
+  height: 30px;
+  margin-top: 5px;
+  font-size: 20px;
+  padding-left: 5px;
+}
+
+.changeemail .body div .eavailabel{
+  display:none;
+  position: absolute;
+  right:21%;
+  top:60%;
+  color:green;
+}
+
+.changeemail .body div .eunavailabel{
+  display:none;
+  position: absolute;
+  right:21%;
+  top:60%;
+  color:red;
 }
 
 .inbox {
@@ -3579,7 +3675,7 @@ aside ul li:nth-child(3) ul li {
 }
 
 #face1 {
-  background-image: url("mbot.png");
+  background-image: url("../../images/mbot.png");
 }
 
 #face2 {

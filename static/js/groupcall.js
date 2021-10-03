@@ -264,21 +264,20 @@ async function startCapture(displayMediaOptions) {
 
     captureStream.addEventListener("ended", () => {
       stopCapture();
-      console.log("aiugasiy");
     });
   } catch (err) {
     console.error("Error: " + err);
   }
   document
-    .querySelector(".pmshare_btn")
+    .querySelector(".gshare_btn")
     .setAttribute("onclick", "stopCapture()");
   document
-    .querySelector(".pmshare_btn")
+    .querySelector(".gshare_btn")
     .setAttribute("style", "background-image:url('cshare.png')");
   if (window.innerWidth >= 525) {
-    document.getElementById("pmvideoElement1").srcObject = captureStream;
+    document.getElementById("gvideoElement1").srcObject = captureStream;
   } else {
-    document.getElementById("pmvideoElement1").style.display = "none";
+    document.getElementById("gvideoElement1").style.display = "none";
   }
   gpeer.send("screanshare");
   gpeer.replaceTrack(
@@ -291,12 +290,12 @@ async function startCapture(displayMediaOptions) {
 async function stopCapture() {
   console.log(captureStream);
   document
-    .querySelector(".pmshare_btn")
+    .querySelector(".gshare_btn")
     .setAttribute("onclick", "startCapture()");
   document
-    .querySelector(".pmshare_btn")
+    .querySelector(".gshare_btn")
     .setAttribute("style", "background-image:url('share.png')");
-  document.getElementById("pmvideoElement1").srcObject = gcallstream;
+  document.getElementById("gvideoElement1").srcObject = gcallstream;
   gpeer.replaceTrack(
     gpeer.streams[0].getVideoTracks()[0],
     gcallstream.getVideoTracks()[0],
@@ -304,15 +303,15 @@ async function stopCapture() {
   );
 }
 
-function enlarge() {
+function genlarge() {
   document
-    .querySelector(".pmvideo_enlarge")
+    .querySelector(".gvideo_enlarge")
     .setAttribute("onclick", "backtosize()");
   document
     .querySelector(".group_video_div")
     .setAttribute("style", "min-height:100vh;width:100vw;top:0%;display:block");
-  document.querySelector(".pmvideo_enlarge").classList.remove("fa-expand-wide");
-  document.querySelector(".pmvideo_enlarge").classList.add("fa-compress-wide");
+  document.querySelector(".gvideo_enlarge").classList.remove("fa-expand-wide");
+  document.querySelector(".gvideo_enlarge").classList.add("fa-compress-wide");
   document
     .querySelector(".gvideo_wrapper1")
     .setAttribute("style", "width: 25%;height: 25%;");
@@ -321,22 +320,22 @@ function enlarge() {
     .setAttribute("style", "width: 25%;height: 25%;");
 }
 
-function backtosize() {
+function gbacktosize() {
   document
-    .querySelector(".pmvideo_enlarge")
+    .querySelector(".gvideo_enlarge")
     .setAttribute("onclick", "enlarge()");
   document
-    .querySelector(".pm_video_div")
+    .querySelector(".group_video_div")
     .setAttribute("style", "height:55%;display:block");
   document
-    .querySelector(".pmvideo_enlarge")
+    .querySelector(".gvideo_enlarge")
     .classList.remove("fa-compress-wide");
-  document.querySelector(".pmvideo_enlarge").classList.add("fa-expand-wide");
+  document.querySelector("gvideo_enlarge").classList.add("fa-expand-wide");
   document
-    .querySelector(".video_wrapper1")
+    .querySelector(".gvideo_wrapper1")
     .setAttribute("style", "width: 50%;height: 100%;");
   document
-    .querySelector(".video_wrapper2")
+    .querySelector(".gvideo_wrapper2")
     .setAttribute("style", "width: 50%;height: 100%;");
 }
 
@@ -349,8 +348,8 @@ function gcall_disc() {
     track.stop();
   }
 
-  document.getElementById("pmvideoElement1").srcObject = null;
-  document.querySelector(".pm_video_div").setAttribute("style", "display:none");
+  document.getElementById("gvideoElement1").srcObject = null;
+  document.querySelector(".group_video_div").setAttribute("style", "display:none");
   gpeer.destroy();
 }
 
@@ -359,7 +358,7 @@ const group_zoomvideo = (id) => {
     if (
       Math.floor(
         (document.getElementById(id).clientWidth /
-          document.querySelector(".pmvideo_wrapper").clientWidth) *
+          document.querySelector(".gvideo_wrapper").clientWidth) *
           100
       ) === 50
     ) {

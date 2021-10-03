@@ -38,11 +38,16 @@ var username = JSON.parse(ca.chatroomjwt.substr(2, ca.chatroomjwt.length)).name;
 var this_userid;
 var country;
 
-document
-  .getElementById("selfdp_view")
-  .setAttribute("src", `${username}/files/profiledp.png`);
+if(user_type == 'guest'){
+  document.getElementById('changepass').style.display = 'none';
+  document.getElementById('changeemail').style.display = 'none';
+  document.getElementById('deleteac').style.display = 'none';
+}
+
+document.getElementById("selfdp_view").setAttribute("src", `${username}/files/profiledp.png`);
 document.getElementById("myuname").innerText = username;
 document.querySelector(".gvideo_wrapper1 label").innerText = username;
+document.querySelector('.this_user_identity span').setAttribute("style",`background-image:url('${username}/files/profiledp.png')`)
 
 socket.emit("new-user-joined", { token: token, user_type: user_type });
 

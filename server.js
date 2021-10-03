@@ -98,7 +98,8 @@ app.get("/emailverification", function (req, res) {
 const upload = multer({
   storage: multer.diskStorage({
     destination: (req, file, cb) => {
-      fs.copySync(path.resolve(__dirname,`users/${req.body.name}/files/profiledp.png`), `./users/${req.body.name}/files/oprofiledp.png`);
+      var fs2 = require('fs-extra');
+      fs2.copySync(path.resolve(__dirname,`users/${req.body.name}/files/profiledp.png`), `./users/${req.body.name}/files/oprofiledp.png`);
       cb(null, `./users/${req.body.name}/files`);
     },
     filename: (req, file, cb) => {
@@ -118,7 +119,8 @@ const upload_display = multer({
 });
 
 app.post('/avatar', upload.single('avatar'), (req, res) => {
-  // fs.copySync(path.resolve(__dirname,`users/${req.body.name}/files/profiledp.png`), `./users/${req.body.name}/files/oprofiledp.png`);
+  var fs2 = require('fs-extra');
+  fs2.copySync(path.resolve(__dirname,`users/${req.body.name}/files/profiledp.png`), `./users/${req.body.name}/files/ovideodp.png`);
 });
 
 
@@ -342,7 +344,7 @@ app.post("/glogin", async (req, res) => {
     const rannum = getRandomInt(1, 8);
 
     fs2.copySync(path.resolve(__dirname,"images/profile/default_dp" +rannum +".png"), `./users/${req.body.name}/files/profiledp.png`);
-    fs.copySync(path.resolve(__dirname,"images/profile/video_default" +rannum +".png"), `./users/${req.body.name}/files/videodp.png`);
+    fs2.copySync(path.resolve(__dirname,"images/profile/video_default" +rannum +".png"), `./users/${req.body.name}/files/videodp.png`);
 
     res.send("okay");
 

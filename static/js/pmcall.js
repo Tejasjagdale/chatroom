@@ -555,7 +555,7 @@ const zoomvideo = (id) => {
       [".video_wrapper1", ".video_wrapper2"].forEach((elem) => {
         document
           .querySelector(elem)
-          .setAttribute("style", "display:flex;width:50%;height:100%");
+          .setAttribute("style", "display:flex;width:50%;height:70%");
       });
     }
   }
