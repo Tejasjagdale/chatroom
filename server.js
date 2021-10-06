@@ -32,7 +32,7 @@ const Register = require("./db/registers");
 const Rooms = require("./db/rooms");
 const Gusers = require("./db/gusers");
 const { load } = require("dotenv");
-const themes = [1,2,3,4,5,6,7,8];
+const themes = ['#914900','#ED4245','#5562EA','#FAA61A','#EB459E','#EB459E','#05DA73','#94A5AF'];
 
 function getRandomInt(min, max) {
   min = Math.ceil(min);
@@ -114,18 +114,16 @@ const upload_display = multer({
       cb(null, `./users/${req.body.name}/files`);
     },
     filename: (req, file, cb) => {
+      cb(null, `display.png`)
     },
   }),
 });
 
 app.post('/avatar', upload.single('avatar'), (req, res) => {
-  var fs2 = require('fs-extra');
-  fs2.copySync(path.resolve(__dirname,`users/${req.body.name}/files/profiledp.png`), `./users/${req.body.name}/files/ovideodp.png`);
 });
 
 
 app.post('/display', upload_display.single('display'), (req, res) => {
-  
 });
 
 app.post('/changepass',async (req,res)=>{
@@ -163,10 +161,7 @@ app.post("/register", async (req, res) => {
       const rannum =getRandomInt(1, 8);
 
       fs.copySync(path.resolve(__dirname,"images/profile/default_dp" + rannum +".png"), `./users/${req.body.name}/files/profiledp.png`);
-      fs.copySync(path.resolve(__dirname,"images/profile/video_default" + rannum +".png"), `./users/${req.body.name}/files/videodp.png`);
-      fs.copySync(path.resolve(__dirname,"images/transparent.png"), `./users/${req.body.name}/files/display.png`);
 
-      
       const registeruser = new Register({
         name: req.body.name,
         email: req.body.email,
@@ -177,7 +172,10 @@ app.post("/register", async (req, res) => {
         history: {
           profile: __dirname +`/users/${req.body.name}/files/profiledp.png`,
           display:__dirname + "/images/wallpaper/dbg" + getRandomInt(1, 20) + ".png",
+          theme: themes[rannum-1],
         },
+        pms:new Array(),
+        alerts: new Array(),
       });
       
       const token = await registeruser.generateAuthToken();
@@ -290,20 +288,24 @@ app.post("/checkemail", async (req, res) => {
 
 app.post("/glogin", async (req, res) => {
   try {
+
+    var fs2 = require('fs-extra');
+    const rannum = getRandomInt(1, 8);
+
+    fs2.copySync(path.resolve(__dirname,"images/profile/default_dp" +rannum +".png"), `./users/${req.body.name}/files/profiledp.png`);
+
     const guestuser = new Gusers({
       name: req.body.name,
       type: "guest",
       joined: getFormattedDate(d),
       country: "india",
       history: {
-        profile:
-          __dirname +
-          "/images/profile/default_dp" +
-          getRandomInt(1, 8) +
-          ".png",
-        display:
-          __dirname + "/images/wallpaper/dbg" + getRandomInt(1, 20) + ".png",
+        profile: __dirname +`/users/${req.body.name}/files/profiledp.png`,
+        display:__dirname + "/images/wallpaper/dbg" + getRandomInt(1, 20) + ".png",
+        theme: themes[rannum-1],
       },
+      pms:new Array(),
+      alerts: new Array(),
     });
 
     const token = await guestuser.generateAuthToken();
@@ -340,12 +342,6 @@ app.post("/glogin", async (req, res) => {
       });
     }
 
-    var fs2 = require('fs-extra');
-    const rannum = getRandomInt(1, 8);
-
-    fs2.copySync(path.resolve(__dirname,"images/profile/default_dp" +rannum +".png"), `./users/${req.body.name}/files/profiledp.png`);
-    fs2.copySync(path.resolve(__dirname,"images/profile/video_default" +rannum +".png"), `./users/${req.body.name}/files/videodp.png`);
-
     res.send("okay");
 
     console.log("1 new guest user joined");
@@ -354,12 +350,16 @@ app.post("/glogin", async (req, res) => {
   }
 });
 
-app.post("/rhythm", async (req, res) => {
-  console.log(req.body)
-  ytdl(req.body.link, { filter: "audioonly" }).pipe(
-    fs.createWriteStream(`rhythm/Main Room/${req.body.title}.mp3`).on("close", () => {res.send(req.body);})
-  );
-});
+
+
+// app.post("/rhythm", async (req, res) => {
+//   let dispatcher = connection.playStream(ytdl(req.body.link, {filter: 'audioonly'}), {seek: 0, volume: (DEFAULT_VOLUME/100)});
+//   dispatcher.setVolume((volum/100));
+//   console.log(dispatcher,typeof(dispatcher))
+//   // ytdl(req.body.link, { filter: "audioonly" }).pipe(res
+//   //   // fs.createWriteStream(`rhythm/Main Room/${req.body.title}.mp3`).on("close", () => {res.send(req.body);})
+//   // );
+// });
 
 var activeusers = [];
 var user_sockets = [];
@@ -367,6 +367,7 @@ var roomsname = [];
 var roomdata = [];
 var block = false;
 var avoid_clone = false;
+var rhythmstream = null;
 
 async function loader() {
   try {
@@ -414,6 +415,19 @@ async function loader() {
 loader();
 
 io.on("connection", function (socket) {
+
+  // socket.on('/rhythm', function (data) {
+  //   if(rhythmstream == null){
+  //     rhythmstream = ss.createStream();
+  //     var filename = __dirname +'/static/sounds/Ringtone1.mp3';
+  //     ss(socket).emit('audio-stream', rhythmstream, { name: filename });
+  //     fs.createReadStream(filename).pipe(rhythmstream);
+  //   }else{
+  //     ss(socket).emit('audio-stream', rhythmstream);
+  //     fs.createReadStream(filename).pipe(rhythmstream);
+  //   }
+  // });
+
   socket.on("new-user-joined", async (data) => {
     try {
       const token = data.token;

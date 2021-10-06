@@ -1010,7 +1010,6 @@ body {
   overflow-y: scroll;
   background-color: #aed8c7;
   background-size: auto 100%;
-  background-image: url('../../images/transparent.png');
 }
 
 .sticky-uploader {
@@ -2641,7 +2640,7 @@ aside ul li:nth-child(3) ul li {
   justify-content: center;
   align-items: flex-end;
   font-size: 80px;
-  color: white;
+  border:5px solid #4D426D;
 }
 
 .name_type {

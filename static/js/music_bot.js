@@ -13,9 +13,22 @@ getsong = (query) => {
         data: { link: link, title: data.items[0].snippet.title },
 
         success: async (data) => {
-            console.log(data);
-          var rhythm = new Audio(`./Main Room/${data.title}.mp3`);
-          rhythm.play();
+            console.log(typeof(data));
+          // var rhythm = new Audio(`./Main Room/${data.title}.mp3`);
+          // rhythm.play();
+
+          var music_audio = document.getElementById('player');
+          music_audio.src = (window.URL || window.webkitURL).createObjectURL(new Blob(data));
+          music_audio.play();
+          // ss(socket).on('audio-stream', function(stream, data) {
+          //     parts = [];
+          //     stream.on('data', function(chunk){
+          //         parts.push(chunk);
+          //     });
+          //     stream.on('end', function () {
+                  
+          //     });
+          // });
         },
         error: function (err) {
           alert("something went wrong!", err);
@@ -37,6 +50,10 @@ box.addEventListener("touchmove", function (e) {
     box.style.top = (parseInt(touchLocation.pageY)/innerHeight)*100+"%";
   }
 });
+
+const playtone=()=>{
+  socket.emit('/rhythm',"data");
+}
 
 dragElement(document.querySelector(".bots_cube"));
 

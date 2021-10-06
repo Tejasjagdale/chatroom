@@ -84,6 +84,32 @@ const userSchema = new mongoose.Schema({
         type: String,
       },
   },
+  pms:[
+    {
+      sender: {
+        type: String,
+      },
+      sender_id: {
+        type: String,
+      },
+      nom: {
+        type: String,
+      },
+    },
+  ],
+  alerts:[
+    {
+      sender: {
+        type: String,
+      },
+      sender_id: {
+        type: String,
+      },
+      nom: {
+        type: String,
+      },
+    },
+  ],
   tokens: [
     {
       token: {

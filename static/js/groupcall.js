@@ -355,13 +355,7 @@ function gcall_disc() {
 
 const group_zoomvideo = (id) => {
   if (window.innerWidth >= 525) {
-    if (
-      Math.floor(
-        (document.getElementById(id).clientWidth /
-          document.querySelector(".gvideo_wrapper").clientWidth) *
-          100
-      ) === 50
-    ) {
+    if (Math.floor((document.getElementById(id).clientWidth /document.querySelector(".gvideo_wrapper").clientWidth) *100) === 50) {
       [".gvideo_wrapper1", ".gvideo_wrapper2"].forEach((elem) => {
         document.querySelector(elem).setAttribute("style", "display:none");
       });

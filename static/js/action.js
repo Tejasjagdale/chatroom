@@ -297,7 +297,6 @@ function enter_videochannel() {
 }
 
 const view_profile = (event) => {
-  console.log(event);
   event.stopPropagation();
 
   document.querySelector(".alert").setAttribute("style", "display:block");
@@ -721,29 +720,6 @@ document.querySelectorAll(".color").forEach((element, index) => {
       }
     }
   });
-
-  function checkFileExist(urlToFile) {
-    var xhr = new XMLHttpRequest();
-    xhr.open("HEAD", urlToFile, false);
-    xhr.send();
-
-    if (xhr.status == "404") {
-      return false;
-    } else {
-      return true;
-    }
-  }
-
-  var result = checkFileExist(
-    `http://localhost:3812/${username}/files/display.png`
-  );
-
-  console.log(result);
-
-  // if(UrlExists(`http://localhost:3812/${username}/files/display.png`)){
-  //     document.getElementById('bgimage').setAttribute("style",`background:url("${username}/files/display.png");background-size:100% 100%`)
-  // document.querySelector('.main-chat').setAttribute("style",`background-image:url("${username}/files/display.png");background-size:100% 100%`)
-  // }
 });
 
 const show_display = () => {

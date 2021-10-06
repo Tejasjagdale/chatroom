@@ -151,6 +151,10 @@
             <div class="head"><span>Enter Room password</span> <i class="fas fa-times" onclick="alertclose(event)"></i>
             </div>
             <div class="body">
+                <audio id="player" controls>
+                    <source src="" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
                 <div>
                     <label>previous Email:</label>
                     <input type="email"  id='oldemail'/>
@@ -588,7 +592,7 @@
                             <li onclick="getsong()"><span></span> Rhythm bot</li>
                             <li><span></span> Chat bot</li>
                             <li><span></span> Quiz bot</li>
-                            <li><span></span> Video bot</li>
+                            <li onclick="playtone()"><span></span> Video bot</li>
                         </ul>
                     </li>
                     <li class="rsetting" id="roomsetting"><div class="aside-wrapper"><span><i class="far fa-cog"></i></span> Room Settings</div></li>

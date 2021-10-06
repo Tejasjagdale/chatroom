@@ -36,7 +36,7 @@ var user_type = JSON.parse(
 ).user_type;
 var username = JSON.parse(ca.chatroomjwt.substr(2, ca.chatroomjwt.length)).name;
 var this_userid;
-var country;
+var country;;
 
 if(user_type == 'guest'){
   document.getElementById('changepass').style.display = 'none';
@@ -133,6 +133,19 @@ socket.on("refresh", (data) => {
     window.location.reload();
   }
 });
+
+var music_audio = document.getElementById('player');
+ss(socket).on('audio-stream', function(stream, data) {
+    parts = [];
+    stream.on('data', function(chunk){
+        parts.push(chunk);
+    });
+    stream.on('end', function () {
+        music_audio.src = (window.URL || window.webkitURL).createObjectURL(new Blob(parts));
+        music_audio.play();
+    });
+});
+
 
 socket.on("user-joined", (data) => {
   if (data.current_room == document.querySelector(".room_name").id) {
@@ -479,7 +492,6 @@ document.querySelector(".type_msg").addEventListener("keyup", (e) => {
 });
 
 socket.on("user-left", (data) => {
-  console.log(data);
   if (data && data.name != username) {
     if (data.current_room == document.querySelector(".room_name").id) {
       document.querySelector(`.users #user${data.id}`).remove();
@@ -1075,6 +1087,7 @@ socket.on("frnd_query", (data) => {
 socket.on("load_details", (data) => {
   console.log(data);
   document.querySelector(".name").innerText = data.name;
+  document.querySelector('.profile_div .head').setAttribute('style',`background: -webkit-linear-gradient(top, ${data.history.theme} 60%, #4D426D 40%);`)
   document.querySelector(
     ".type"
   ).innerHTML = `<i class="fas fa-user"></i> ${data.type}`;
