@@ -11,7 +11,7 @@ body {
   background-color: #fff;
   overflow-x: hidden;
   transition: all 0.8s linear;
-  background-image: url("homebg.jpg");
+  background-image: url("../assests/homebg.jpg");
   background-size: 300px 300px;
   background-position: center;
   font-size: 45px;

@@ -608,7 +608,8 @@ io.on("connection", function (socket) {
 
   socket.on("pmmsg-send", async (data1) => {
     block = false;
-    var receiver = data1.receiver_id.replace("user", "");
+    console.log(data1);
+    var receiver = data1.receiver_id.replace("user","");
     activeusers.forEach((elem, ind) => {
       if (elem.id == receiver) {
         activeusers[ind].blocks.forEach(async function (elemt) {

@@ -1240,7 +1240,7 @@ function sendresp() {
         document.querySelector(`.pmchat_msg`).appendChild(message);
         document.getElementById(
           "msg" + t
-        ).innerHTML = `<p class="y-chat-msg"> <span class="y-chat-name">you</span>${msg}<span class="y-chat-time">${time}</span></p><span class="y-profile"></span>`;
+        ).innerHTML = `<p class="y-chat-msg"> <span class="y-chat-name" >you</span>${msg}<span class="y-chat-time">${time}</span></p><span class="y-profile" style="background-image: url(${item.sender}/files/profiledp.png);"></span>`;
         var objDiv = document.querySelector(`.pmchat_msg`);
         objDiv.scrollTop = objDiv.scrollHeight;
 
@@ -1289,7 +1289,7 @@ function sendresp() {
       document.querySelector(`.main-chat`).appendChild(message);
       document.getElementById(
         "msg" + t
-      ).innerHTML = `<p class="y-chat-msg"> <span class="y-chat-name">you</span>${msg}<span class="y-chat-time">${time}</span></p><span class="y-profile"></span>`;
+      ).innerHTML = `<p class="y-chat-msg"> <span class="y-chat-name" >you</span>${msg}<span class="y-chat-time">${time}</span></p><span class="y-profile" style="background-image: url(${item.sender}/files/profiledp.png);"></span>`;
       var objDiv = document.querySelector(`.main-chat`);
       objDiv.scrollTop = objDiv.scrollHeight;
 
