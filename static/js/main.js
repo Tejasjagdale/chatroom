@@ -164,7 +164,11 @@ socket.on("user-joined", (data) => {
       this_userid = data.id;
       document.getElementById("selfdp_view").setAttribute("src", `${this_userid}/files/profiledp.png`);
       document.querySelector('.this_user_identity span').setAttribute("style",`background-image:url('${this_userid}/files/profiledp.png')`)
-      document.querySelector('.main-chat').setAttribute("style",`background-image:url(${data.history.display})`)
+      if(data.history.display.includes(data.id)){
+        document.querySelector('.main-chat').setAttribute("style",`background-image:url(${data.history.display});background-size:100% 100%`)
+      }else{
+        document.querySelector('.main-chat').setAttribute("style",`background-image:url(${data.history.display})`)
+      }
     }
     room_user.id = "user" + data.id;
     room_user.className = "user";

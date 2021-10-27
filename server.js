@@ -130,7 +130,24 @@ const upload_display = multer({
 
 app.post("/avatar", upload.single("avatar"), (req, res) => {});
 
-app.post("/display", (req, res) => {});
+app.post("/display",upload_display.single("display"),async (req, res) => {
+  if(req.body.type == 'register'){
+    try {
+      console.log(req.body.id,req.body.wpnum)
+      await Register.updateOne(
+        { _id: req.body.id },
+        { $set: { "history.display": req.body.wpnum} }
+      );
+    } catch (error) {
+      console.log(error)
+    }
+  }else{
+    await Gusers.updateOne(
+      { _id: req.body.id },
+      { $set: { "history.display": `${req.body.wpnum}`} }
+    );
+  }
+});
 
 app.post("/changepass", async (req, res) => {});
 

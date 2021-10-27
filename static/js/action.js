@@ -709,6 +709,20 @@ document.querySelectorAll(".color").forEach((element, index) => {
 
     var formData = new FormData();
     formData.append("id", this_userid);
+    formData.append("type", user_type);
+    if (document.getElementById("doodel").checked) {
+      formData.append(
+        "wpnum",
+        `wallpapers/dbg${
+          document.querySelector(".activecol").id.split("color")[1]
+        }.jpg`
+      );
+    } else {
+      formData.append(
+        "wpnum",
+        `wallpapers/transparent.png`
+      );
+    }
 
     $.ajax({
       url: "/display",
@@ -818,10 +832,10 @@ const set_wallpaper = (e) => {
   document.getElementById("bgimage").classList.add("activecol");
 
   var formData = new FormData();
-  formData.append("name", username);
+  formData.append("id", this_userid);
   formData.append("display", e.target.files[0]);
-
-  console.log(formData);
+  formData.append("type", user_type);
+  formData.append("wpnum",`${this_userid}/files/display.png`);
 
   $.ajax({
     url: "/display",
