@@ -462,6 +462,7 @@ socket.on("load-msgs", (data) => {
 });
 
 socket.on("msg-send", (data) => {
+  console.log(data)
   if (data.room == document.querySelector(".room_name").id) {
     let temp = data.message.split(" ");
 
@@ -483,7 +484,7 @@ socket.on("msg-send", (data) => {
     document.querySelector(`.main-chat`).appendChild(message);
     document.getElementById(
       "msg" + t
-    ).innerHTML = `<span class="profile" style="background-image: url(${data.sender_id}/files/profiledp.png);"></span><p class="chat-msg"> <span class="chat-name">${data.sender}</span>${data.message}<span class="chat-time">${data.time}</span></p>`;
+    ).innerHTML = `<span class="profile" style="background-image: url(${data.id}/files/profiledp.png);"></span><p class="chat-msg"> <span class="chat-name">${data.sender}</span>${data.message}<span class="chat-time">${data.time}</span></p>`;
     var objDiv = document.querySelector(`.main-chat`);
     objDiv.scrollTop = objDiv.scrollHeight;
     msg1.play();
@@ -506,7 +507,7 @@ socket.on("auto-msg-clear", (data) => {
 document.querySelector(".type_msg").addEventListener("keyup", (e) => {
   if (event.keyCode === 13) {
     event.preventDefault();
-    sendresp();
+    sendresp(e);
   }
 });
 
@@ -803,6 +804,7 @@ socket.on("change-room-load", (data) => {
 
   data.roommsgs.forEach(function (item, index) {
     t++;
+    console.log(item)
     if (item.file) {
       if (this_userid != item.id) {
         const blob = new Blob([item.file], { type: item.filetype });
@@ -815,15 +817,15 @@ socket.on("change-room-load", (data) => {
         if (item.filetype.includes("image")) {
           document.getElementById(
             "msg" + t
-          ).innerHTML = `<span class="profile" style="background-image: url(${item.sender_id}/files/profiledp.png);"></span><p class="chat-msg"> <span class="chat-name">${item.sender}</span><img id=file${t} class="msg-img"><span class="chat-time">${item.time}</span></p>`;
+          ).innerHTML = `<span class="profile" style="background-image: url(${item.id}/files/profiledp.png);"></span><p class="chat-msg"> <span class="chat-name">${item.sender}</span><img id=file${t} class="msg-img"><span class="chat-time">${item.time}</span></p>`;
         } else if (item.filetype.includes("video")) {
           document.getElementById(
             "msg" + t
-          ).innerHTML = `<span class="profile" style="background-image: url(${item.sender_id}/files/profiledp.png);"></span><p class="chat-msg"> <span class="chat-name">${item.sender}</span><video id=file${t} class="msg-video"></video><span class="chat-time">${item.time}</span></p>`;
+          ).innerHTML = `<span class="profile" style="background-image: url(${item.id}/files/profiledp.png);"></span><p class="chat-msg"> <span class="chat-name">${item.sender}</span><video id=file${t} class="msg-video"></video><span class="chat-time">${item.time}</span></p>`;
         } else if (item.filetype.includes("audio")) {
           document.getElementById(
             "msg" + t
-          ).innerHTML = `<span class="profile" style="background-image: url(${item.sender_id}/files/profiledp.png);"></span><p class="chat-msg"> <span class="chat-name">${item.sender}</span><audio id=file${t} class="msg-audio"></audio><span class="chat-time">${item.time}</span></p>`;
+          ).innerHTML = `<span class="profile" style="background-image: url(${item.id}/files/profiledp.png);"></span><p class="chat-msg"> <span class="chat-name">${item.sender}</span><audio id=file${t} class="msg-audio"></audio><span class="chat-time">${item.time}</span></p>`;
         } else {
           alert("this file is not in support yet");
         }
@@ -842,15 +844,15 @@ socket.on("change-room-load", (data) => {
         if (item.filetype.includes("image")) {
           document.getElementById(
             "msg" + t
-          ).innerHTML = `<p class="y-chat-msg"> <span class="y-chat-name">you</span><img id=file${t} class="msg-img"><span class="y-chat-time">${time}</span></p><span class="y-profile"></span>`;
+          ).innerHTML = `<p class="y-chat-msg"> <span class="y-chat-name">you</span><img id=file${t} class="msg-img"><span class="y-chat-time">${time}</span></p><span class="y-profile" style="background-image: url(${item.id}/files/profiledp.png);"></span>`;
         } else if (item.filetype.includes("video")) {
           document.getElementById(
             "msg" + t
-          ).innerHTML = `<p class="y-chat-msg"> <span class="y-chat-name">you</span><video id=file${t} class="msg-video" controls></video><span class="y-chat-time">${time}</span></p><span class="y-profile"></span>`;
+          ).innerHTML = `<p class="y-chat-msg"> <span class="y-chat-name">you</span><video id=file${t} class="msg-video" controls></video><span class="y-chat-time">${time}</span></p><span class="y-profile" style="background-image: url(${item.id}/files/profiledp.png);"></span>`;
         } else if (item.filetype.includes("audio")) {
           document.getElementById(
             "msg" + t
-          ).innerHTML = `<p class="y-chat-msg"> <span class="y-chat-name">you</span><audio id=file${t} class="msg-audio" controls></audio><span class="y-chat-time">${time}</span></p><span class="y-profile"></span>`;
+          ).innerHTML = `<p class="y-chat-msg"> <span class="y-chat-name">you</span><audio id=file${t} class="msg-audio" controls></audio><span class="y-chat-time">${time}</span></p><span class="y-profile" style="background-image: url(${item.id}/files/profiledp.png);"></span>`;
         } else {
           alert("this file is not in support yet");
         }
@@ -900,7 +902,7 @@ socket.on("change-room-load", (data) => {
       document.querySelector(`.main-chat`).appendChild(message);
       document.getElementById(
         "msg" + t
-      ).innerHTML = `<span class="profile" style="background-image: url(${item.sender_id}/files/profiledp.png);"></span><p class="chat-msg"> <span class="chat-name">${item.sender}</span>${item.message}<span class="chat-time">${item.time}</span></p>`;
+      ).innerHTML = `<span class="profile" style="background-image: url(${item.id}/files/profiledp.png);"></span><p class="chat-msg"> <span class="chat-name">${item.sender}</span>${item.message}<span class="chat-time">${item.time}</span></p>`;
       var objDiv = document.querySelector(`.main-chat`);
       objDiv.scrollTop = objDiv.scrollHeight;
     }
@@ -934,7 +936,7 @@ socket.on("pmmsg-send", (data) => {
       document.querySelector(`.msg-container`).appendChild(pm_div);
       document.getElementById(
         "msg" + data.sender_id
-      ).innerHTML = `<div class="msg ${data.sender} " id="user${data.sender_id}" onclick="pmchat(this.id,this.classList,event)"><span></span> <p>${data.sender}</p> <label class="num_of_msgs">${num_of_msgs}</label> <i class="fas fa-times" onclick="deletepm(event)"></i></div>`;
+      ).innerHTML = `<div class="msg ${data.sender} " id="user${data.sender_id}" onclick="pmchat(this.id,this.classList,event)"><span style="background-image: url(${data.sender_id}/files/profiledp.png);"></span> <p>${data.sender}</p> <label class="num_of_msgs">${num_of_msgs}</label> <i class="fas fa-times" onclick="deletepm(event)"></i></div>`;
     }
     if (document.querySelector(".activepm")) {
       document
@@ -994,7 +996,7 @@ socket.on("load-pmmsgs", (data) => {
       document.querySelector(`.pmchat_msg`).appendChild(message);
       document.getElementById(
         "msg" + t
-      ).innerHTML = `<p class="y-chat-msg"> <span class="y-chat-name">you</span>${data.message}<span class="y-chat-time">${data.time}</span></p><span class="y-profile"></span>`;
+      ).innerHTML = `<p class="y-chat-msg"> <span class="y-chat-name">you</span>${data.message}<span class="y-chat-time">${data.time}</span></p><span class="y-profile" style="background-image: url(${data.sender_id}/files/profiledp.png)"></span>`;
       var objDiv = document.querySelector(`.pmchat_msg`);
       objDiv.scrollTop = objDiv.scrollHeight;
     }
@@ -1215,7 +1217,8 @@ socket.on("room-file", async (data) => {
   }
 });
 
-function sendresp() {
+function sendresp(event) {
+  event.preventDefault();
   t++;
   var msg = $(".type_msg").val();
 
@@ -1259,7 +1262,7 @@ function sendresp() {
         document.querySelector(`.pmchat_msg`).appendChild(message);
         document.getElementById(
           "msg" + t
-        ).innerHTML = `<p class="y-chat-msg"> <span class="y-chat-name" >you</span>${msg}<span class="y-chat-time">${time}</span></p><span class="y-profile" style="background-image: url(${item.sender_id}/files/profiledp.png);"></span>`;
+        ).innerHTML = `<p class="y-chat-msg"> <span class="y-chat-name" >you</span>${msg}<span class="y-chat-time">${time}</span></p><span class="y-profile" style="background-image: url(${this_userid}/files/profiledp.png);"></span>`;
         var objDiv = document.querySelector(`.pmchat_msg`);
         objDiv.scrollTop = objDiv.scrollHeight;
 
@@ -1289,8 +1292,6 @@ function sendresp() {
     if ($(".type_msg").val() != "") {
       socket.emit("msg-send", user_chat);
 
-      socket.emit("pmmsg-send", user_chat);
-
       let temp = msg.split(" ");
 
       temp.forEach((elem, ind) => {
@@ -1308,7 +1309,7 @@ function sendresp() {
       document.querySelector(`.main-chat`).appendChild(message);
       document.getElementById(
         "msg" + t
-      ).innerHTML = `<p class="y-chat-msg"> <span class="y-chat-name" >you</span>${msg}<span class="y-chat-time">${time}</span></p><span class="y-profile" style="background-image: url(${item.sender_id}/files/profiledp.png);"></span>`;
+      ).innerHTML = `<p class="y-chat-msg"> <span class="y-chat-name" >you</span>${msg}<span class="y-chat-time">${time}</span></p><span class="y-profile" style="background-image: url(${this_userid}/files/profiledp.png);"></span>`;
       var objDiv = document.querySelector(`.main-chat`);
       objDiv.scrollTop = objDiv.scrollHeight;
 

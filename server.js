@@ -238,12 +238,12 @@ app.post("/login", async (req, res) => {
     });
 
     if (isMatch) {
-      res.send("matched");
+      res.status(200).send("matched");
     } else {
-      res.send("invalid login details");
+      res.status(500).send("invalid login details");
     }
   } catch (error) {
-    res.status(400).send("some error occured");
+    res.status(500).send("some error occured");
   }
 });
 
@@ -305,6 +305,33 @@ app.post("/glogin", async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(400).send(error);
+  }
+});
+
+app.post("/changename", async (req, res) => {
+  try {
+    if (req.body.type === "register") {
+      var user = await Register.findOne({ _id: req.body.userid });
+      await Register.updateOne(
+        { _id: req.body.userid },
+        { $set: { name: req.body.name } }
+      );
+    } else {
+      await Gusers.updateOne(
+        { _id: req.body.userid },
+        { $set: { name: req.body.name } }
+      );
+    }
+
+    res.cookie("chatroomjwt", {
+      token: req.body.token,
+      user_type: req.body.type,
+      name: req.body.name,
+    });
+
+    res.status(200).send(req.body.name)
+  } catch (error) {
+    res.status(400).send("some error occured");
   }
 });
 
@@ -371,17 +398,17 @@ async function loader() {
 loader();
 
 io.on("connection", function (socket) {
-  // socket.on('/rhythm', function (data) {
-  //   if(rhythmstream == null){
-  //     rhythmstream = ss.createStream();
-  //     var filename = __dirname +'/static/sounds/Ringtone1.mp3';
-  //     ss(socket).emit('audio-stream', rhythmstream, { name: filename });
-  //     fs.createReadStream(filename).pipe(rhythmstream);
-  //   }else{
-  //     ss(socket).emit('audio-stream', rhythmstream);
-  //     fs.createReadStream(filename).pipe(rhythmstream);
-  //   }
-  // });
+  socket.on('/rhythm', function (data) {
+    if(rhythmstream == null){
+      rhythmstream = ss.createStream();
+      var filename = __dirname +'/static/sounds/Ringtone1.mp3';
+      ss(socket).emit('audio-stream', rhythmstream, { name: filename });
+      fs.createReadStream(filename).pipe(rhythmstream);
+    }else{
+      ss(socket).emit('audio-stream', rhythmstream);
+      fs.createReadStream(filename).pipe(rhythmstream);
+    }
+  });
 
   socket.on("new-user-joined", async (data) => {
     try {
@@ -566,7 +593,6 @@ io.on("connection", function (socket) {
 
   socket.on("pmmsg-send", async (data1) => {
     block = false;
-    console.log(data1);
     var receiver = data1.receiver_id.replace("user", "");
     activeusers.forEach((elem, ind) => {
       if (elem.id == receiver) {
@@ -821,6 +847,7 @@ io.on("connection", function (socket) {
             }
             if (items.roomname == data.nroomname) {
               var i = user_sockets.indexOf(socket.id);
+              console.log(user_sockets)
 
               activeusers[i].current_room = data.nroomname;
               items.roomusers = [...items.roomusers, activeusers[i]];
@@ -1108,29 +1135,21 @@ io.on("connection", function (socket) {
     });
   });
 
-  socket.on("changename", async function (data) {
-    if (data.type === "register") {
-      var user = await Register.findOne({ _id: data.userid });
-      await Register.updateOne(
-        { _id: data.userid },
-        { $set: { name: data.name } }
-      );
-    } else {
-      await Gusers.updateOne(
-        { _id: data.userid },
-        { $set: { name: data.name } }
-      );
-    }
-
-    socket.emit("changename");
-  });
-
   socket.on("changeemail", async function (data) {
     await Register.updateOne(
       { _id: data.userid },
       { $set: { email: data.email } }
     );
     socket.emit("changeemail");
+  });
+
+  socket.on("changepass", async function (data) {
+    const newpass = await bcrypt.hash(data.npass, 10)
+    await Register.updateOne(
+      { _id: data.userid },
+      { $set: { password: newpass } }
+    );
+    socket.emit("changepass");
   });
 
   socket.on("disconnect", function () {
@@ -1154,7 +1173,6 @@ io.on("connection", function (socket) {
       }
     });
 
-    console.log(activeusers[i]);
     socket.broadcast.emit("user-left", activeusers[i]);
     socket.broadcast.emit("room-users", roomdata);
 

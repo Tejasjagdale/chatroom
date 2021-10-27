@@ -179,7 +179,8 @@ userSchema.pre("save", async function (req,res,next) {
     // Using fs.exists() method
     fs.exists(`./users/${this._id}/files/profiledp.png`, (exists) => {
       if(!exists){
-        fs.copySync(
+        let fs2 = require('fs-extra');
+        fs2.copySync(
           path.resolve(__dirname, "../images/profile/default_dp" + rannum + ".png"),
           `./users/${this._id}/files/profiledp.png`
         );

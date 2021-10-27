@@ -718,10 +718,7 @@ document.querySelectorAll(".color").forEach((element, index) => {
         }.jpg`
       );
     } else {
-      formData.append(
-        "wpnum",
-        `wallpapers/transparent.png`
-      );
+      formData.append("wpnum", `wallpapers/transparent.png`);
     }
 
     $.ajax({
@@ -835,7 +832,7 @@ const set_wallpaper = (e) => {
   formData.append("id", this_userid);
   formData.append("display", e.target.files[0]);
   formData.append("type", user_type);
-  formData.append("wpnum",`${this_userid}/files/display.png`);
+  formData.append("wpnum", `${this_userid}/files/display.png`);
 
   $.ajax({
     url: "/display",
@@ -1217,30 +1214,85 @@ const changename = () => {
       $("#notifyType").innerText = "";
     }, 2000);
   } else {
-    socket.emit("changename", {
-      name: document.getElementById("changenameid").value,
-      userid: this_userid,
-      type: user_type,
-    });
-    socket.on("changename", () => {
-      document.querySelector(".notify").classList.add("active");
-      document
-        .querySelector(".notify")
-        .setAttribute("style", "background:rgb(0,77, 0,0.7);");
-      document.getElementById("notifyType").innerText =
-        "This Username is Changed successfully!";
+    $.ajax({
+      url: "/changename",
+      type: "POST",
+      data: {
+        name: document.getElementById("changenameid").value,
+        userid: this_userid,
+        type: user_type,
+        token: token
+      },
 
-      setTimeout(function () {
-        $(".notify").removeClass("active");
-        $("#notifyType").innerText = "";
-      }, 2000);
+      success: function (data) {
+        document.querySelector(".notify").classList.add("active");
+        document
+          .querySelector(".notify")
+          .setAttribute("style", "background:rgb(0,77, 0,0.7);");
+        document.getElementById("notifyType").innerText =
+          "This Username is Changed successfully!";
 
-      alertclose(event);
+        setTimeout(function () {
+          $(".notify").removeClass("active");
+          $("#notifyType").innerText = "";
+        }, 2000);
+
+        username = data;
+
+        alertclose(event);
+      },
+      error: function (jqXHR, textStatus, err) {
+        document.querySelector(".notify").classList.add("active");
+        document
+          .querySelector(".notify")
+          .setAttribute("style", "background:rgb(135, 0, 0,0.7);");
+        document.getElementById("notifyType").innerText =
+          "Something Went Wrong!";
+
+        setTimeout(function () {
+          $(".notify").removeClass("active");
+          $("#notifyType").innerText = "";
+        }, 2000);
+      },
     });
   }
 };
 
-const changepass = () => {};
+const changepass = () => {
+  if(document.getElementById("Newpassword").value != document.getElementById("reenterpassword").value){
+    document.querySelector(".notify").classList.add("active");
+    document
+      .querySelector(".notify")
+      .setAttribute("style", "background:rgb(135, 0, 0,0.7);");
+    document.getElementById("notifyType").innerText =
+      "This Passwords are not Matching!";
+
+    setTimeout(function () {
+      $(".notify").removeClass("active");
+      $("#notifyType").innerText = "";
+    }, 2000);
+  }else{
+    socket.emit("changepass", {
+      userid: this_userid,
+      npass: document.getElementById("Newpassword").value,
+    });
+    socket.on("changepass", () => {
+      document.querySelector(".notify").classList.add("active");
+      document
+        .querySelector(".notify")
+        .setAttribute("style", "background:rgb(0, 77, 0,0.7);");
+      document.getElementById("notifyType").innerText =
+        "The Password has been Changed successfully!";
+  
+      setTimeout(function () {
+        $(".notify").removeClass("active");
+        $("#notifyType").innerText = "";
+      }, 2000);
+  
+      alertclose(event);
+    });
+  }
+};
 
 const emailchange = () => {
   if (document.querySelector(".eunavailabel").style.display == "flex") {
@@ -1277,3 +1329,7 @@ const emailchange = () => {
     });
   }
 };
+
+const deleteaccount=()=>{
+
+}
