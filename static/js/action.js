@@ -52,9 +52,10 @@ const action = (id) => {
     .setAttribute("id", id.replace("afrnd", "action"));
   document.querySelector(
     ".admin_action .head span"
-  ).innerHTML = `<span id="action_dp" style="background-image: url(${
-    document.querySelector(".user_details .ud_head p").innerText
-  }/files/profiledp.png);"></span> ${
+  ).innerHTML = `<span id="action_dp" style="background-image: url(${id.replace(
+    "afrnd",
+    ""
+  )}/files/profiledp.png);"></span> ${
     document.querySelector(".user_details .ud_head p").innerText
   }`;
   document.querySelector(".admin_action").classList.add("activeb2");
@@ -106,7 +107,7 @@ const action = (id) => {
         "#actions4"
       ).innerHTML = `<i class="fas fa-user-times"></i> Remove freind`;
       document.querySelector("#actions4").setAttribute("style", "color:red");
-      documeneditt
+      document
         .querySelector("#actions4")
         .setAttribute("onclick", "RemoveFreind(this.parentNode.parentNode.id)");
     }
@@ -401,6 +402,22 @@ document.querySelector("#editname").addEventListener("click", () => {
   document.querySelector(".changemyname").classList.add("activeb2");
 });
 
+document.querySelector("#aboutme").addEventListener("click", () => {
+  document.querySelector(".alert").setAttribute("style", "display:block");
+  document
+    .querySelector(".changeaboutme")
+    .setAttribute("style", "animation: ZoomIn 0.3s ease-out");
+  document.querySelector(".changeaboutme").classList.add("activeb2");
+});
+
+document.querySelector("#deleteac").addEventListener("click", () => {
+  document.querySelector(".alert").setAttribute("style", "display:block");
+  document
+    .querySelector(".delete_account")
+    .setAttribute("style", "animation: ZoomIn 0.3s ease-out");
+  document.querySelector(".delete_account").classList.add("activeb2");
+});
+
 document.querySelector("#blocklist").addEventListener("click", () => {
   document.querySelector(".alert").setAttribute("style", "display:block");
   document.querySelector(".blocked").classList.add("activeb2");
@@ -486,6 +503,12 @@ document.querySelector(".changeemail").addEventListener("click", (e) => {
 });
 
 document.querySelector(".changemyname").addEventListener("click", (e) => {
+  if (e.target !== e.currentTarget) {
+    e.stopPropagation();
+  }
+});
+
+document.querySelector(".changeaboutme").addEventListener("click", (e) => {
   if (e.target !== e.currentTarget) {
     e.stopPropagation();
   }
@@ -683,6 +706,42 @@ document.querySelectorAll(".color").forEach((element, index) => {
     document.querySelector(
       ".activecol"
     ).innerHTML = `<i class="fas fa-check"></i>`;
+
+    var formData = new FormData();
+    formData.append("id", this_userid);
+
+    $.ajax({
+      url: "/display",
+      contentType: false,
+      processData: false,
+      type: "POST",
+      data: formData,
+      success: function (data) {
+        document.querySelector(".notify").classList.add("active");
+        document
+          .querySelector(".notify")
+          .setAttribute("style", "background:rgb(0, 77, 0,0.7);");
+        document.getElementById("notifyType").innerText = "Action Completed!";
+
+        setTimeout(function () {
+          $(".notify").removeClass("active");
+          $("#notifyType").innerText = "";
+        }, 2000);
+      },
+      error: function (data) {
+        document.querySelector(".notify").classList.add("active");
+        document
+          .querySelector(".notify")
+          .setAttribute("style", "background:rgb(135, 0, 0,0.7);");
+        document.getElementById("notifyType").innerText =
+          "something went wrong!";
+
+        setTimeout(function () {
+          $(".notify").removeClass("active");
+          $("#notifyType").innerText = "";
+        }, 2000);
+      },
+    });
   });
 
   element.addEventListener("mouseout", () => {
@@ -771,7 +830,16 @@ const set_wallpaper = (e) => {
     type: "POST",
     data: formData,
     success: function (data) {
-      console.log(data);
+      document.querySelector(".notify").classList.add("active");
+      document
+        .querySelector(".notify")
+        .setAttribute("style", "background:rgb(0, 77, 0,0.7);");
+      document.getElementById("notifyType").innerText = "Action Completed!";
+
+      setTimeout(function () {
+        $(".notify").removeClass("active");
+        $("#notifyType").innerText = "";
+      }, 2000);
     },
     error: function (data) {
       document.querySelector(".notify").classList.add("active");
@@ -1135,10 +1203,63 @@ const changename = () => {
       $("#notifyType").innerText = "";
     }, 2000);
   } else {
-    
+    socket.emit("changename", {
+      name: document.getElementById("changenameid").value,
+      userid: this_userid,
+      type: user_type,
+    });
+    socket.on("changename", () => {
+      document.querySelector(".notify").classList.add("active");
+      document
+        .querySelector(".notify")
+        .setAttribute("style", "background:rgb(0,77, 0,0.7);");
+      document.getElementById("notifyType").innerText =
+        "This Username is Changed successfully!";
+
+      setTimeout(function () {
+        $(".notify").removeClass("active");
+        $("#notifyType").innerText = "";
+      }, 2000);
+
+      alertclose(event);
+    });
   }
 };
 
 const changepass = () => {};
 
-const emailchange = () => {};
+const emailchange = () => {
+  if (document.querySelector(".eunavailabel").style.display == "flex") {
+    document.querySelector(".notify").classList.add("active");
+    document
+      .querySelector(".notify")
+      .setAttribute("style", "background:rgb(135, 0, 0,0.7);");
+    document.getElementById("notifyType").innerText =
+      "This Email is already Registered!";
+
+    setTimeout(function () {
+      $(".notify").removeClass("active");
+      $("#notifyType").innerText = "";
+    }, 2000);
+  } else {
+    socket.emit("changeemail", {
+      userid: this_userid,
+      name: document.getElementById("newemail").value,
+    });
+    socket.on("changeemail", () => {
+      document.querySelector(".notify").classList.add("active");
+      document
+        .querySelector(".notify")
+        .setAttribute("style", "background:rgb(0, 77, 0,0.7);");
+      document.getElementById("notifyType").innerText =
+        "The email is Changed successfully!";
+
+      setTimeout(function () {
+        $(".notify").removeClass("active");
+        $("#notifyType").innerText = "";
+      }, 2000);
+
+      alertclose(event);
+    });
+  }
+};

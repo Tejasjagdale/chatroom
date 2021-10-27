@@ -114,7 +114,7 @@
         </div>
 
         <div class="changemyname">
-            <div class="head"><span>Change name</span> <i class="fas fa-times" onclick="alertclose(event)"></i>
+            <div class="head"><span><i class="fas fa-user-edit"></i> Change name</span> <i class="fas fa-times" onclick="alertclose(event)"></i>
             </div>
             <div class="body">
                 <div>
@@ -124,13 +124,42 @@
                     <input type="text"  id="changenameid"/>
                 </div>
                 <div class="crbtn">
-                    <button class="crabtn" onclick="changename()">Enter <i class="fas fa-sign-in-alt"></i></button>
+                    <button class="crabtn" onclick="changename()">Save <i class="fas fa-save"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="changeaboutme">
+            <div class="head"><span><i class="fas fa-address-card"></i> About Me</span> <i class="fas fa-times" onclick="alertclose(event)"></i>
+            </div>
+            <div class="body">
+                <div>
+                    <label>About Me:</label>
+                    <input type="text"  id="changeamid"/>
+                </div>
+                <div class="crbtn">
+                    <button class="crabtn" onclick="changeaboutme()">Save <i class="fas fa-save"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="delete_account">
+            <div class="head"><span> <i class="fas fa-trash-alt"></i> Delete Account</span> <i class="fas fa-times" onclick="alertclose(event)"></i>
+            </div>
+            <div class="body">
+                <div>
+                    <p>Are you sure you want to delete this account won't be able to recover once deleted?</p>
+                </div>
+                <div class="crbtn">
+                    <button class="crabtn" id="dayes" onclick="deleteaccount()">Yes <i class="fas fa-trash-alt"></i></button>
+
+                    <button class="crabtn" id="dano" onclick="alertclose(event)">No <i class="fas fa-times"></i></button>
                 </div>
             </div>
         </div>
 
         <div class="changepass">
-            <div class="head"><span>Enter Room password</span> <i class="fas fa-times" onclick="alertclose(event)"></i>
+            <div class="head"><span><i class="fas fa-lock"></i> Change Password</span> <i class="fas fa-times" onclick="alertclose(event)"></i>
             </div>
             <div class="body">
                 <div>
@@ -142,22 +171,24 @@
                     <input type="password" id="reenterpassword" />
                 </div>
                 <div class="crbtn">
-                    <button class="crabtn" onclick="changepass()">Enter <i class="fas fa-sign-in-alt"></i></button>
+                    <button class="crabtn" onclick="changepass()">Save <i class="fas fa-save"></i></button>
                 </div>
             </div>
         </div>
 
+        
+
         <div class="changeemail">
-            <div class="head"><span>Enter Room password</span> <i class="fas fa-times" onclick="alertclose(event)"></i>
+            <div class="head"><span><i class="fas fa-envelope"></i> Change Email</span> <i class="fas fa-times" onclick="alertclose(event)"></i>
             </div>
             <div class="body">
-                <audio id="player" controls>
+                <!-- <audio id="player" controls>
                     <source src="" type="audio/mpeg">
                         Your browser does not support the audio element.
-                    </audio>
+                </audio> -->
                 <div>
                     <label>previous Email:</label>
-                    <input type="email"  id='oldemail'/>
+                    <input type="email" disabled value="tejasjagdale60@gmail.com" id='oldemail'/>
                 </div>
                 <div>
                     <label class="eavailabel"><i class="fas fa-check"></i></label>
@@ -166,7 +197,7 @@
                     <input type="email"  id="newemail"/>
                 </div>
                 <div class="crbtn">
-                    <button class="crabtn" onclick="emailchange()">Enter <i class="fas fa-sign-in-alt"></i></button>
+                    <button class="crabtn" onclick="emailchange()">Save <i class="fas fa-save"></i></button>
                 </div>
             </div>
         </div>

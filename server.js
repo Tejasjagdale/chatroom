@@ -14,7 +14,8 @@ const ytdl = require("ytdl-core");
 const path = require("path");
 var requestCountry = require("request-country");
 const nodemailer = require("nodemailer");
-const multer  = require('multer')
+const multer = require("multer");
+var rimraf = require("rimraf");
 
 const PORT = process.env.PORT || 3812;
 
@@ -32,7 +33,16 @@ const Register = require("./db/registers");
 const Rooms = require("./db/rooms");
 const Gusers = require("./db/gusers");
 const { load } = require("dotenv");
-const themes = ['#914900','#ED4245','#5562EA','#FAA61A','#EB459E','#EB459E','#05DA73','#94A5AF'];
+const themes = [
+  "#914900",
+  "#ED4245",
+  "#5562EA",
+  "#FAA61A",
+  "#EB459E",
+  "#EB459E",
+  "#05DA73",
+  "#94A5AF",
+];
 
 function getRandomInt(min, max) {
   min = Math.ceil(min);
@@ -98,9 +108,8 @@ app.get("/emailverification", function (req, res) {
 const upload = multer({
   storage: multer.diskStorage({
     destination: (req, file, cb) => {
-      var fs2 = require('fs-extra');
-      fs2.copySync(path.resolve(__dirname,`users/${req.body.name}/files/profiledp.png`), `./users/${req.body.name}/files/oprofiledp.png`);
-      cb(null, `./users/${req.body.name}/files`);
+      var fs2 = require("fs-extra");
+      cb(null, `./users/${req.body.id}/files`);
     },
     filename: (req, file, cb) => {
       cb(null, `profiledp.png`);
@@ -111,80 +120,43 @@ const upload = multer({
 const upload_display = multer({
   storage: multer.diskStorage({
     destination: (req, file, cb) => {
-      cb(null, `./users/${req.body.name}/files`);
+      cb(null, `./users/${req.body.id}/files`);
     },
     filename: (req, file, cb) => {
-      cb(null, `display.png`)
+      cb(null, `display.png`);
     },
   }),
 });
 
-app.post('/avatar', upload.single('avatar'), (req, res) => {
-});
+app.post("/avatar", upload.single("avatar"), (req, res) => {});
 
+app.post("/display", (req, res) => {});
 
-app.post('/display', upload_display.single('display'), (req, res) => {
-});
-
-app.post('/changepass',async (req,res)=>{
-
-})
+app.post("/changepass", async (req, res) => {});
 
 app.post("/register", async (req, res) => {
   try {
-      var fs = require("fs");
+    const registeruser = new Register({
+      name: req.body.name,
+      email: req.body.email,
+      password: req.body.password,
+      type: "register",
+      joined: getFormattedDate(d),
+      country: "india",
+      history: {
+        display: "wallpapers/dbg" + getRandomInt(1, 20) + ".jpg",
+      },
+      pms: new Array(),
+      alerts: new Array(),
+    });
 
-      const dir = `./users/${req.body.name}`;
-      const dir2 = `./users/${req.body.name}/rhythm`;
-      const dir3 = `./users/${req.body.name}/files`;
+    const token = await registeruser.generateAuthToken();
 
-      if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, {
-          recursive: true,
-        });
-      }
-
-      if (!fs.existsSync(dir2)) {
-        fs.mkdirSync(dir2, {
-          recursive: true,
-        });
-      }
-
-      if (!fs.existsSync(dir3)) {
-        fs.mkdirSync(dir3, {
-          recursive: true,
-        });
-      }
-
-      var fs = require('fs-extra');
-
-      const rannum =getRandomInt(1, 8);
-
-      fs.copySync(path.resolve(__dirname,"images/profile/default_dp" + rannum +".png"), `./users/${req.body.name}/files/profiledp.png`);
-
-      const registeruser = new Register({
-        name: req.body.name,
-        email: req.body.email,
-        password: req.body.password,
-        type: "register",
-        joined: getFormattedDate(d),
-        country: "india",
-        history: {
-          profile: __dirname +`/users/${req.body.name}/files/profiledp.png`,
-          display:__dirname + "/images/wallpaper/dbg" + getRandomInt(1, 20) + ".png",
-          theme: themes[rannum-1],
-        },
-        pms:new Array(),
-        alerts: new Array(),
-      });
-      
-      const token = await registeruser.generateAuthToken();
-
-      res.cookie("chatroomjwt", {
-        token: token,
-        user_type: "register",
-        name: req.body.name,
-      });
+    res.cookie("chatroomjwt", {
+      token: token,
+      user_type: "register",
+      name: req.body.name,
+    });
 
     // var transporter = nodemailer.createTransport({
     //     service: 'gmail',
@@ -262,13 +234,13 @@ app.post("/checkname", async (req, res) => {
   try {
     var user;
 
-    if(req.body.type == 'register'){
+    if (req.body.type == "register") {
       user = await Register.findOne({ name: req.body.name });
-    }else{
+    } else {
       user = await Gusers.findOne({ name: req.body.name });
     }
 
-    res.send(user)
+    res.send(user);
   } catch (error) {
     res.status(400).send("some error occured");
   }
@@ -280,7 +252,7 @@ app.post("/checkemail", async (req, res) => {
 
     user = await Register.findOne({ email: req.body.email });
 
-    res.send(user)
+    res.send(user);
   } catch (error) {
     res.status(400).send("some error occured");
   }
@@ -288,23 +260,15 @@ app.post("/checkemail", async (req, res) => {
 
 app.post("/glogin", async (req, res) => {
   try {
-
-    var fs2 = require('fs-extra');
-    const rannum = getRandomInt(1, 8);
-
-    fs2.copySync(path.resolve(__dirname,"images/profile/default_dp" +rannum +".png"), `./users/${req.body.name}/files/profiledp.png`);
-
     const guestuser = new Gusers({
       name: req.body.name,
       type: "guest",
       joined: getFormattedDate(d),
       country: "india",
       history: {
-        profile: __dirname +`/users/${req.body.name}/files/profiledp.png`,
-        display:__dirname + "/images/wallpaper/dbg" + getRandomInt(1, 20) + ".png",
-        theme: themes[rannum-1],
+        display: "wallpapers/dbg" + getRandomInt(1, 20) + ".jpg",
       },
-      pms:new Array(),
+      pms: new Array(),
       alerts: new Array(),
     });
 
@@ -318,39 +282,14 @@ app.post("/glogin", async (req, res) => {
 
     const guser = await guestuser.save();
 
-    var fs = require("fs");
-
-    const dir = `./users/${req.body.name}`;
-    const dir2 = `./users/${req.body.name}/rhythm`;
-    const dir3 = `./users/${req.body.name}/files`;
-
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, {
-        recursive: true,
-      });
-    }
-
-    if (!fs.existsSync(dir2)) {
-      fs.mkdirSync(dir2, {
-        recursive: true,
-      });
-    }
-
-    if (!fs.existsSync(dir3)) {
-      fs.mkdirSync(dir3, {
-        recursive: true,
-      });
-    }
-
     res.send("okay");
 
     console.log("1 new guest user joined");
   } catch (error) {
+    console.log(error);
     res.status(400).send(error);
   }
 });
-
-
 
 // app.post("/rhythm", async (req, res) => {
 //   let dispatcher = connection.playStream(ytdl(req.body.link, {filter: 'audioonly'}), {seek: 0, volume: (DEFAULT_VOLUME/100)});
@@ -415,7 +354,6 @@ async function loader() {
 loader();
 
 io.on("connection", function (socket) {
-
   // socket.on('/rhythm', function (data) {
   //   if(rhythmstream == null){
   //     rhythmstream = ss.createStream();
@@ -441,29 +379,32 @@ io.on("connection", function (socket) {
         }
       });
 
-      setTimeout(async () => {
-        if (user_type == "register") {
-          var user = await Register.findOne({ _id: verifyUser._id });
-        } else {
-          var user = await Gusers.findOne({ _id: verifyUser._id });
-        }
-  
-        socket.emit("load-users", [roomdata[0].roomusers, roomdata[0].roomroles]);
-        socket.emit("load-rooms", roomsname);
-  
-        if (roomdata[0].roomusers.length == 0) {
-          roomdata[0].roomusers[0] = {
-            name: user.name,
-            id: user._id,
-            country: user.country,
-            type: user.type,
-            blocks: user.blocks,
-            current_room: "Main Room",
-          };
-          roomdata[0].userssockets[0] = socket.id;
-          roomdata[0].roomactive = true;
-        } else {
+      setTimeout(
+        async () => {
+          if (user_type == "register") {
+            var user = await Register.findOne({ _id: verifyUser._id });
+          } else {
+            var user = await Gusers.findOne({ _id: verifyUser._id });
+          }
 
+          socket.emit("load-users", [
+            roomdata[0].roomusers,
+            roomdata[0].roomroles,
+          ]);
+          socket.emit("load-rooms", roomsname);
+
+          if (roomdata[0].roomusers.length == 0) {
+            roomdata[0].roomusers[0] = {
+              name: user.name,
+              id: user._id,
+              country: user.country,
+              type: user.type,
+              blocks: user.blocks,
+              current_room: "Main Room",
+            };
+            roomdata[0].userssockets[0] = socket.id;
+            roomdata[0].roomactive = true;
+          } else {
             roomdata[0].roomusers = [
               ...roomdata[0].roomusers,
               {
@@ -477,7 +418,7 @@ io.on("connection", function (socket) {
             ];
             roomdata[0].userssockets = [...roomdata[0].userssockets, socket.id];
           }
-  
+
           activeusers.push({
             name: user.name,
             id: user._id,
@@ -486,42 +427,42 @@ io.on("connection", function (socket) {
             blocks: user.blocks,
             current_room: "Main Room",
           });
-  
+
           user_sockets.push(socket.id);
-  
-  
-        socket.emit("user-joined", {
-          name: user.name,
-          id: user._id,
-          country: user.country,
-          type: user.type,
-          blocks: user.blocks,
-          current_room: "Main Room",
-          history: user.history,
-          roomdata: roomdata[0],
-        });
-  
-        socket.broadcast.emit("user-joined", {
-          name: user.name,
-          id: user._id,
-          country: user.country,
-          type: user.type,
-          blocks: user.blocks,
-          history: user.history,
-          current_room: "Main Room",
-          roomdata: roomdata[0],
-        });
-  
-        socket.emit("load-msgs", roomdata[0].roommsgs);
-        socket.emit("room-users", roomdata);
-        socket.broadcast.emit("room-users", roomdata);
-  
-        if (user.type == "register") {
-          const frnds = await Register.findOne({ _id: user._id });
-          socket.emit("load-frnds", frnds);
-        }
-      }, ( avoid_clone ? 500 : 100 ));
-      
+
+          socket.emit("user-joined", {
+            name: user.name,
+            id: user._id,
+            country: user.country,
+            type: user.type,
+            blocks: user.blocks,
+            current_room: "Main Room",
+            history: user.history,
+            roomdata: roomdata[0],
+          });
+
+          socket.broadcast.emit("user-joined", {
+            name: user.name,
+            id: user._id,
+            country: user.country,
+            type: user.type,
+            blocks: user.blocks,
+            history: user.history,
+            current_room: "Main Room",
+            roomdata: roomdata[0],
+          });
+
+          socket.emit("load-msgs", roomdata[0].roommsgs);
+          socket.emit("room-users", roomdata);
+          socket.broadcast.emit("room-users", roomdata);
+
+          if (user.type == "register") {
+            const frnds = await Register.findOne({ _id: user._id });
+            socket.emit("load-frnds", frnds);
+          }
+        },
+        avoid_clone ? 500 : 100
+      );
     } catch (error) {
       console.log(error);
     }
@@ -609,7 +550,7 @@ io.on("connection", function (socket) {
   socket.on("pmmsg-send", async (data1) => {
     block = false;
     console.log(data1);
-    var receiver = data1.receiver_id.replace("user","");
+    var receiver = data1.receiver_id.replace("user", "");
     activeusers.forEach((elem, ind) => {
       if (elem.id == receiver) {
         activeusers[ind].blocks.forEach(async function (elemt) {
@@ -1093,13 +1034,13 @@ io.on("connection", function (socket) {
     roomdata.forEach((items, ind) => {
       if (items.roomname == data.current_room) {
         delete data.current_room;
-        roomdata[ind].voiceuser.forEach((elem)=>{
-          if(elem.userid == data.userid){
+        roomdata[ind].voiceuser.forEach((elem) => {
+          if (elem.userid == data.userid) {
             exisit = false;
           }
-        })
+        });
 
-        if(exisit){
+        if (exisit) {
           roomdata[ind].voiceuser.push(data);
         }
       }
@@ -1112,9 +1053,9 @@ io.on("connection", function (socket) {
   socket.on("leave_voice", (data) => {
     roomdata.forEach((items, ind1) => {
       if (items.roomname == data.current_room) {
-        items.voiceuser.forEach((elem,ind2) => {
-          if(elem.userid == data.userid){
-            roomdata[ind1].voiceuser.splice(ind2,1)
+        items.voiceuser.forEach((elem, ind2) => {
+          if (elem.userid == data.userid) {
+            roomdata[ind1].voiceuser.splice(ind2, 1);
           }
         });
       }
@@ -1126,27 +1067,54 @@ io.on("connection", function (socket) {
 
   socket.on("group_call", (data) => {
     roomdata.forEach((item) => {
-       if (item.roomname == data.current_room) {
-           item.voiceuser.forEach((item1,ind)=>{
-             if(ind != (item.voiceuser.length - 1)){
-               activeusers.forEach((item2,index)=>{
-                 if(item2.id == item1.userid){
-                   socket.broadcast.to(user_sockets[index]).emit("group_call", data);
-                 }
-               })
-             }
-           })
-       }
-     });
-   });
- 
-   socket.on("callstarted", (data) => {
-     activeusers.forEach((item, index) => {
-       if (item.id == data.rid) {
-         socket.broadcast.to(user_sockets[index]).emit("callstarted", data);
-       }
-     });
-   });
+      if (item.roomname == data.current_room) {
+        item.voiceuser.forEach((item1, ind) => {
+          if (ind != item.voiceuser.length - 1) {
+            activeusers.forEach((item2, index) => {
+              if (item2.id == item1.userid) {
+                socket.broadcast
+                  .to(user_sockets[index])
+                  .emit("group_call", data);
+              }
+            });
+          }
+        });
+      }
+    });
+  });
+
+  socket.on("callstarted", (data) => {
+    activeusers.forEach((item, index) => {
+      if (item.id == data.rid) {
+        socket.broadcast.to(user_sockets[index]).emit("callstarted", data);
+      }
+    });
+  });
+
+  socket.on("changename", async function (data) {
+    if (data.type === "register") {
+      var user = await Register.findOne({ _id: data.userid });
+      await Register.updateOne(
+        { _id: data.userid },
+        { $set: { name: data.name } }
+      );
+    } else {
+      await Gusers.updateOne(
+        { _id: data.userid },
+        { $set: { name: data.name } }
+      );
+    }
+
+    socket.emit("changename");
+  });
+
+  socket.on("changeemail", async function (data) {
+    await Register.updateOne(
+      { _id: data.userid },
+      { $set: { email: data.email } }
+    );
+    socket.emit("changeemail");
+  });
 
   socket.on("disconnect", function () {
     var i = user_sockets.indexOf(socket.id);
@@ -1155,19 +1123,21 @@ io.on("connection", function (socket) {
       if (i != -1) {
         if (items.roomname == activeusers[i].current_room) {
           var i3 = items.userssockets.indexOf(socket.id);
-          items.voiceuser.forEach((elem,ind2) => {
-              if(elem.userid == items.roomusers[i3].id){
-                roomdata[index].voiceuser.splice(ind2,1);
-                socket.broadcast.emit("vuser_left", {name:items.roomusers[i3].name});
-              }
+          items.voiceuser.forEach((elem, ind2) => {
+            if (elem.userid == items.roomusers[i3].id) {
+              roomdata[index].voiceuser.splice(ind2, 1);
+              socket.broadcast.emit("vuser_left", {
+                name: items.roomusers[i3].name,
+              });
+            }
           });
           items.roomusers.splice(i3, 1);
           items.userssockets.splice(i3, 1);
         }
       }
     });
-    
-    console.log(activeusers[i])
+
+    console.log(activeusers[i]);
     socket.broadcast.emit("user-left", activeusers[i]);
     socket.broadcast.emit("room-users", roomdata);
 

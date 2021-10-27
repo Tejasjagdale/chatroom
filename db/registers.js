@@ -1,6 +1,15 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
+const path = require("path");
 const jwt = require("jsonwebtoken");
+
+const themes = ['#914900','#ED4245','#5562EA','#FAA61A','#EB459E','#EB459E','#05DA73','#94A5AF'];
+
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -74,17 +83,14 @@ const userSchema = new mongoose.Schema({
     },
   ],
   history: {
-      profile: {
-        type: String,
-      },
-      theme:{
-        type: String,
-      },
-      display: {
-        type: String,
-      },
+    theme: {
+      type: String,
+    },
+    display: {
+      type: String,
+    },
   },
-  pms:[
+  pms: [
     {
       sender: {
         type: String,
@@ -97,7 +103,7 @@ const userSchema = new mongoose.Schema({
       },
     },
   ],
-  alerts:[
+  alerts: [
     {
       sender: {
         type: String,
@@ -137,10 +143,51 @@ userSchema.methods.generateAuthToken = async function () {
   }
 };
 
-userSchema.pre("save", async function (next) {
+userSchema.pre("save", async function (req,res,next) {
   if (this.isModified("password")) {
     this.password = await bcrypt.hash(this.password, 10);
   }
+
+  var fs = require("fs");
+
+  const dir = `./users/${this._id}`;
+  const dir2 = `./users/${this._id}/rhythm`;
+  const dir3 = `./users/${this._id}/files`;
+
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, {
+      recursive: true,
+    });
+  }
+
+  if (!fs.existsSync(dir2)) {
+    fs.mkdirSync(dir2, {
+      recursive: true,
+    });
+  }
+
+  if (!fs.existsSync(dir3)) {
+    fs.mkdirSync(dir3, {
+      recursive: true,
+    });
+  }
+
+  const rannum = getRandomInt(1, 8);
+
+  var fs = require('fs');
+   
+    // Using fs.exists() method
+    fs.exists(`./users/${this._id}/files/profiledp.png`, (exists) => {
+      if(!exists){
+        fs.copySync(
+          path.resolve(__dirname, "../images/profile/default_dp" + rannum + ".png"),
+          `./users/${this._id}/files/profiledp.png`
+        );
+      }  
+    });
+
+  this.history.theme = themes[rannum-1]
+
   next();
 });
 

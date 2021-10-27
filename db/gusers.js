@@ -1,5 +1,23 @@
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
+const path = require("path");
+
+const themes = [
+  "#914900",
+  "#ED4245",
+  "#5562EA",
+  "#FAA61A",
+  "#EB459E",
+  "#EB459E",
+  "#05DA73",
+  "#94A5AF",
+];
+
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
 const guserSchema = new mongoose.Schema({
   name: {
@@ -54,16 +72,13 @@ const guserSchema = new mongoose.Schema({
       },
     },
   ],
-  history:{
-      profile: {
-        type: String,
-      },
-      theme:{
-        type: String,
-      },
-      display: {
-        type: String,
-      },
+  history: {
+    theme: {
+      type: String,
+    },
+    display: {
+      type: String,
+    },
   },
   tokens: [
     {
@@ -87,10 +102,54 @@ guserSchema.methods.generateAuthToken = async function () {
 
     return token;
   } catch (error) {
-    res.send("the error is" + error);
     console.log(error);
   }
 };
+
+guserSchema.pre("save", async function (req, res, next) {
+  var fs2 = require("fs-extra");
+  const rannum = getRandomInt(1, 8);
+
+  fs.exists(`./users/${this._id}/files/profiledp.png`, (exists) => {
+    if (!exists) {
+      fs2.copySync(
+        path.resolve(
+          __dirname,
+          "../images/profile/default_dp" + rannum + ".png"
+        ),
+        `./users/${this._id}/files/profiledp.png`
+      );
+    }
+  });
+
+  var fs = require("fs");
+
+  const dir = `./users/${this._id}`;
+  const dir2 = `./users/${this._id}/rhythm`;
+  const dir3 = `./users/${this._id}/files`;
+
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, {
+      recursive: true,
+    });
+  }
+
+  if (!fs.existsSync(dir2)) {
+    fs.mkdirSync(dir2, {
+      recursive: true,
+    });
+  }
+
+  if (!fs.existsSync(dir3)) {
+    fs.mkdirSync(dir3, {
+      recursive: true,
+    });
+  }
+
+  this.history.theme = themes[rannum - 1];
+
+  next();
+});
 
 const guser = new mongoose.model("guest", guserSchema);
 
