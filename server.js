@@ -773,11 +773,14 @@ io.on("connection", function (socket) {
 
   socket.on("new-room", async function (data2) {
     try {
+      console.log(data2)
+
       const newroom = new Rooms(data2);
 
       await newroom.save();
 
       roomsname.push(data2.roomname);
+
       roomdata.push({
         roomname: data2.roomname,
         roomusers: new Array(),

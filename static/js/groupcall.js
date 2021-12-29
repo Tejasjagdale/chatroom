@@ -156,7 +156,7 @@ socket.on("new_vuser_join", async (data) => {
   document.querySelector(`#General_channel_users`).appendChild(voice_user);
   document.getElementById(
     "voice" + data.userid
-  ).innerHTML = `<span style="background-image: url(${data.name}/files/profiledp.png);"></span> ${data.name}`;
+  ).innerHTML = `<span style="background-image: url(${data.userid}/files/profiledp.png);"></span> ${data.name}`;
 
   if (data.name != username) {
     var newuser = document.createElement("DIV");
@@ -166,7 +166,7 @@ socket.on("new_vuser_join", async (data) => {
     document.querySelector(`.gvideo_wrapper`).appendChild(newuser);
     document.getElementById(
       `${data.name}video_wrapper`
-    ).innerHTML = `<label>${data.name}</label><span><i class="fas fa-microphone-slash"></i></span><video autoplay="true" id="${data.name}video" class="gvideoElement2" onclick="group_zoomvideo(this.id)" ></video>`;
+    ).innerHTML = `<label>${data.name}</label><span><i class="fas fa-microphone-slash"></i></span><video autoplay="true" id="${data.name}video" class="gvideoElement2" onclick="group_zoomvideo(event,this.id)" ></video>`;
     curuser = data.name;
   }
 });
@@ -256,7 +256,7 @@ socket.on("group_call", async (data1) => {
   gpeer.signal(data1.signal);
 });
 
-async function startCapture(displayMediaOptions) {
+async function gstartCapture(displayMediaOptions) {
   try {
     captureStream = await navigator.mediaDevices.getDisplayMedia(
       displayMediaOptions
@@ -279,15 +279,12 @@ async function startCapture(displayMediaOptions) {
   } else {
     document.getElementById("gvideoElement1").style.display = "none";
   }
-  gpeer.send("screanshare");
-  gpeer.replaceTrack(
-    gpeer.streams[0].getVideoTracks()[0],
-    captureStream.getVideoTracks()[0],
-    gpeer.streams[0]
+  
+  gpeer.replaceTrack(gpeer.streams[0].getVideoTracks()[0],captureStream.getVideoTracks()[0],gpeer.streams[0]
   );
 }
 
-async function stopCapture() {
+async function gstopCapture() {
   console.log(captureStream);
   document
     .querySelector(".gshare_btn")
@@ -304,20 +301,12 @@ async function stopCapture() {
 }
 
 function genlarge() {
-  document
-    .querySelector(".gvideo_enlarge")
-    .setAttribute("onclick", "backtosize()");
-  document
-    .querySelector(".group_video_div")
-    .setAttribute("style", "min-height:100vh;width:100vw;top:0%;display:block");
+  document.querySelector(".gvideo_enlarge").setAttribute("onclick", "gbacktosize()");
+  document.querySelector(".group_video_div").setAttribute("style", "min-height:100vh;width:100vw;top:0%;display:block");
   document.querySelector(".gvideo_enlarge").classList.remove("fa-expand-wide");
   document.querySelector(".gvideo_enlarge").classList.add("fa-compress-wide");
-  document
-    .querySelector(".gvideo_wrapper1")
-    .setAttribute("style", "width: 25%;height: 25%;");
-  document
-    .querySelector(".gvideo_wrapper2")
-    .setAttribute("style", "width: 25%;height: 25%;");
+  document.querySelector(".gvideo_wrapper1").setAttribute("style", "width: 25%;height: 25%;");
+  document.querySelector(".gvideo_wrapper2").setAttribute("style", "width: 25%;height: 25%;");
 }
 
 function gbacktosize() {
@@ -353,25 +342,23 @@ function gcall_disc() {
   gpeer.destroy();
 }
 
-const group_zoomvideo = (id) => {
+const group_zoomvideo = (event,id) => {
+  console.log(Math.floor((document.getElementById(id).clientWidth /document.querySelector(".gvideo_wrapper").clientWidth) *100));
+  
   if (window.innerWidth >= 525) {
-    if (Math.floor((document.getElementById(id).clientWidth /document.querySelector(".gvideo_wrapper").clientWidth) *100) === 50) {
-      [".gvideo_wrapper1", ".gvideo_wrapper2"].forEach((elem) => {
-        document.querySelector(elem).setAttribute("style", "display:none");
-      });
-      document
-        .getElementById(id)
-        .parentNode.setAttribute(
-          "style",
-          "display:flex;width:100%;height:100%"
-        );
-      console.log(document.getElementById(id).parentNode);
+    if (Math.floor((document.getElementById(id).clientWidth /document.querySelector(".gvideo_wrapper").clientWidth) *100) <= 50) {
+      document.querySelector(".gvideo_wrapper1").setAttribute("style", "display:none");
+
+      document.querySelectorAll(".gvideo_wrapper2").forEach((elem)=>{
+        elem.setAttribute("style","display:none");
+      })
+      document.getElementById(id).parentNode.setAttribute("style","display:flex;width:100%;height:100%");
     } else {
-      [".gvideo_wrapper1", ".gvideo_wrapper2"].forEach((elem) => {
-        document
-          .querySelector(elem)
-          .setAttribute("style", "display:flex;width:50%;height:100%");
-      });
+      document.querySelector(".gvideo_wrapper1").setAttribute("style", "display:flex");
+
+      document.querySelectorAll(".gvideo_wrapper2").forEach((elem)=>{
+        elem.setAttribute("style","display:flex");
+      })
     }
   }
 };

@@ -318,7 +318,7 @@
                 </h1>
                 <div class="display-wrapper">
                     <div class="check-option">
-                        <div><input type="checkbox" id="doodel"> Add Chat Doodels</div>
+                        <div><input type="checkbox" id="doodel" checked> Add Chat Doodels</div>
                         <div><input type="file" id="wp_select" onchange="set_wallpaper(event)"> <i class="far fa-image"></i> Select image</div>
                     </div>
                     <div class="select-color">
@@ -422,7 +422,7 @@
                     <div class="vco-bottom">
                         <div class="this_user_identity"><span></span>tejas</div>
                         <div>
-                            <button class="mainmic" onclick="muteMic()"><i class="fas fa-microphone"></i></button>
+                            <button class="mainmic" onclick="mutegMic()"><i class="fas fa-microphone"></i></button>
                             <button onclick="deafen()"><i class="fas fa-headphones"></i></button> 
                             <button><i class="fas fa-cog"></i></button>
                         </div>
@@ -521,7 +521,7 @@
                 <div class="gvideo_wrapper">
                     <div class="gvideo_wrapper1">
                         <label>user</label>
-                        <video autoplay="true"  id="gvideoElement1" onclick="group_zoomvideo(this.id)" muted></video>
+                        <video autoplay="true"  id="gvideoElement1" onclick="group_zoomvideo(event,this.id)" muted></video>
                     </div>
                     <!-- <div class="css_filters">
                     <span onclick="cssfilter('sub')"><i class="fas fa-caret-left"></i></span><p id="cur_filter">normal</p><span onclick="cssfilter('add')"><i class="fas fa-caret-right"></i></span>
@@ -530,12 +530,12 @@
                 <div class="gvideo_control_wrapper">
                     <div class="gvideo_control">
                     <button class="gvideo_btn" onclick="mutegCam()"><i class="fas fa-video"></i></button>
-                    <button class="gshare_btn" onclick="startCapture()"></button>
+                    <button class="gshare_btn" onclick="gstartCapture()"></button>
                     <button class="gmic_btn" onclick="mutegMic()"><i class="fas fa-microphone"></i></button>
                     <button class="gcall_btn" onclick="gcall_disc()"><i class="fas fa-phone-slash"></i></button>
                     </div>
-                    <i class="fas fa-cog pmvideo_setting" onclick="toggel_filter()"></i>
-                    <i class="fas fa-expand-wide pmvideo_enlarge" onclick="enlarge()"></i>
+                    <i class="fas fa-cog gvideo_setting" onclick="toggel_filter()"></i>
+                    <i class="fas fa-expand-wide gvideo_enlarge" onclick="genlarge()"></i>
                 </div>
             </div>
 
