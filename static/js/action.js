@@ -55,9 +55,8 @@ const action = (id) => {
   ).innerHTML = `<span id="action_dp" style="background-image: url(${id.replace(
     "afrnd",
     ""
-  )}/files/profiledp.png);"></span> ${
-    document.querySelector(".user_details .ud_head p").innerText
-  }`;
+  )}/files/profiledp.png);"></span> ${document.querySelector(".user_details .ud_head p").innerText
+    }`;
   document.querySelector(".admin_action").classList.add("activeb2");
   document.querySelector(".alert").setAttribute("style", "display:block");
   document
@@ -713,8 +712,7 @@ document.querySelectorAll(".color").forEach((element, index) => {
     if (document.getElementById("doodel").checked) {
       formData.append(
         "wpnum",
-        `wallpapers/dbg${
-          document.querySelector(".activecol").id.split("color")[1]
+        `wallpapers/dbg${document.querySelector(".activecol").id.split("color")[1]
         }.jpg`
       );
     } else {
@@ -954,11 +952,9 @@ const block_user = (userid) => {
   document.querySelector(`.blocked-container`).appendChild(block_div);
   document.getElementById(
     "block" + userid.replace("action", "")
-  ).innerHTML = `<div class="block ${
-    document.querySelector(".admin_action .head span").innerText
-  } " id="blocked${userid.replace("action", "")}" ><span></span> <p>${
-    document.querySelector(".admin_action .head span").innerText
-  }</p> <i class="fas fa-times" onclick="removeblock(event)"></i></div>`;
+  ).innerHTML = `<div class="block ${document.querySelector(".admin_action .head span").innerText
+    } " id="blocked${userid.replace("action", "")}" ><span></span> <p>${document.querySelector(".admin_action .head span").innerText
+    }</p> <i class="fas fa-times" onclick="removeblock(event)"></i></div>`;
 
   socket.emit("block_user", [mod, this_userid]);
   alertclose(event);
@@ -1259,7 +1255,7 @@ const changename = () => {
 };
 
 const changepass = () => {
-  if(document.getElementById("Newpassword").value != document.getElementById("reenterpassword").value){
+  if (document.getElementById("Newpassword").value != document.getElementById("reenterpassword").value) {
     document.querySelector(".notify").classList.add("active");
     document
       .querySelector(".notify")
@@ -1271,7 +1267,7 @@ const changepass = () => {
       $(".notify").removeClass("active");
       $("#notifyType").innerText = "";
     }, 2000);
-  }else{
+  } else {
     socket.emit("changepass", {
       userid: this_userid,
       npass: document.getElementById("Newpassword").value,
@@ -1283,12 +1279,12 @@ const changepass = () => {
         .setAttribute("style", "background:rgb(0, 77, 0,0.7);");
       document.getElementById("notifyType").innerText =
         "The Password has been Changed successfully!";
-  
+
       setTimeout(function () {
         $(".notify").removeClass("active");
         $("#notifyType").innerText = "";
       }, 2000);
-  
+
       alertclose(event);
     });
   }
@@ -1330,6 +1326,6 @@ const emailchange = () => {
   }
 };
 
-const deleteaccount=()=>{
+const deleteaccount = () => {
 
 }

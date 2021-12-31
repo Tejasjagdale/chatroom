@@ -17,7 +17,7 @@ var t = 0;
 var msg_noti = 0;
 var alert_noti = 0;
 var user_pms = 0;
-const socket = io("https://temp-app-chatroom.herokuapp.com");
+const socket = io("https://temp-app-chatroom.herokuapp.com/");
 
 var ca = document.cookie
   .split(";")
@@ -30,7 +30,6 @@ var ca = document.cookie
     {}
   );
 
-
 var token = JSON.parse(ca.chatroomjwt.substr(2, ca.chatroomjwt.length)).token;
 var user_type = JSON.parse(
   ca.chatroomjwt.substr(2, ca.chatroomjwt.length)
@@ -39,15 +38,14 @@ var username = JSON.parse(ca.chatroomjwt.substr(2, ca.chatroomjwt.length)).name;
 var this_userid;
 var country;
 
-if(user_type == 'guest'){
-  document.getElementById('changepass').style.display = 'none';
-  document.getElementById('changeemail').style.display = 'none';
-  document.getElementById('deleteac').style.display = 'none';
+if (user_type == "guest") {
+  document.getElementById("changepass").style.display = "none";
+  document.getElementById("changeemail").style.display = "none";
+  document.getElementById("deleteac").style.display = "none";
 }
 
 document.getElementById("myuname").innerText = username;
 document.querySelector(".gvideo_wrapper1 label").innerText = username;
-
 
 socket.emit("new-user-joined", { token: token, user_type: user_type });
 
@@ -60,7 +58,9 @@ const avatarchange = (e) => {
   formData.append("id", this_userid);
   formData.append("avatar", e.target.files[0]);
 
-  document.getElementById("selfdp_view").setAttribute("src", URL.createObjectURL(e.target.files[0]));
+  document
+    .getElementById("selfdp_view")
+    .setAttribute("src", URL.createObjectURL(e.target.files[0]));
 
   $.ajax({
     url: "/avatar",
@@ -144,30 +144,48 @@ socket.on("refresh", (data) => {
   }
 });
 
-var music_audio = document.getElementById('player');
-ss(socket).on('audio-stream', function(stream, data) {
-    parts = [];
-    stream.on('data', function(chunk){
-        parts.push(chunk);
-    });
-    stream.on('end', function () {
-        music_audio.src = (window.URL || window.webkitURL).createObjectURL(new Blob(parts));
-        music_audio.play();
-    });
+var music_audio = document.getElementById("player");
+ss(socket).on("audio-stream", function (stream, data) {
+  parts = [];
+  stream.on("data", function (chunk) {
+    parts.push(chunk);
+  });
+  stream.on("end", function () {
+    music_audio.src = (window.URL || window.webkitURL).createObjectURL(
+      new Blob(parts)
+    );
+    music_audio.play();
+  });
 });
-
 
 socket.on("user-joined", (data) => {
   if (data.current_room == document.querySelector(".room_name").id) {
     var room_user = document.createElement("DIV");
     if (username == data.name) {
       this_userid = data.id;
-      document.getElementById("selfdp_view").setAttribute("src", `${this_userid}/files/profiledp.png`);
-      document.querySelector('.this_user_identity span').setAttribute("style",`background-image:url('${this_userid}/files/profiledp.png')`)
-      if(data.history.display.includes(data.id)){
-        document.querySelector('.main-chat').setAttribute("style",`background-image:url(${data.history.display});background-size:100% 100%`)
-      }else{
-        document.querySelector('.main-chat').setAttribute("style",`background-image:url(${data.history.display})`)
+      document
+        .getElementById("selfdp_view")
+        .setAttribute("src", `${this_userid}/files/profiledp.png`);
+      document
+        .querySelector(".this_user_identity span")
+        .setAttribute(
+          "style",
+          `background-image:url('${this_userid}/files/profiledp.png')`
+        );
+      if (data.history.display.includes(data.id)) {
+        document
+          .querySelector(".main-chat")
+          .setAttribute(
+            "style",
+            `background-image:url(${data.history.display});background-size:100% 100%`
+          );
+      } else {
+        document
+          .querySelector(".main-chat")
+          .setAttribute(
+            "style",
+            `background-image:url(${data.history.display})`
+          );
       }
     }
     room_user.id = "user" + data.id;
@@ -204,11 +222,19 @@ socket.on("user-joined", (data) => {
         if (elem.role == "admin") {
           document.getElementById(
             "user" + data.id
-          ).innerHTML = `<span class="uprofile" style="background-image: url(${elem.userid.replace("user", "")}/files/profiledp.png);"></span><p class="username">${elem.username}</p><div><i class="fas fa-crown"></i><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
+          ).innerHTML = `<span class="uprofile" style="background-image: url(${elem.userid.replace(
+            "user",
+            ""
+          )}/files/profiledp.png);"></span><p class="username">${elem.username
+            }</p><div><i class="fas fa-crown"></i><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
         } else {
           document.getElementById(
             "user" + data.id
-          ).innerHTML = `<span class="uprofile" style="background-image: url(${elem.userid.replace("user", "")}/files/profiledp.png);"></span><p class="username">${elem.username}</p><div><i class="fas fa-user-shield"></i><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
+          ).innerHTML = `<span class="uprofile" style="background-image: url(${elem.userid.replace(
+            "user",
+            ""
+          )}/files/profiledp.png);"></span><p class="username">${elem.username
+            }</p><div><i class="fas fa-user-shield"></i><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
         }
       }
     });
@@ -225,19 +251,15 @@ socket.on("user-joined", (data) => {
         document.querySelector(`.blocked-container`).appendChild(block_div);
         document.getElementById(
           "block" + elem.userid.replace("user", "")
-        ).innerHTML = `<div class="block ${
-          elem.username
-        } " id="blocked${elem.userid.replace(
-          "user",
-          ""
-        )}" ><span style="background-image: url(${
-          elem.userid.replace(
-          "user",
-          ""
-        )
-        }/files/profiledp.png);"></span> <p>${
-          elem.username
-        }</p> <i class="fas fa-times" onclick="removeblock(event)"></i></div>`;
+        ).innerHTML = `<div class="block ${elem.username
+          } " id="blocked${elem.userid.replace(
+            "user",
+            ""
+          )}" ><span style="background-image: url(${elem.userid.replace(
+            "user",
+            ""
+          )}/files/profiledp.png);"></span> <p>${elem.username
+          }</p> <i class="fas fa-times" onclick="removeblock(event)"></i></div>`;
       });
 
       data.roomdata.voiceuser.forEach((elem) => {
@@ -462,7 +484,7 @@ socket.on("load-msgs", (data) => {
 });
 
 socket.on("msg-send", (data) => {
-  console.log(data)
+  console.log(data);
   if (data.room == document.querySelector(".room_name").id) {
     let temp = data.message.split(" ");
 
@@ -725,7 +747,7 @@ socket.on("change-room-load", (data) => {
             document.querySelector(`.admin_cont`).appendChild(room_user);
             document.getElementById(
               "admin" + element.userid
-            ).innerHTML = `<div class="roomroles" ><span style="background-image: url(${element.userid}/files/profiledp.png);"></span> <p>${element.username}</p> <i class="fas fa-times"></i></div>`;
+            ).innerHTML = `<div class="roomroles" ><span style="background-image: url(${element.userid.replace('user','')}/files/profiledp.png);"></span> <p>${element.username}</p> <i class="fas fa-times"></i></div>`;
           } else {
             var room_user = document.createElement("DIV");
             room_user.id = "moderator" + element.userid;
@@ -734,7 +756,7 @@ socket.on("change-room-load", (data) => {
             document.querySelector(`.moderator_cont`).appendChild(room_user);
             document.getElementById(
               "moderator" + element.userid
-            ).innerHTML = `<div class="roomroles" ><span style="background-image: url(${element.userid}/files/profiledp.png);"></span> <p>${element.username}</p> <i class="fas fa-times" onclick="removerole(this.parentNode.parentNode.id)"></i></div>`;
+            ).innerHTML = `<div class="roomroles" ><span style="background-image: url(${element.userid.replace('user','')}/files/profiledp.png);"></span> <p>${element.username}</p> <i class="fas fa-times" onclick="removerole(this.parentNode.parentNode.id)"></i></div>`;
           }
         });
 
@@ -804,7 +826,7 @@ socket.on("change-room-load", (data) => {
 
   data.roommsgs.forEach(function (item, index) {
     t++;
-    console.log(item)
+    console.log(item);
     if (item.file) {
       if (this_userid != item.id) {
         const blob = new Blob([item.file], { type: item.filetype });
@@ -1108,7 +1130,12 @@ socket.on("frnd_query", (data) => {
 socket.on("load_details", (data) => {
   console.log(data);
   document.querySelector(".name").innerText = data.name;
-  document.querySelector('.profile_div .head').setAttribute('style',`background: -webkit-linear-gradient(top, ${data.history.theme} 60%, #4D426D 40%);`)
+  document
+    .querySelector(".profile_div .head")
+    .setAttribute(
+      "style",
+      `background: -webkit-linear-gradient(top, ${data.history.theme} 60%, #4D426D 40%);`
+    );
   document.querySelector(
     ".type"
   ).innerHTML = `<i class="fas fa-user"></i> ${data.type}`;
@@ -1589,9 +1616,7 @@ function user_profile(event) {
     .querySelector(".user_details .ud_head span")
     .setAttribute(
       "style",
-      `background-image: url(${
-        event.replace("user", "")
-      }/files/profiledp.png)`
+      `background-image: url(${event.replace("user", "")}/files/profiledp.png)`
     );
 
   if (
@@ -1677,7 +1702,11 @@ function addfreind(opretion_type, recv_id) {
     document.querySelector(`.freinds`).appendChild(frnd);
     document.getElementById(
       "frnd" + event.target.parentNode.parentNode.id.replace("alert", "")
-    ).innerHTML = `<span class="uprofile" style="background-image: url(${event.target.parentNode.parentNode.id.replace("alert", "")}/files/profiledp.png);"></span><p class="username">${event.target.id}</p><div><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
+    ).innerHTML = `<span class="uprofile" style="background-image: url(${event.target.parentNode.parentNode.id.replace(
+      "alert",
+      ""
+    )}/files/profiledp.png);"></span><p class="username">${event.target.id
+      }</p><div><img id="flag" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg" width="30px" height="20px"/></div>`;
     document
       .getElementById(
         "frnd" + event.target.parentNode.parentNode.id.replace("alert", "")
@@ -2030,24 +2059,25 @@ function pmchat(id, name, event) {
   document.querySelector(
     ".persnol_chat_model"
   ).innerHTML = `     <div class="pmchathead">
-                      <div class="pm_type ${
-                        document.querySelector(`.users #${id}`)
-                          ? document.querySelector(`.users #${id}`).classList[1]
-                          : document.querySelector(
-                              `.freinds #${id.replace("user", "frnd")}`
-                            ).classList[1]
-                      }">
-                                                                                <span class="pm_profile" onclick="view_profile(event)" style="background-image: url(${id.replace("user", "")}/files/profiledp.png);"></span> ${receiver}
-                                                                            </div>
-                                                                            <div class="pm-options">
-                                                                                <i class="fas fa-video" id="startvideocall" onclick="pmvideostart()"></i>
-                                                                                <i class="fas fa-phone-volume" id="startaudiocall"" onclick="pmaudiostart()"></i>
-                                                                                <i class="fas fa-times"onclick="closepm()"></i>
-                                                                            </div>
-                                                                            </div>
-                                                                            <div class="pmchat_msg">
-                                                                            </div>
-                                                                        `;
+                      <div class="pm_type ${document.querySelector(`.users #${id}`)
+      ? document.querySelector(`.users #${id}`).classList[1]
+      : document.querySelector(
+        `.freinds #${id.replace("user", "frnd")}`
+      ).classList[1]
+    }"><span class="pm_profile" onclick="view_profile(event)" style="background-image: url(${id.replace(
+      "user",
+      ""
+    )}/files/profiledp.png);"></span> ${receiver}
+                  </div>
+                  <div class="pm-options">
+                      <i class="fas fa-video" id="startvideocall" onclick="pmvideostart()"></i>
+                      <i class="fas fa-phone-volume" id="startaudiocall"" onclick="pmaudiostart()"></i>
+                      <i class="fas fa-times"onclick="closepm()"></i>
+                  </div>
+                  </div>
+                  <div class="pmchat_msg">
+                  </div>
+              `;
   document.querySelector(".persnol_chat_model").classList.add("activepm");
   document.querySelector(".pmchathead").id = id;
   document.querySelector(".user_details").setAttribute("style", "display:none");
