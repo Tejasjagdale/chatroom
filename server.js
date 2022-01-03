@@ -364,7 +364,7 @@ async function loader() {
       roomroles: [
         {
           role: "admin",
-          username: "tejas",
+          username: "admin",
           userid: "613a08584495eb4688ddd96d",
         },
       ],
@@ -389,6 +389,25 @@ async function loader() {
         voiceuser: new Array(),
         roomactive: false,
       });
+    });
+
+    roomdata.push({
+      roomname: "Quiz Room",
+      roomusers: new Array(),
+      userssockets: new Array(),
+      roommsgs: new Array(),
+      roomroles: [
+        {
+          role: "admin",
+          username: "admin",
+          userid: "613a08584495eb4688ddd96d",
+        },
+      ],
+      muteusers: new Array(),
+      rhythm: new Array(),
+      banusers: new Array(),
+      voiceuser: new Array(),
+      roomactive: false,
     });
   } catch (error) {
     console.log(error);
@@ -806,7 +825,7 @@ io.on("connection", function (socket) {
   socket.on("change-room", async (data) => {
     var isMatch;
     try {
-      if (data.nroomname == "Main Room") {
+      if (data.nroomname == "Main Room" || data.nroomname == "Quiz Room") {
         isMatch = true;
       } else {
         var room = await Rooms.findOne({ roomname: data.nroomname });

@@ -17,7 +17,7 @@ var t = 0;
 var msg_noti = 0;
 var alert_noti = 0;
 var user_pms = 0;
-const socket = io("https://temp-app-chatroom.herokuapp.com/");
+const socket = io("http://localhost:3812/");
 
 var ca = document.cookie
   .split(";")
@@ -1378,7 +1378,7 @@ const changeroom = (room) => {
   let new_room_name = document.querySelector(`#${room} p`).innerText;
 
   if (new_room_name != document.querySelector(".room_name").id) {
-    if (new_room_name == "Main Room") {
+    if (new_room_name == "Main Room" || new_room_name == "Quiz Room") {
       document.querySelector(".enter_roompass .head  span").innerHTML =
         new_room_name;
       roompass();

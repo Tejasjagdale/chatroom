@@ -98,7 +98,7 @@ async function pmvideostart() {
     document.getElementById("pmvideoElement1").srcObject = MyStream;
     document.querySelector(
       ".pmvideo_btn"
-    ).innerHTML = `<i class="fas fa-video-slash"></i>`;
+    ).innerHTML = `<i class="fas fa-video"></i>`;
 
     peer = new SimplePeer({
       initiator: true,
@@ -161,7 +161,7 @@ async function pmvideostart() {
 
     peer.on("dissconnect", (data) => {
       document
-        .getElementById("pmvideoElement2")
+        .getElementById("video_wrapper2")
         .setAttribute("style", "display:none");
 
       var tracks = MyStream.getTracks();
@@ -185,9 +185,8 @@ async function pmvideostart() {
     socket.on("callDeclined", (data) => {
       call_disc();
     });
-
-    muteMic();
   }
+  muteMic();
 }
 
 async function pmaudiostart() {
@@ -243,7 +242,7 @@ async function pmaudiostart() {
       document.getElementById("pmvideoElement2").srcObject = stream;
     });
 
-    peer.on("dissconnect", (data) => {
+    peer.on("close", (data) => {
       document
         .getElementById("pmvideoElement2")
         .setAttribute("style", "display:none");
@@ -272,7 +271,6 @@ async function pmaudiostart() {
     });
 
     muteCam();
-    muteMic();
   }
 }
 
@@ -348,7 +346,7 @@ async function acceptcall(event) {
     muteMic();
   });
 
-  peer.on("dissconnect", (data) => {
+  peer.on("close", (data) => {
     document
       .getElementById("pmvideoElement2")
       .setAttribute("style", "display:none");
@@ -533,7 +531,6 @@ function cssfilter(opr) {
 }
 
 const zoomvideo = (id) => {
-  if (window.innerWidth >= 525) {
     if (
       Math.floor(
         (document.getElementById(id).clientWidth /
@@ -550,13 +547,12 @@ const zoomvideo = (id) => {
           "style",
           "display:flex;width:100%;height:100%"
         );
-      console.log(document.getElementById(id).parentNode);
-    } else {
+    } 
+    else {
       [".video_wrapper1", ".video_wrapper2"].forEach((elem) => {
         document
           .querySelector(elem)
-          .setAttribute("style", "display:flex;width:50%;height:70%");
+          .setAttribute("style", "display:flex;width:50%;height:100%");
       });
     }
-  }
 };

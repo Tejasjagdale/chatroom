@@ -50,11 +50,11 @@ function mutegCam() {
     if (gcallstream.getVideoTracks()[0].enabled) {
       document.querySelector(
         ".gvideo_btn"
-      ).innerHTML = `<i class="fas fa-video-slash"></i>`;
+      ).innerHTML = `<i class="fas fa-video"></i>`;
     } else {
       document.querySelector(
         ".gvideo_btn"
-      ).innerHTML = `<i class="fas fa-video"></i>`;
+      ).innerHTML = `<i class="fas fa-video-slash"></i>`;
     }
   }
 }
@@ -118,7 +118,7 @@ async function group_call() {
       document.getElementById(`${curuser}video`).srcObject = stream;
     });
 
-    gpeer.on("dissconnect", (data) => {
+    gpeer.on("close", (data) => {
       document
         .getElementById("gvideoElement2")
         .setAttribute("style", "display:none");
@@ -139,7 +139,7 @@ async function group_call() {
     socket.on("callstarted", (data) => {
       gpeer.signal(data.signal);
     });
-    // mutegCam();
+    mutegCam();
     mutegMic();
   } else {
     document
@@ -166,8 +166,9 @@ socket.on("new_vuser_join", async (data) => {
     document.querySelector(`.gvideo_wrapper`).appendChild(newuser);
     document.getElementById(
       `${data.name}video_wrapper`
-    ).innerHTML = `<label>${data.name}</label><span><i class="fas fa-microphone-slash"></i></span><video autoplay="true" id="${data.name}video" class="gvideoElement2" onclick="group_zoomvideo(event,this.id)" ></video>`;
+    ).innerHTML = `<label>${data.name}</label><span><i class="fas fa-microphone-slash"></i></span><video autoplay="true" id="${data.name}video" class="gvideoElement2" ></video>`;
     curuser = data.name;
+    document.getElementById(`${data.name}video_wrapper`).setAttribute('onclick', 'group_zoomvideo(event,this.id)')
   }
 });
 
@@ -230,11 +231,11 @@ socket.on("group_call", async (data1) => {
 
   gpeer.on("stream", (stream) => {
     document.getElementById(`${data1.name}video`).srcObject = stream;
-    // mutegCam();
+    mutegCam();
     mutegMic();
   });
 
-  gpeer.on("dissconnect", (data) => {
+  gpeer.on("close", (data) => {
     document
       .getElementById("gvideoElement2")
       .setAttribute("style", "display:none");
@@ -279,8 +280,8 @@ async function gstartCapture(displayMediaOptions) {
   } else {
     document.getElementById("gvideoElement1").style.display = "none";
   }
-  
-  gpeer.replaceTrack(gpeer.streams[0].getVideoTracks()[0],captureStream.getVideoTracks()[0],gpeer.streams[0]
+
+  gpeer.replaceTrack(gpeer.streams[0].getVideoTracks()[0], captureStream.getVideoTracks()[0], gpeer.streams[0]
   );
 }
 
@@ -305,8 +306,8 @@ function genlarge() {
   document.querySelector(".group_video_div").setAttribute("style", "min-height:100vh;width:100vw;top:0%;display:block");
   document.querySelector(".gvideo_enlarge").classList.remove("fa-expand-wide");
   document.querySelector(".gvideo_enlarge").classList.add("fa-compress-wide");
-  document.querySelector(".gvideo_wrapper1").setAttribute("style", "width: 25%;height: 25%;");
-  document.querySelector(".gvideo_wrapper2").setAttribute("style", "width: 25%;height: 25%;");
+  document.querySelector(".gvideo_wrapper1").setAttribute("style", "width: 350px;height: 200px;");
+  document.querySelector(".gvideo_wrapper2").setAttribute("style", "width: 350px;height: 200px;");
 }
 
 function gbacktosize() {
@@ -315,7 +316,7 @@ function gbacktosize() {
     .setAttribute("onclick", "enlarge()");
   document
     .querySelector(".group_video_div")
-    .setAttribute("style", "height:55%;display:block");
+    .setAttribute("style", "height:100%;display:block");
   document
     .querySelector(".gvideo_enlarge")
     .classList.remove("fa-compress-wide");
@@ -342,23 +343,23 @@ function gcall_disc() {
   gpeer.destroy();
 }
 
-const group_zoomvideo = (event,id) => {
-  console.log(Math.floor((document.getElementById(id).clientWidth /document.querySelector(".gvideo_wrapper").clientWidth) *100));
-  
-  if (window.innerWidth >= 525) {
-    if (Math.floor((document.getElementById(id).clientWidth /document.querySelector(".gvideo_wrapper").clientWidth) *100) <= 50) {
-      document.querySelector(".gvideo_wrapper1").setAttribute("style", "display:none");
+const group_zoomvideo = (event, id) => {
+  console.log(id)
+  if (Math.floor((document.getElementById(id).clientWidth / document.querySelector(".gvideo_wrapper").clientWidth) * 100) < 100) {
+    document.querySelector(".gvideo_wrapper1").setAttribute("style", "display:none");
 
-      document.querySelectorAll(".gvideo_wrapper2").forEach((elem)=>{
-        elem.setAttribute("style","display:none");
-      })
-      document.getElementById(id).parentNode.setAttribute("style","display:flex;width:100%;height:100%");
-    } else {
-      document.querySelector(".gvideo_wrapper1").setAttribute("style", "display:flex");
+    document.querySelectorAll(".gvideo_wrapper2").forEach((elem) => {
+      elem.setAttribute("style", "display:none");
+    })
 
-      document.querySelectorAll(".gvideo_wrapper2").forEach((elem)=>{
-        elem.setAttribute("style","display:flex");
-      })
-    }
+    document.getElementById(id).setAttribute("style", "display:flex;width:100%;height:100%");
+    console.log(1)
+  } else {
+    console.log(2)
+    document.querySelector(".gvideo_wrapper1").setAttribute("style", "display:flex");
+
+    document.querySelectorAll(".gvideo_wrapper2").forEach((elem) => {
+      document.getElementById(elem.getAttribute('id')).setAttribute("style", "display:flex;width:350px;height:200px");
+    })
   }
 };
